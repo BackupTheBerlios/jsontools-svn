@@ -8,6 +8,22 @@
     <version>1.0</version>
     <name>Java JSON Tools - Core</name>
     <url>http://jsontools.berlios.de</url>
+    <description>
+        Java JSON Tools core library. It is independent of third party libraries.
+        It is meant to minimize transitive dependencies.
+        Applications of the JSON tools which relate to other libraries will
+        be in separate optional pacakges.
+    </description>
+    <licenses>
+        <license>
+            <name>LGPL</name>
+            <url>http://www.gnu.org/licenses/licenses.html#LGPL</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://svn.berlios.de/viewcvs/jsontools/</url>
+    </scm>
 
     <parent>
         <groupId>com.sdi</groupId>

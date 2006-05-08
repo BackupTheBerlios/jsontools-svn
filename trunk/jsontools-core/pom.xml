@@ -23,6 +23,8 @@
     </licenses>
     <scm>
         <url>http://svn.berlios.de/viewcvs/jsontools/</url>
+        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-core</developerConnection>
+        <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-core</connection>
     </scm>
 
     <parent>

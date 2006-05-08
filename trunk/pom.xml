@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.sdi</groupId>
+    <groupId>com.sdi-consulting</groupId>
     <artifactId>jsontools</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
@@ -20,6 +20,7 @@
     </licenses>
     <scm>
         <url>http://svn.berlios.de/viewcvs/jsontools/</url>
+        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk</developerConnection>
     </scm>
 
     <modules>

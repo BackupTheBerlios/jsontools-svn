@@ -1,7 +1,7 @@
 header
 {
-package com.sdi.json.parser.impl;
-import com.sdi.json.model.*;
+package com.sdicons.json.parser.impl;
+import com.sdicons.json.model.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 }

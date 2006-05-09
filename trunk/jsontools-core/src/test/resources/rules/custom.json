@@ -3,7 +3,7 @@
         {
             "name" :"Custom test",
             "type" :"custom",
-            "class" : "com.sdi.json.validator.MyValidator"
+            "class" : "com.sdicons.json.validator.MyValidator"
         },
     "good" :
         [

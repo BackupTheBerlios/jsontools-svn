@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>de.berlios</groupId>
+    <groupId>com.sdicons.jsontools</groupId>
     <artifactId>jsontools</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
@@ -11,17 +11,6 @@
         Java JSON Tools, global project. It consists of the core which is relatively independent on
         third party jars and optional parts which might introduce transitive dependencies.
     </description>
-    <licenses>
-        <license>
-            <name>LGPL</name>
-            <url>http://www.gnu.org/licenses/licenses.html#LGPL</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm>
-        <url>http://svn.berlios.de/viewcvs/jsontools/</url>
-        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk</developerConnection>
-    </scm>
 
     <modules>
         <module>jsontools-core</module>

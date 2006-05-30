@@ -5,7 +5,7 @@
     <groupId>com.sdicons.jsontools</groupId>
     <artifactId>jsontools-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>Java JSON Tools - Core</name>
     <url>http://jsontools.berlios.de</url>
     <description>
@@ -17,7 +17,7 @@
     <licenses>
         <license>
             <name>GNU LESSER GENERAL PUBLIC LICENSE Version 2.1</name>
-            <url>http://www.gnu.org/licenses/licenses.html#LGPL</url>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

@@ -3,8 +3,8 @@ package com.sdicons.json.serializer.helper.impl;
 /*
     JSONTools - Java JSON Tools
     Copyright (C) 2006 S.D.I.-Consulting BVBA
-    http://www.sdicons-consulting.com
-    mailto://nospam@sdicons-consulting.com
+    http://www.sdi-consulting.com
+    mailto://nospam@sdi-consulting.com
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public

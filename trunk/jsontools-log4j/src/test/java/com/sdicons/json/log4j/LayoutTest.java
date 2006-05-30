@@ -40,15 +40,15 @@ extends TestCase
             lTempLog = File.createTempFile("json-log-test", ".txt");
             lTempLog.createNewFile();
 
-            Logger lLog = Logger.getLogger(LayoutTest.class);
+            final Logger lLog = Logger.getLogger(LayoutTest.class);
 
-            Layout lLayout = new JSONLayout();
-            FileAppender lAppender = new FileAppender();
+            final Layout lLayout = new JSONLayout();
+            final FileAppender lAppender = new FileAppender();
             lAppender.setFile(lTempLog.getAbsolutePath());
             lAppender.setLayout(lLayout);
             lAppender.activateOptions();
 
-            Logger lRootLogger = Logger.getRootLogger();
+            final Logger lRootLogger = Logger.getRootLogger();
             lRootLogger.addAppender(new ConsoleAppender(lLayout));
             lRootLogger.addAppender(lAppender);
 
@@ -56,6 +56,19 @@ extends TestCase
             lLog.debug("This is a debug message.");
             lLog.error("This is an error message.");
             lLog.fatal("This is a fatal message.", new IllegalArgumentException("This is an illegal argument."));
+
+            for(int i = 0; i < 10; i++)
+            {
+                new Thread(new Runnable()
+                {
+                    public void run()
+                    {
+                        lLog.info("This is an info message from a thread.");
+                        lLog.debug("This is a debug message from a thread.");
+                        lLog.error("This is an error message from a tread.");
+                    }
+                }).start();
+            }
         }
         catch (IOException e)
         {

@@ -32,7 +32,6 @@ import antlr.TokenStreamException;
 
 /**
  * Reads JSON text and convert it into a Java model for further handling.
- * oeleboele
  */
 public class JSONParser
 {

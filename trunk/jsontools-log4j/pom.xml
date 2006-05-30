@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sdicons.jsontools</groupId>
+    <artifactId>jsontools-log4j</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0</version>
+    <name>Java JSON Tools - Log4J</name>
+    <url>http://jsontools.berlios.de</url>
+    <description>
+        Java JSON Tools Log4J library. 
+    </description>
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE Version 2.1</name>
+            <url>http://www.gnu.org/licenses/licenses.html#LGPL</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>http://svn.berlios.de/viewcvs/jsontools/</url>
+        <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-log4j</developerConnection>
+        <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-log4j</connection>
+    </scm>
+
+    <parent>
+        <groupId>com.sdicons.jsontools</groupId>
+        <artifactId>jsontools</artifactId>
+        <version>1.1</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+              <groupId>log4j</groupId>
+              <artifactId>log4j</artifactId>
+              <version>1.2.12</version>
+              <scope>compile</scope>
+         </dependency>
+       
+    </dependencies>
+
+    <build>
+        <plugins>
+           
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

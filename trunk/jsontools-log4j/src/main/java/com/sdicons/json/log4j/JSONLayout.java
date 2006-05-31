@@ -37,6 +37,14 @@ import java.math.BigInteger;
 public class JSONLayout
 extends Layout
 {
+    // Requested options.
+    private boolean prettyPrint = true;
+    private boolean ignoreThrowable = false;
+
+    // Active options.
+    private boolean activePrettyPrint = prettyPrint;
+    private boolean activeIgnoreThrowable = ignoreThrowable;
+
     public java.lang.String format(LoggingEvent loggingEvent)
     {
         DateFormat lFormat = new ISO8601DateFormat();
@@ -55,7 +63,7 @@ extends Layout
         lLogObj.getValue().put("timestamp", lLogTimes);
 
         ThrowableInformation lTi = loggingEvent.getThrowableInformation();
-        if(lTi != null)
+        if(lTi != null && !activeIgnoreThrowable)
         {
             JSONObject lExcObj = new JSONObject();
             lLogObj.getValue().put("exception", lExcObj);
@@ -76,16 +84,37 @@ extends Layout
             lExcObj.getValue().put("message", new JSONString(lTi.getThrowable().getMessage()));
         }
 
-        return lLogObj.render(true) + "\n";
+        return lLogObj.render(activePrettyPrint) + "\n";
     }
 
     public void activateOptions()
     {
-
+        activePrettyPrint = prettyPrint;
+        activeIgnoreThrowable = ignoreThrowable;
     }
 
     public boolean ignoresThrowable()
     {
-        return false;
+        return ignoreThrowable;
+    }
+
+    public boolean isPrettyPrint()
+    {
+        return prettyPrint;
+    }
+
+    public void setPrettyPrint(String prettyPrint)
+    {
+        this.prettyPrint = Boolean.parseBoolean(prettyPrint);
+    }
+
+    public boolean isIgnoreThrowable()
+    {
+        return ignoreThrowable;
+    }
+
+    public void setIgnoreThrowable(String ignoreThrowable)
+    {
+        this.ignoreThrowable = Boolean.parseBoolean(ignoreThrowable);
     }
 }

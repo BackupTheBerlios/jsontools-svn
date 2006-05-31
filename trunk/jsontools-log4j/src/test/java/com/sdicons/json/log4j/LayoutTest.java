@@ -25,6 +25,9 @@ import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.parser.JSONParser;
+import com.sdicons.json.validator.Validator;
+import com.sdicons.json.validator.JSONValidator;
+import com.sdicons.json.validator.ValidationException;
 import junit.framework.TestCase;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
@@ -35,6 +38,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+
+import antlr.TokenStreamException;
+import antlr.RecognitionException;
 
 
 public class LayoutTest
@@ -88,6 +94,10 @@ extends TestCase
             FileInputStream lLogStream = new FileInputStream(lTempLog);
             JSONParser lLogParser = new JSONParser(lLogStream);
 
+            // Initialize the validator of the log file contents.
+            final JSONParser lLogValidatorParser = new JSONParser(LayoutTest.class.getResourceAsStream("/log4j-validator.json"));
+            final Validator lLogValidator = new JSONValidator((JSONObject) lLogValidatorParser.nextValue());
+
             // Initialize statistics.
             int lCount = 0;
             HashMap<String,int[]> lStats = new HashMap<String, int[]>();
@@ -102,6 +112,8 @@ extends TestCase
                 try
                 {
                     JSONValue lVal = lLogParser.nextValue();
+                    lLogValidator.validate(lVal);
+                    
                     JSONObject lLogObj = (JSONObject) lVal;
                     String lLevel = ((JSONString) lLogObj.getValue().get("level")).getValue();
                     if(lStats.containsKey(lLevel))
@@ -130,7 +142,22 @@ extends TestCase
         catch (IOException e)
         {
             e.printStackTrace();
-            TestCase.fail();
+            TestCase.fail(e.getMessage());
+        }
+        catch (ValidationException e)
+        {
+            e.printStackTrace();
+            TestCase.fail(e.getMessage());
+        }
+        catch (TokenStreamException e)
+        {
+            e.printStackTrace();
+            TestCase.fail(e.getMessage());
+        }
+        catch (RecognitionException e)
+        {
+            e.printStackTrace();
+            TestCase.fail(e.getMessage());
         }
         finally
         {

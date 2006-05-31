@@ -23,7 +23,7 @@
    "pairs" : [
               # The level indicates the severity of the log entry.
               #
-              {"key":"level",   "optional":false, "rule":{ "type" :"enum", "values" : ["DEBUG", "INFO", "ERROR",  "FATAL"] }},
+              {"key":"level",   "optional":false, "rule":{ "type" :"enum", "values" : ["DEBUG", "INFO", "WARN", "ERROR",  "FATAL"] }},
 
               # The message is the main part of information of the entry.
               #

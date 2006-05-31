@@ -63,7 +63,7 @@ extends TestCase
     {
         try
         {
-            final JSONParser lParser1 = new JSONParser(ValidatorTest.class.getResourceAsStream("/rules/validator-validator.json"));
+            final JSONParser lParser1 = new JSONParser(ValidatorTest.class.getResourceAsStream("/validator-validator.json"));
             final JSONObject lValidatorObject = (JSONObject) lParser1.nextValue();
             final Validator lValidatorValidator = new JSONValidator(lValidatorObject);
 

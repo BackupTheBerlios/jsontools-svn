@@ -5,7 +5,7 @@
     <groupId>com.sdicons.jsontools</groupId>
     <artifactId>jsontools-log4j</artifactId>
     <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.1</version>
     <name>Java JSON Tools - Log4J</name>
     <url>http://jsontools.berlios.de</url>
     <description>

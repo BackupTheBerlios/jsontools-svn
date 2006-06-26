@@ -21,21 +21,20 @@ package com.sdicons.json.parser;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.parser.impl.*;
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.parser.impl.JSONLexer;
 
 import java.io.InputStream;
 import java.io.Reader;
-
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
 
 /**
  * Reads JSON text and convert it into a Java model for further handling.
  */
 public class JSONParser
 {
-    private com.sdicons.json.parser.impl.JSONParser parser;
+    private com.sdicons.json.parser.impl.JSONParserAntlr parser;
     private String streamName = "[unknown]";
 
     /**
@@ -45,7 +44,7 @@ public class JSONParser
     public JSONParser(InputStream aStream, String aStreamName)
     {
          JSONLexer lexer = new JSONLexer(aStream);
-         parser = new com.sdicons.json.parser.impl.JSONParser(lexer);
+         parser = new com.sdicons.json.parser.impl.JSONParserAntlr(lexer);
          if(aStreamName != null) streamName = aStreamName;
     }
 
@@ -61,7 +60,7 @@ public class JSONParser
     public JSONParser(Reader aReader, String aStreamName)
     {
          JSONLexer lexer = new JSONLexer(aReader);
-         parser = new com.sdicons.json.parser.impl.JSONParser(lexer);
+         parser = new com.sdicons.json.parser.impl.JSONParserAntlr(lexer);
          if(aStreamName != null) streamName = aStreamName;
     }
 

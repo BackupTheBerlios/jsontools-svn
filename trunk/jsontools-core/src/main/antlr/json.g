@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 }
 
-class JSONParser extends Parser;
+class JSONParserAntlr extends Parser;
 
 value[String aStreamName] returns [JSONValue val=JSONNull.NULL] :
      val=object[aStreamName]

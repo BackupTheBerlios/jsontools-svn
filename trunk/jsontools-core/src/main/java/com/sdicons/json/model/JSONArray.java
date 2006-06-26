@@ -23,9 +23,11 @@ package com.sdicons.json.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 
 /**
- * Represents a JSON array (list), an ordered list of values..
+ * Represents a JSON array (list), an ordered list of values ...
+ * Example: [ "one", "two", "tree" ] is an array of 3 strings.
  */
 public class JSONArray
 extends JSONComplex
@@ -76,7 +78,7 @@ extends JSONComplex
                 if(i < array.size() - 1) lBuf.append(",\n");
                 else lBuf.append("\n");
             }
-            lBuf.append(aIndent).append("]");            
+            lBuf.append(aIndent).append("]");
         }
         else
         {
@@ -107,5 +109,20 @@ extends JSONComplex
     public int hashCode()
     {
         return array.hashCode();
+    }
+
+    /**
+     * Remove all JSON information. In the case of a JSONString, a Java String is returned.
+     * The elements of the array are stripped as well.
+     * @return A Java String representing the contents of the JSONString.
+     */
+    public Object strip()
+    {
+        List lResult = new LinkedList();
+        for(JSONValue lVal: array)
+        {
+            lResult.add(lVal.strip());
+        }
+        return lResult;
     }
 }

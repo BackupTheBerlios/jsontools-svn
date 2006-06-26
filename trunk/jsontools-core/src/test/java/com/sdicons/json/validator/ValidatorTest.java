@@ -38,7 +38,7 @@ extends TestCase
         try
         {
             // This is a good illustration of the use of a validator.
-            // The code is kept as simple and compelete as possible.
+            // The code is kept as simple and complete as possible.
             final JSONParser lParser = new JSONParser(ValidatorTest.class.getResourceAsStream("/rules/simple.json"));
             final Validator lChecker = new JSONValidator((JSONObject) lParser.nextValue());
             lChecker.validate(new JSONObject());                  
@@ -115,7 +115,7 @@ extends TestCase
 
             final JSONObject lCheckerObject = (JSONObject) lTestData.get("validator");
 
-            // Note that in practice it is not necessary to validate a validator. The validtor code
+            // Note that in practice it is not necessary to validate a validator. The validator code
             // is independent of the validator mechanism, otherwise we would have a chicken-egg problem.
             // The check is here to test the validator-validator definition.
             aValidatorValidator.validate(lCheckerObject);
@@ -127,27 +127,25 @@ extends TestCase
 
             for (JSONValue jsonValue : lGoods.getValue())
             {
-                JSONValue lVal = (JSONValue) jsonValue;
                 try
                 {
-                    lChecker.validate(lVal);
+                    lChecker.validate(jsonValue);
                 }
                 catch (ValidationException e)
                 {
                     // Failure if exception.
                     e.printStackTrace(System.out);
-                    TestCase.fail("Should have succeeded: " + lVal.toString());
+                    TestCase.fail("Should have succeeded: " + jsonValue.toString());
                 }
             }
 
             for (JSONValue jsonValue1 : lBads.getValue())
             {
-                JSONValue lVal = (JSONValue) jsonValue1;
                 try
                 {
-                    lChecker.validate(lVal);
+                    lChecker.validate(jsonValue1);
                     // Failure if success.
-                    TestCase.fail("Should have failed: " + lVal.toString());
+                    TestCase.fail("Should have failed: " + jsonValue1.toString());
                 }
                 catch (ValidationException eIgnore)
                 {

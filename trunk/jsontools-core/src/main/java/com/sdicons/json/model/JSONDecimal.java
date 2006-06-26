@@ -24,7 +24,7 @@ package com.sdicons.json.model;
 import java.math.BigDecimal;
 
 /**
- * Represents a JSON float. JSON only defines "numbers" but during parsing a diffrence is
+ * Represents a JSON float. JSON only defines "numbers" but during parsing a difference is
  * made between integral types and floating types.
  */
 public class JSONDecimal
@@ -48,7 +48,7 @@ extends JSONNumber
         return "JSONDecimal(" + getLine() + ":" + getCol() + ")[" + value.toString() + "]";
     }
 
-    String render(boolean pretty, String indent)
+    protected String render(boolean pretty, String indent)
     {
         if(pretty) return indent + value;
         else return "" + value;
@@ -69,5 +69,14 @@ extends JSONNumber
     public int hashCode()
     {
         return value.hashCode();
+    }
+
+    /**
+     * Remove all JSON information. In the case of a JSONDecimal this is a BigDecimal.
+     * @return A BigDecimal representing the JSONDecimal.
+     */
+    public Object strip()
+    {
+        return value;
     }
 }

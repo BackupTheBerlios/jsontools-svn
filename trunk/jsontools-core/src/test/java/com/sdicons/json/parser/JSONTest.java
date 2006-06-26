@@ -21,16 +21,14 @@ package com.sdicons.json.parser;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import junit.framework.TestCase;
-import com.sdicons.json.parser.JSONParser;
-import com.sdicons.json.model.JSONValue;
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONString;
+import com.sdicons.json.model.JSONValue;
+import junit.framework.TestCase;
 
 import java.util.Iterator;
-
-import antlr.TokenStreamException;
-import antlr.RecognitionException;
 
 public class JSONTest
 extends TestCase
@@ -57,6 +55,7 @@ extends TestCase
                     final JSONParser lExampleParser = new JSONParser(JSONTest.class.getResourceAsStream(lEntryResource.getValue()));
                     JSONValue lExampleVal = lExampleParser.nextValue();
                     System.out.println(lExampleVal.render(true));
+                    JSONValue.decorate(lExampleVal.strip());
                 }
                 catch (Exception e)
                 {

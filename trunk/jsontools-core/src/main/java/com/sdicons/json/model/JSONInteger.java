@@ -24,7 +24,7 @@ package com.sdicons.json.model;
 import java.math.BigInteger;
 
 /**
- * Represents a JSON int. JSON only defines "numbers" but during parsing a diffrence is 
+ * Represents a JSON int. JSON only defines "numbers" but during parsing a difference is
  * made between integral types and floating types.
  */
 public class JSONInteger
@@ -48,7 +48,7 @@ extends JSONNumber
         return "JSONInteger(" + getLine() + ":" + getCol() + ")[" + value.toString() + "]";
     }
 
-    String render(boolean pretty, String indent)
+    protected String render(boolean pretty, String indent)
     {
         if(pretty) return indent + value;
         else return "" + value;
@@ -69,5 +69,14 @@ extends JSONNumber
     public int hashCode()
     {
         return value.hashCode();
+    }
+
+    /**
+     * Remove all JSON information, in the case of a JSONInteger this means a BigInteger.
+     * @return A BigInteger representing the value of the JSONInteger object.
+     */
+    public Object strip()
+    {
+        return value;
     }
 }

@@ -1,5 +1,10 @@
 package com.sdicons.json.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+
 /*
     JSONTools - Java JSON Tools
     Copyright (C) 2006 S.D.I.-Consulting BVBA
@@ -34,7 +39,7 @@ public abstract class JSONValue
     /**
      * Get the line number in the textual representation where this JSON value was encountered.
      * Can be handy for post processing tools which want to give an indication tot he user
-     * where in the representation some condition occured.
+     * where in the representation some condition occurred.
      * @return   The line number.
      */
     public int getLine()
@@ -43,7 +48,7 @@ public abstract class JSONValue
     }
 
     /**
-     * Set The position where this JSON element occured during parsing. This method is called
+     * Set The position where this JSON element occurred during parsing. This method is called
      * by the parser. Probably no need to call this yourself.
      * @param line
      * @param col
@@ -55,8 +60,8 @@ public abstract class JSONValue
     }
 
     /**
-     * Get information about the stream in which the value occured.
-     * Its purpose is to identify in which stream the error occured if multiple streams are being parsed
+     * Get information about the stream in which the value occurred.
+     * Its purpose is to identify in which stream the error occurred if multiple streams are being parsed
      * and the error reports are being collected in a single report.
      * @return The name of the stream.
      */
@@ -66,7 +71,7 @@ public abstract class JSONValue
     }
 
     /**
-     * Fill in informatio about the stream.
+     * Fill in information about the stream.
      * @param streamName
      */
     public void setStreamName(String streamName)
@@ -77,7 +82,7 @@ public abstract class JSONValue
     /**
      * Get the column number in the textual representation where this JSON value was encountered.
      * Can be handy for post processing tools which want to give an indication tot he user
-     * where in the representation some condition occured.
+     * where in the representation some condition occurred.
      * @return   The line number.
      */
     public int getCol()
@@ -95,7 +100,7 @@ public abstract class JSONValue
     }
 
     /**
-     * Set user data. The user of the library can link whatever information is usefull in the
+     * Set user data. The user of the library can link whatever information is useful in the
      * user context to a JSON object in order to track back to the original JSON data.
      * The JSON tools do not use this field, it is for the user of the library.
      * @param data
@@ -105,55 +110,104 @@ public abstract class JSONValue
         this.data = data;
     }
 
+    /**
+     * Check if this value represents a "simple" value, meaning:
+     * a boolean, a number, a string or null.
+     * @return  An assertion that the value is "simple".
+     */
     public boolean isSimple()
     {
         return this instanceof JSONSimple;
     }
 
+    /**
+     * Check if this value represents a "complex" value, meaning:
+     * an array, an object.
+     * @return An assertion that the value is "complex".
+     */
     public boolean isComplex()
     {
         return this instanceof JSONComplex;
     }
 
+    /**
+     * Check if this value represents an array.
+     * @return An assertion that the value is an array.
+     */
     public boolean isArray()
     {
         return this instanceof JSONArray;
     }
 
+    /**
+     * Check if this value represents a JSON object.
+     * @return An assertion that the value is a JSON object.
+     */
     public boolean isObject()
     {
         return this instanceof JSONObject;
     }
 
+    /**
+     * Check if this value is a number, meaning:
+     * an integer or a decimal.
+     * @return An assertion that the value is a number.
+     */
     public boolean isNumber()
     {
         return this instanceof JSONNumber;
     }
 
+    /**
+     * Check if this value is a decimal.
+     * @return An assertion that the value is a decimal.
+     */
     public boolean isDecimal()
     {
         return this instanceof JSONDecimal;
     }
 
+    /**
+     * Check if this value is an integer.
+     * @return An assertion that the value is an integer.
+     */
     public boolean isInteger()
     {
         return this instanceof JSONInteger;
     }
 
+    /**
+     * Check if this value represents a JSON null value.
+     * @return An assertion that the value is the JSON null value.
+     */
     public boolean isNull()
     {
         return this instanceof JSONNull;
     }
 
+    /**
+     * Check if this value represents a JSON boolean value.
+     * @return An assertion that the value is a JSON boolean.
+     */
     public boolean isBoolean()
     {
         return this instanceof JSONBoolean;
     }
+
+    /**
+     * Check if this value represents a JSON string.
+     * @return An assertion that the value is a JSON string.
+     */
     public boolean isString()
     {
         return this instanceof JSONString;
     }
 
+    /**
+     * Convert the JSON value into a string representation (JSON representation).
+     * @param pretty Indicating if the print should be made pretty (human readers) or compact (transmission or storage).
+     * @return A JSON representation.
+     */
     public String render(boolean pretty)
     {
         return render(pretty, "");
@@ -161,9 +215,73 @@ public abstract class JSONValue
 
     /**
      * Convert the JSON value into a string representation (JSON representation).
-     * @param pretty Indicating if the print should be made pretty (human readers) or compact (transmission).
+     * @param pretty Indicating if the print should be made pretty (human readers) or compact (transmission or storage).
      * @param indent Starting indent.
      * @return A JSON representation.
      */
-    abstract String render(boolean pretty, String indent);
+    protected abstract String render(boolean pretty, String indent);
+
+    /**
+     * This method strips all JSON related information and returns pure Java objects.
+     * It can be handy if you know in advance which objects to expect or if you already did validation.
+     * @return Pure Java object, stripped of all JSON information.
+     */
+    public abstract Object strip();
+
+    /**
+     * This mehtod is the reverse of a strip, it converts a construction of Java objects to a JSON decorated
+     * composition.
+     * @param anObject
+     * @return A JSONValue representing the object.
+     * @throws IllegalArgumentException If a conversion cannot be done.
+     */
+    public static JSONValue decorate(Object anObject)
+    {
+        if(anObject == null)
+        {
+            return new JSONNull();
+        }
+        else if(anObject instanceof Boolean)
+        {
+            return anObject.equals(Boolean.TRUE)?JSONBoolean.TRUE:JSONBoolean.FALSE;
+        }
+        else if(anObject instanceof BigDecimal)
+        {
+            return new JSONDecimal((BigDecimal) anObject);
+        }
+        else if(anObject instanceof BigInteger)
+        {
+            return new JSONInteger((BigInteger) anObject);
+        }
+        else if(anObject instanceof String)
+        {
+            return new JSONString((String) anObject);
+        }
+        else if(anObject instanceof List)
+        {
+            final JSONArray lArray = new JSONArray();
+            for(Object lElement : ((List) anObject))
+            {
+                lArray.getValue().add(decorate(lElement));
+            }
+            return lArray;
+        }
+        else if(anObject instanceof Map)
+        {
+            final JSONObject lObj = new JSONObject();
+            for(Object lKey: ((Map)anObject).keySet())
+            {
+                if(lKey instanceof String)
+                {
+                    lObj.getValue().put((String) lKey, decorate(((Map)anObject).get(lKey)));
+                }
+                else throw new IllegalArgumentException("HashMap contains a key that is not a String: " + lKey);
+            }
+            return lObj;
+        }
+        else
+        {
+            throw new IllegalArgumentException("Cannot convert this object to a JSONValue: " + anObject);
+        }
+    }
 }

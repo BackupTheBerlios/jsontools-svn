@@ -23,6 +23,7 @@ package com.sdicons.json.model;
 
 /**
  * Represents a JSON boolean value.
+ * Examples are: true, false.
  */
 public class JSONBoolean
 extends JSONSimple
@@ -47,7 +48,7 @@ extends JSONSimple
         return "JSONBoolean(" + getLine() + ":" + getCol() + ")[" + value +"]";
     }
 
-    String render(boolean pretty, String indent)
+    protected String render(boolean pretty, String indent)
     {
         if(pretty) return indent + value;
         else return "" + value;
@@ -68,5 +69,15 @@ extends JSONSimple
     public int hashCode()
     {
         return (value ? 1 : 0);
+    }
+
+    /**
+     * Get the Java object, remove all JSON information. In the case of a JSONBoolean, this
+     * is a Java Boolean object.
+     * @return Boolean.TRUE or Boolean.FALSE depending on the value of the JSONBoolean.
+     */
+    public Object strip()
+    {
+        return value?Boolean.TRUE:Boolean.FALSE;
     }
 }

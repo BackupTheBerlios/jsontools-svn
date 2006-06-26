@@ -131,4 +131,19 @@ extends JSONComplex
     {
         return map.get(aKey);
     }
+
+    /**
+     * Remove all JSON related information. In the case of a JSONObject, a HashMap is returned.
+     * The values of the HashMap are stripped as well.
+     * @return a HashMap, containing pure Java objects.
+     */
+    public Object strip()
+    {
+        HashMap lResult = new HashMap();
+        for(String lKey : map.keySet())
+        {
+            lResult.put(lKey, map.get(lKey).strip());
+        }
+        return lResult;
+    }
 }

@@ -25,6 +25,7 @@ import com.sdicons.json.parser.impl.ParserUtil;
 
 /**
  * Represents a JSON delimited string.
+ * Examples are: "Hello" and "World"; "Hello\nWorld" contains a newline.
  */
 public class JSONString
 extends JSONSimple
@@ -47,7 +48,7 @@ extends JSONSimple
         return "JSONString(" + getLine() + ":" + getCol() + ")[" + ParserUtil.render(value, false, "") + "]";
     }
 
-    String render(boolean pretty, String indent)
+    protected String render(boolean pretty, String indent)
     {
         return ParserUtil.render(value, pretty, indent);
     }
@@ -67,5 +68,15 @@ extends JSONSimple
     public int hashCode()
     {
         return value.hashCode();
+    }
+
+    /**
+     * A pure Java object, all JSON information is removed. A JSONString
+     * trivially maps to a Java String.
+     * @return A Java String representing the contents of a JSONString.
+     */
+    public Object strip()
+    {
+        return value;
     }
 }

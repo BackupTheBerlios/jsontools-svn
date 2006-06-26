@@ -23,6 +23,7 @@ package com.sdicons.json.model;
 
 /**
  * Represents a JSON null value.
+ * The only valid example is: null.
  */
 public class JSONNull
 extends JSONSimple
@@ -38,7 +39,7 @@ extends JSONSimple
         return "JSONNull(" + getLine() + ":" + getCol() + ")";
     }
 
-     String render(boolean pretty, String indent)
+    protected String render(boolean pretty, String indent)
     {
         if(pretty) return indent + "null";
         else return "null";
@@ -48,5 +49,14 @@ extends JSONSimple
     {
         if(obj == null) return false;
         else return obj instanceof JSONNull;
+    }
+
+    /**
+     * Strip all JSON information. In the case of a JSONNull object, only null remains...
+     * @return null.
+     */
+    public Object strip()
+    {
+        return null;
     }
 }

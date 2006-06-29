@@ -27,7 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Representation of a JSON object, a collection (unordered) of name/value pairs. 
+ * Representation of a JSON object, a collection (unordered) of name/value pairs.
+ * An example: {"name":"Homer", "age":40, "children":["Bart", "Maggie", "Lisa"]} 
  */
 public class JSONObject
 extends JSONComplex

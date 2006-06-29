@@ -229,7 +229,7 @@ public abstract class JSONValue
     public abstract Object strip();
 
     /**
-     * This mehtod is the reverse of a strip, it converts a construction of Java objects to a JSON decorated
+     * This method is the reverse of a strip, it converts a construction of Java objects to a JSON decorated
      * composition.
      * @param anObject
      * @return A JSONValue representing the object.

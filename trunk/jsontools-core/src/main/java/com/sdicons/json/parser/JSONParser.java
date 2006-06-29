@@ -40,6 +40,9 @@ public class JSONParser
     /**
      * Construct a parser using a stream.
      * @param aStream A stream containing JSON text.
+     * @param aStreamName A String that describes the stream, it will be attached to
+     * all JSON objects in the model which are generated from this parser. This makes it
+     * possible to identify the stream where the object came from.
      */
     public JSONParser(InputStream aStream, String aStreamName)
     {
@@ -48,6 +51,10 @@ public class JSONParser
          if(aStreamName != null) streamName = aStreamName;
     }
 
+    /**
+     * Construct a parser using a stream.
+     * @param aStream A stream containing JSON text.
+     */
     public JSONParser(InputStream aStream)
     {
         this(aStream, null);
@@ -56,6 +63,9 @@ public class JSONParser
     /**
      * Construct a parser using a reader.
      * @param aReader A reader containing JSON text.
+     * @param aStreamName A String that describes the stream, it will be attached to
+     * all JSON objects in the model which are generated from this parser. This makes it
+     * possible to identify the stream where the object came from.
      */
     public JSONParser(Reader aReader, String aStreamName)
     {
@@ -64,6 +74,10 @@ public class JSONParser
          if(aStreamName != null) streamName = aStreamName;
     }
 
+    /**
+     * Construct a parser using a reader.
+     * @param aReader A reader containing JSON text.
+     */
     public JSONParser(Reader aReader)
     {
         this(aReader, null);

@@ -26,6 +26,7 @@ import com.sdicons.json.parser.impl.ParserUtil;
 /**
  * Represents a JSON delimited string.
  * Examples are: "Hello" and "World"; "Hello\nWorld" contains a newline.
+ * Strings are always delimited with double quotes.
  */
 public class JSONString
 extends JSONSimple

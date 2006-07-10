@@ -64,6 +64,18 @@ extends JSONComplex
         return lBuf.toString();
     }
 
+    /**
+     * Utility method, get an element at a specific position in the list.
+     * You do not have to get the list value first with getValue() first.
+     * @param i Index of the element to return.
+     * @return Returns the element at the specified position in this list.
+     * @throws IndexOutOfBoundsException When there is no element at the specified position.
+     */
+    public JSONValue get(int i)
+    {
+        return array.get(i);
+    }
+
     protected String render(boolean aPretty, String aIndent)
     {
         final StringBuffer lBuf = new StringBuffer();

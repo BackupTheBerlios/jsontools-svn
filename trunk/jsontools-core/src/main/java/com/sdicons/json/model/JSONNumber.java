@@ -22,7 +22,7 @@ package com.sdicons.json.model;
 */
 
 /**
- * The parent class of numerical types, being integer and decimal.
+ * The parent class of numerical types, being {@link JSONInteger} and {@link JSONDecimal}.
  */
 public abstract class JSONNumber
 extends JSONSimple

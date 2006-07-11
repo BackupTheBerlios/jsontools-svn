@@ -23,7 +23,7 @@ package com.sdicons.json.model;
 
 /**
  * Represents a JSON null value.
- * The only valid example is: null.
+ * The only valid example is: <code>null.</code>
  */
 public class JSONNull
 extends JSONSimple

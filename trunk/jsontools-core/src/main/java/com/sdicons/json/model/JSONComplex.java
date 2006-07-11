@@ -22,7 +22,7 @@ package com.sdicons.json.model;
 */
 
 /**
- * Superclass of JSON complex types, namely arrays and objects.
+ * Superclass of JSON complex types, namely {@link JSONArray} and {@link JSONObject}.
  */
 public abstract class JSONComplex
 extends JSONValue

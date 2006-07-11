@@ -48,7 +48,7 @@ public abstract class JSONValue
     }
 
     /**
-     * Set The position where this JSON element occurred during parsing. This method is called
+     * Set The position where this JSON value occurred during parsing. This method is called
      * by the parser. Probably no need to call this yourself.
      * @param line
      * @param col

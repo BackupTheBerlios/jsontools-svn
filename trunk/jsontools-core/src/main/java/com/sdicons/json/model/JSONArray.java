@@ -27,7 +27,7 @@ import java.util.LinkedList;
 
 /**
  * Represents a JSON array (list), an ordered list of values ...
- * Example: [ "one", "two", "tree" ] is an array of 3 strings.
+ * Example: <code>[ "one", "two", "tree" ]</code> is an array of 3 strings.
  */
 public class JSONArray
 extends JSONComplex
@@ -56,7 +56,7 @@ extends JSONComplex
         lBuf.append("JSONArray(").append(getLine()).append(":").append(getCol()).append(")[");
         for (int i = 0; i < array.size(); i++)
         {
-            JSONValue jsonValue = (com.sdicons.json.model.JSONValue) array.get(i);
+            JSONValue jsonValue = array.get(i);
             lBuf.append(jsonValue.toString());
             if(i < array.size() - 1) lBuf.append(", ");
         }
@@ -85,7 +85,7 @@ extends JSONComplex
             String lIndent = aIndent + "   ";
             for (int i = 0; i < array.size(); i++)
             {
-                JSONValue jsonValue = (com.sdicons.json.model.JSONValue) array.get(i);
+                JSONValue jsonValue = array.get(i);
                 lBuf.append(jsonValue.render(true, lIndent));
                 if(i < array.size() - 1) lBuf.append(",\n");
                 else lBuf.append("\n");
@@ -97,7 +97,7 @@ extends JSONComplex
             lBuf.append("[");
             for (int i = 0; i < array.size(); i++)
             {
-                JSONValue jsonValue = (com.sdicons.json.model.JSONValue) array.get(i);
+                JSONValue jsonValue = array.get(i);
                 lBuf.append(jsonValue.render(false, ""));
                 if(i < array.size() - 1) lBuf.append(",");
             }
@@ -113,9 +113,8 @@ extends JSONComplex
 
         final JSONArray jsonArray = (JSONArray) o;
 
-        if (!array.equals(jsonArray.array)) return false;
+        return array.equals(jsonArray.array);
 
-        return true;
     }
 
     public int hashCode()

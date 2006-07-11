@@ -23,7 +23,7 @@ package com.sdicons.json.model;
 
 /**
  * Represents a JSON boolean value.
- * Examples are: true, false.
+ * Examples are: <code>true, false.</code>
  */
 public class JSONBoolean
 extends JSONSimple

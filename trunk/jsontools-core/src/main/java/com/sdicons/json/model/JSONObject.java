@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 /**
  * Representation of a JSON object, a collection (unordered) of name/value pairs.
- * An example: {"name":"Homer", "age":40, "children":["Bart", "Maggie", "Lisa"]} 
+ * An example: <code>{"name":"Homer", "age":40, "children":["Bart", "Maggie", "Lisa"]}</code>
  */
 public class JSONObject
 extends JSONComplex

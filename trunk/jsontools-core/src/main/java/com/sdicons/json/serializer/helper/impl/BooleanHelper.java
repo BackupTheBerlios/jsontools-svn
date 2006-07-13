@@ -29,7 +29,7 @@ import com.sdicons.json.model.JSONString;
 import java.util.*;
 
 public class BooleanHelper
-extends HelperImpl
+extends AbstractHelper
 {
     public Object parseValue(JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException

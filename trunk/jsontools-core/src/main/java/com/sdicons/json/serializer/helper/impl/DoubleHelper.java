@@ -29,7 +29,7 @@ import com.sdicons.json.model.JSONObject;
 import java.util.*;
 
 public class DoubleHelper
-extends HelperImpl
+extends AbstractHelper
 {
     public Object parseValue(JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException

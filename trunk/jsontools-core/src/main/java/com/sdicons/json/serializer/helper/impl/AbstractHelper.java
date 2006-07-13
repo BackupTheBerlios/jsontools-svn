@@ -29,7 +29,7 @@ import com.sdicons.json.model.JSONString;
 
 import java.util.*;
 
-public abstract class HelperImpl
+public abstract class AbstractHelper
 implements Helper
 {
     public boolean equals(Object obj)

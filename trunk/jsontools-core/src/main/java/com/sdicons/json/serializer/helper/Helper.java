@@ -28,15 +28,15 @@ import com.sdicons.json.model.JSONObject;
 import java.util.HashMap;
 
 /** A helper can render an instance of a specific class in a custom way.
- * It is the helpers responsability to render instances of a class to/from XML.
+ * It is the helpers responsability to render instances of a class to/from JSON.
  */
 public interface Helper
 {
-    /** Convert an element to simplified XML.
+    /** Convert an element to JSON.
      *
      * @param aObj Instance that should be rendered to JSON.
      * @param aObjectElement The parent element where we have to put the rendered information. A helper is allowed to add
-     *                       text or children elements.
+     *                       child elements.
      * @param aMarshall      The marshall we can use to recursively render parts of our own object.
      * @param aPool          A pool of objects already encountered. Is used to resolve references.
      * @throws MarshallException

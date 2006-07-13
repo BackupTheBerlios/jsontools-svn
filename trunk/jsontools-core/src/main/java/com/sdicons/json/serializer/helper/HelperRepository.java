@@ -36,17 +36,17 @@ import java.util.List;
  */
 public class HelperRepository
 {
-    HelperTreeNode root;
+    private HelperTreeNode root;
 
     private static class HelperTreeNode
     {
         private Helper helper;
-        private List children;
+        private List<HelperTreeNode> children;
 
         public HelperTreeNode(Helper aClass)
         {
             helper = aClass;
-            children = new LinkedList();
+            children = new LinkedList<HelperTreeNode>();
         }
 
         public Helper getHelper()
@@ -105,10 +105,9 @@ public class HelperRepository
                 return helper;
             else
             {
-                for (Object aChildren : children)
+                for (HelperTreeNode lChildNode : children)
                 {
-                    HelperTreeNode lNode = (HelperTreeNode) aChildren;
-                    Helper lHelper = lNode.findHelper(aClass);
+                    Helper lHelper = lChildNode.findHelper(aClass);
                     if (lHelper != null) return lHelper;
                 }
             }

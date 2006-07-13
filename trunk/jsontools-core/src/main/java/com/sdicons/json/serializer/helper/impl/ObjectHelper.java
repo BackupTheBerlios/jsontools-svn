@@ -33,10 +33,10 @@ import java.lang.reflect.*;
 public class ObjectHelper
 implements Helper
 {
-
     public void renderValue(Object aObj, JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException
     {
+        // We will render the bean properties as the elements of a JSON object.
         final JSONObject lElements = new JSONObject();
         aObjectElement.getValue().put(JSONMarshall.RNDR_ATTR_VALUE, lElements);
 

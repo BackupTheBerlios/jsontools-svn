@@ -21,12 +21,15 @@ package com.sdicons.json.serializer;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import junit.framework.*;
-import java.util.Date;
-
+import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.serializer.marshall.Marshall;
 import com.sdicons.json.serializer.marshall.MarshallValue;
-import com.sdicons.json.serializer.marshall.JSONMarshall;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import java.util.Date;
+import java.util.List;
+import java.util.LinkedList;
 
 public class HelpersTest
 extends TestCase
@@ -169,6 +172,27 @@ extends TestCase
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             final Date lDate2 = (Date) lResult.getReference();
             Assert.assertTrue(lDate2.getTime() == lDate.getTime());
+        }
+        catch(Exception e)
+        {
+            Assert.fail();
+        }
+    }
+
+    public void testCollections()
+    {
+        try
+        {
+            final List lLinkedList = new LinkedList();
+            lLinkedList.add("uno");
+            lLinkedList.add("duo");
+            lLinkedList.add("tres");
+            //lLinkedList.add(lLinkedList);
+
+            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lLinkedList));
+            Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+            final List lLinkedList2 = (LinkedList) lResult.getReference();
+            Assert.assertTrue(lLinkedList.size() == lLinkedList2.size());
         }
         catch(Exception e)
         {

@@ -187,7 +187,7 @@ extends TestCase
             lLinkedList.add("uno");
             lLinkedList.add("duo");
             lLinkedList.add("tres");
-            //lLinkedList.add(lLinkedList);
+            lLinkedList.add(lLinkedList);
 
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lLinkedList));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());

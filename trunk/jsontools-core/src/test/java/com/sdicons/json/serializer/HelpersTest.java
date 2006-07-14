@@ -27,9 +27,9 @@ import com.sdicons.json.serializer.marshall.MarshallValue;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import java.util.Date;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class HelpersTest
 extends TestCase
@@ -163,6 +163,38 @@ extends TestCase
         }
     }
 
+    public void testBigDecimal()
+    {
+        try
+        {
+            BigDecimal lDecimal = new BigDecimal(21.331);
+            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lDecimal));
+            Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+            BigDecimal lDecimal2 = (BigDecimal) lResult.getReference();
+            Assert.assertTrue(lDecimal2.equals(lDecimal));
+        }
+        catch(Exception e)
+        {
+            Assert.fail();
+        }
+    }
+
+    public void testBigInteger()
+    {
+        try
+        {
+            BigInteger lBigInt = new BigInteger("123456789123456789123456789123456789");
+            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lBigInt));
+            Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+            BigInteger lBigInt2 = (BigInteger) lResult.getReference();
+            Assert.assertTrue(lBigInt2.equals(lBigInt));
+        }
+        catch(Exception e)
+        {
+            Assert.fail();
+        }
+    }
+
     public void testDate()
     {
         try
@@ -183,16 +215,102 @@ extends TestCase
     {
         try
         {
-            final List lLinkedList = new LinkedList();
-            lLinkedList.add("uno");
-            lLinkedList.add("duo");
-            lLinkedList.add("tres");
-            lLinkedList.add(lLinkedList);
+            {
+                // Linked lists.
+                ////////////////
+                final List lLinkedList = new LinkedList();
+                lLinkedList.add("uno");
+                lLinkedList.add("duo");
+                lLinkedList.add("tres");
 
-            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lLinkedList));
-            Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
-            final List lLinkedList2 = (LinkedList) lResult.getReference();
-            Assert.assertTrue(lLinkedList.size() == lLinkedList2.size());
+                final List lNestedLinkedList = new LinkedList();
+                lNestedLinkedList.add("one");
+                lNestedLinkedList.add("two");
+                lNestedLinkedList.add("three");
+                lLinkedList.add(lNestedLinkedList);
+
+                // This will not work! See java bug 4756334.
+                // A container cannot contain itself when  the hashcode is calculated, this generates a
+                // StackOverflow. According to Sun this behaviour is wanted.
+                //lLinkedList.add(lLinkedList);
+
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lLinkedList));
+                Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+                final List lLinkedList2 = (LinkedList) lResult.getReference();
+                Assert.assertTrue(lLinkedList.size() == lLinkedList2.size());
+            }
+
+            // Array lists.
+            ///////////////
+            {
+                final List lArrayList = new ArrayList();
+                lArrayList.add("uno");
+                lArrayList.add("duo");
+                lArrayList.add("tres");
+
+                final List lNestedArrayList = new ArrayList();
+                lNestedArrayList.add("one");
+                lNestedArrayList.add("two");
+                lNestedArrayList.add("three");
+                lArrayList.add(lNestedArrayList);
+
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lArrayList));
+                Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+                final List lArrayList2 = (ArrayList) lResult.getReference();
+                Assert.assertTrue(lArrayList.size() == lArrayList2.size());
+            }
+
+            // TreeSet.
+            ///////////
+            {
+                final Set lTreeSet = new TreeSet();
+                lTreeSet.add("uno");
+                lTreeSet.add("duo");
+                lTreeSet.add("tres");
+
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lTreeSet));
+                Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+                final Set lTreeSet2 = (TreeSet) lResult.getReference();
+                Assert.assertTrue(lTreeSet.size() == lTreeSet2.size());
+            }
+        }
+        catch(Exception e)
+        {
+            Assert.fail();
+        }
+    }
+
+    public void testMaps()
+    {
+        try
+        {
+            {
+                // HashMap.
+                ////////////////
+                final Map lHashMap = new HashMap();
+                lHashMap.put("uno", "one");
+                lHashMap.put("duo", "two");
+                lHashMap.put("tres", "three");
+
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lHashMap));
+                Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+                final Map lHashMap2 = (HashMap) lResult.getReference();
+                Assert.assertTrue(lHashMap.size() == lHashMap2.size());
+            }
+
+            {
+                // TreeMap.
+                ////////////////
+                final Map lTreeMap = new TreeMap();
+                lTreeMap.put("uno", "one");
+                lTreeMap.put("duo", "two");
+                lTreeMap.put("tres", "three");
+
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lTreeMap));
+                Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
+                final Map lTreeMap2 = (TreeMap) lResult.getReference();
+                Assert.assertTrue(lTreeMap.size() == lTreeMap2.size());
+            }
         }
         catch(Exception e)
         {

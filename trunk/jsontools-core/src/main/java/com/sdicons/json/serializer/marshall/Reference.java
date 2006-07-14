@@ -1,7 +1,5 @@
 package com.sdicons.json.serializer.marshall;
 
-import java.util.Collection;
-
 /*
     JSONTools - Java JSON Tools
     Copyright (C) 2006 S.D.I.-Consulting BVBA
@@ -39,10 +37,6 @@ class Reference
 
     public int hashCode()
     {
-        // There is a bug in hashcode for collections.
-        // If a list contains itself recursively, the hashcode
-        // is calculated wrongly, it throws a stackoverflow.
-        if(encapsulated instanceof Collection) return 13;
         return encapsulated.hashCode();
     }
 

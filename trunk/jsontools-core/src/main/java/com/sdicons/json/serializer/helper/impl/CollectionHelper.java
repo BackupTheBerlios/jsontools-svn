@@ -22,11 +22,15 @@ implements Helper
     public void renderValue(Object aObj, JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException
     {
-        final Collection lCollection = (Collection) aObj;
-        final Iterator lIter = lCollection.iterator();
+        // We create a new JSON array where we will collect the elements of the
+        // collection. We attach this new array as the parent object value.
         final JSONArray lArray = new JSONArray();
         aObjectElement.getValue().put(JSONMarshall.RNDR_ATTR_VALUE, lArray);
 
+        // We iterate through the elements of the collection, render these as
+        // JSON values and put these values in the array created above.
+        final Collection lCollection = (Collection) aObj;
+        final Iterator lIter = lCollection.iterator();
         while(lIter.hasNext())
         {
             Object lColEl = lIter.next();

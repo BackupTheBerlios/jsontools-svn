@@ -73,9 +73,12 @@ implements Marshall
         repo.addHelper(new LongHelper());
         repo.addHelper(new FloatHelper());
         repo.addHelper(new DoubleHelper());
+        repo.addHelper(new BigIntegerHelper());
+        repo.addHelper(new BigDecimalHelper());
         repo.addHelper(new CharacterHelper());
         repo.addHelper(new DateHelper());
         repo.addHelper(new CollectionHelper());
+        repo.addHelper(new MapHelper());
     }
 
     public JSONObject marshall(boolean aValue)

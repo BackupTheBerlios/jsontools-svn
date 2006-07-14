@@ -44,14 +44,14 @@ implements Helper
         {
             Class lClass = aObj.getClass();
             PropertyDescriptor[] lPropDesc = Introspector.getBeanInfo(lClass, Introspector.USE_ALL_BEANINFO).getPropertyDescriptors();
-            for(int i = 0; i < lPropDesc.length; i++)
+            for (PropertyDescriptor aLPropDesc : lPropDesc)
             {
-                Method lReader = lPropDesc[i].getReadMethod();
-                Method lWriter = lPropDesc[i].getWriteMethod();
-                String lPropName = lPropDesc[i].getName();
+                Method lReader = aLPropDesc.getReadMethod();
+                Method lWriter = aLPropDesc.getWriteMethod();
+                String lPropName = aLPropDesc.getName();
 
                 // Only serialize if the property is READ-WRITE.
-                if(lReader != null && lWriter != null)
+                if (lReader != null && lWriter != null)
                 {
                     lElements.getValue().put(lPropName, aMarshall.marshallImpl(lReader.invoke(aObj, new Object[]{}), aPool));
                 }
@@ -91,7 +91,7 @@ implements Helper
         try
         {
             Class lBeanClass = Class.forName(lBeanClassName);
-            Object lBean = null;
+            Object lBean;
 
             lBean = lBeanClass.newInstance();
             if (lId != null) aPool.put(lId, lBean);

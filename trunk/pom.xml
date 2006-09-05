@@ -14,7 +14,7 @@
 
     <modules>
         <module>jsontools-core</module>
-	<module>jsontools-log4j</module>
-    </modules>  
+        <module>jsontools-log4j</module>
+    </modules>
 
 </project>

@@ -27,12 +27,6 @@
         <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-core</connection>
     </scm>
 
-    <parent>
-        <groupId>com.sdicons.jsontools</groupId>
-        <artifactId>jsontools</artifactId>
-        <version>1.3-SNAPSHOT</version>
-    </parent>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>

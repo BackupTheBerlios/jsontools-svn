@@ -9,7 +9,7 @@
     <name>Java JSON Tools - Log4J</name>
     <url>http://jsontools.berlios.de</url>
     <description>
-        Java JSON Tools Log4J library. 
+        Java JSON Tools Log4J library.
     </description>
     <licenses>
         <license>
@@ -23,12 +23,6 @@
         <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-log4j</developerConnection>
         <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-log4j</connection>
     </scm>
-
-    <parent>
-        <groupId>com.sdicons.jsontools</groupId>
-        <artifactId>jsontools</artifactId>
-        <version>1.3-SNAPSHOT</version>
-    </parent>
 
     <dependencies>
         <dependency>
@@ -48,7 +42,7 @@
         <dependency>
               <groupId>com.sdicons.jsontools</groupId>
               <artifactId>jsontools-core</artifactId>
-              <version>1.3-SNAPSHOT</version>
+              <version>[1.2, 2.0)</version>
               <scope>compile</scope>
          </dependency>
        

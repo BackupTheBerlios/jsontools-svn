@@ -24,12 +24,15 @@ package com.sdicons.json.serializer;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.serializer.marshall.Marshall;
 import com.sdicons.json.serializer.marshall.MarshallValue;
+import com.sdicons.json.serializer.marshall.MarshallException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import java.util.*;
+import java.util.List;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.awt.*;
 
 public class HelpersTest
 extends TestCase
@@ -316,5 +319,20 @@ extends TestCase
         {
             Assert.fail();
         }
+    }
+
+    public void testColors()
+    {
+        try
+        {
+            final Color lColor = Color.WHITE;
+            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
+            Assert.assertTrue(lResult.getReference().equals(lColor));
+        }
+        catch (MarshallException e)
+        {
+            Assert.fail();
+        }
+
     }
 }

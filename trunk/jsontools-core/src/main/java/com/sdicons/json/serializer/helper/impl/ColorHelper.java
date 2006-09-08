@@ -22,11 +22,13 @@ extends AbstractHelper
     public void renderValue(Object aObj, JSONObject aParent, JSONMarshall aMarshall, HashMap aPool) throws MarshallException
     {
         Color lColor = (Color) aObj;
-        StringBuffer lBuf = new StringBuffer("0x");
-        lBuf.append(Integer.toString(lColor.getRed(), 16))
-                .append(Integer.toString(lColor.getGreen(), 16))
-                .append(Integer.toString(lColor.getBlue(), 16));
-        aParent.getValue().put(JSONMarshall.RNDR_ATTR_VALUE, new JSONString(lBuf.toString()));
+//        StringBuffer lBuf = new StringBuffer("0x");
+//        lBuf
+//            .append(Integer.toString(lColor.getRed(), 16))
+//            .append(Integer.toString(lColor.getGreen(), 16))
+//            .append(Integer.toString(lColor.getBlue(), 16))
+//            .append("00");
+        aParent.getValue().put(JSONMarshall.RNDR_ATTR_VALUE, new JSONString("" + lColor.getRGB()));
     }
 
     public Class getHelpedClass()

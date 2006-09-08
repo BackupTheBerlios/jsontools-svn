@@ -325,9 +325,29 @@ extends TestCase
     {
         try
         {
-            final Color lColor = Color.WHITE;
-            MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
-            Assert.assertTrue(lResult.getReference().equals(lColor));
+            {
+                final Color lColor = Color.WHITE;
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
+                Assert.assertTrue(lResult.getReference().equals(lColor));
+            }
+
+            {
+                final Color lColor = Color.RED;
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
+                Assert.assertTrue(lResult.getReference().equals(lColor));
+            }
+
+             {
+                final Color lColor = Color.GREEN;
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
+                Assert.assertTrue(lResult.getReference().equals(lColor));
+            }
+
+             {
+                final Color lColor = Color.BLUE;
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lColor));
+                Assert.assertTrue(lResult.getReference().equals(lColor));
+            }
         }
         catch (MarshallException e)
         {

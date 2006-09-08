@@ -28,6 +28,7 @@ import com.sdicons.json.serializer.marshall.MarshallException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.math.BigDecimal;
@@ -353,6 +354,21 @@ extends TestCase
         {
             Assert.fail();
         }
+    }
 
+    public void testFonts()
+    {
+        try
+        {
+            {
+                final Font lFont = new JPanel().getFont();
+                MarshallValue lResult = marshall.unmarshall(marshall.marshall(lFont));
+                Assert.assertTrue(lResult.getReference().equals(lFont));
+            }
+        }
+        catch (MarshallException e)
+        {
+            Assert.fail();
+        }
     }
 }

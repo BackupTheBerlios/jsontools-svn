@@ -27,7 +27,6 @@ import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.serializer.marshall.MarshallException;
 
 import java.util.HashMap;
-import java.awt.*;
 
 public class EnumHelper
 extends AbstractHelper

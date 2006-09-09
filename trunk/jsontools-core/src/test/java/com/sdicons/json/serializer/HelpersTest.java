@@ -371,4 +371,24 @@ extends TestCase
             Assert.fail();
         }
     }
+
+    static enum SimpsonEnum {HOMER, MARGE, LISA, BART, MAGGY};
+
+    public void testEnums()
+    {
+        try
+        {
+            {
+                for(SimpsonEnum lSimpson: SimpsonEnum.values())
+                {
+                    MarshallValue lResult = marshall.unmarshall(marshall.marshall(lSimpson));
+                    Assert.assertTrue(lResult.getReference() == lSimpson);
+                }
+            }
+        }
+        catch (MarshallException e)
+        {
+            Assert.fail();
+        }
+    }
 }

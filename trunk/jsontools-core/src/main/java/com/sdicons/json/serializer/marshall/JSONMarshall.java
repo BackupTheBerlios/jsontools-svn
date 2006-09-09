@@ -81,6 +81,7 @@ implements Marshall
         repo.addHelper(new MapHelper());
         repo.addHelper(new ColorHelper());
         repo.addHelper(new FontHelper());
+        repo.addHelper(new EnumHelper());
     }
 
     public JSONObject marshall(boolean aValue)

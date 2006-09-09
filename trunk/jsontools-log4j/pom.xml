@@ -23,6 +23,13 @@
         <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-log4j</developerConnection>
         <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-log4j</connection>
     </scm>
+    <developers>
+        <developer>
+            <name>Bruno Ranschaert</name>
+            <email>nospam@sdi-consulting.com</email>
+            <url>http://www.sdi-consulting.com</url>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -44,8 +51,7 @@
               <artifactId>jsontools-core</artifactId>
               <version>[1.2, 2.0)</version>
               <scope>compile</scope>
-         </dependency>
-       
+         </dependency>       
     </dependencies>
 
     <build>

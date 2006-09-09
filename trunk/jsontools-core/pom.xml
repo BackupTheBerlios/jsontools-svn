@@ -26,6 +26,13 @@
         <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-core</developerConnection>
         <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-core</connection>
     </scm>
+    <developers>
+        <developer>
+            <name>Bruno Ranschaert</name>
+            <email>nospam@sdi-consulting.com</email>
+            <url>http://www.sdi-consulting.com</url>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -41,7 +48,6 @@
             <version>2.7.6</version>
             <scope>compile</scope>
         </dependency>
-
     </dependencies>
 
     <build>

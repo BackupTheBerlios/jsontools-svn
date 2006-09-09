@@ -35,6 +35,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.awt.*;
 
+@SuppressWarnings({"unchecked"})
 public class HelpersTest
 extends TestCase
 {
@@ -56,7 +57,7 @@ extends TestCase
     {
         try
         {
-            Byte lByte = new Byte((byte) 5);
+            Byte lByte = (byte) 5;
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lByte));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Byte lByte2 = (Byte) lResult.getReference();
@@ -73,7 +74,7 @@ extends TestCase
     {
         try
         {
-            Short lShort = new Short((short) 3);
+            Short lShort = (short) 3;
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lShort));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Short lShort2 = (Short) lResult.getReference();
@@ -90,7 +91,7 @@ extends TestCase
     {
         try
         {
-            Character lchar = new Character('x');
+            Character lchar = 'x';
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lchar));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Character lChar2 = (Character) lResult.getReference();
@@ -107,7 +108,7 @@ extends TestCase
     {
         try
         {
-            Integer lInt = new Integer(17);
+            Integer lInt = 17;
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lInt));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Integer lInt2 = (Integer) lResult.getReference();
@@ -123,7 +124,7 @@ extends TestCase
     {
         try
         {
-            Long lLong = new Long(21);
+            Long lLong = (long) 21;
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lLong));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Long lLong2 = (Long) lResult.getReference();
@@ -155,7 +156,7 @@ extends TestCase
     {
         try
         {
-            Double lDouble = new Double(21.156331);
+            Double lDouble = 21.156331;
             MarshallValue lResult = marshall.unmarshall(marshall.marshall(lDouble));
             Assert.assertTrue(MarshallValue.REFERENCE == lResult.getType());
             Double lDouble2 = (Double) lResult.getReference();
@@ -372,7 +373,7 @@ extends TestCase
         }
     }
 
-    static enum SimpsonEnum {HOMER, MARGE, LISA, BART, MAGGY};
+    static enum SimpsonEnum {HOMER, MARGE, LISA, BART, MAGGY}
 
     public void testEnums()
     {

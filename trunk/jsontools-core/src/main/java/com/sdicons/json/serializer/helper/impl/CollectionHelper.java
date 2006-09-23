@@ -67,21 +67,13 @@ implements Helper
         JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_CLASS);
         String lCollectionClassName = ((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_CLASS)).getValue();
 
-        String lId = null;
-        try
-        {
-            JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_ID);
-            lId = ((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_ID)).getValue();
-        }
-        catch (Exception eIgnore) { }
-
         try
         {
             Class lCollectionClass = Class.forName(lCollectionClassName);
             Collection lCollection = null;
 
             lCollection = (Collection) lCollectionClass.newInstance();
-            if (lId != null) aPool.put(lId, lCollection);
+//            if (lId != null) aPool.put(lId, lCollection);
 
             for(JSONValue lVal : lArray.getValue())
             {

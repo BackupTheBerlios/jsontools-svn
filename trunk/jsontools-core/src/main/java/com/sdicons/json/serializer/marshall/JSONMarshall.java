@@ -312,10 +312,21 @@ implements Marshall
                            throw new MarshallException(lMsg);
                        }
 
+                       String lId = null;
+                       try
+                       {
+                           JSONMarshall.requireStringAttribute(aElement, JSONMarshall.RNDR_ATTR_ID);
+                           lId = ((JSONString) aElement.get(JSONMarshall.RNDR_ATTR_ID)).getValue();
+                       }
+                       catch (Exception eIgnore)
+                       {
+                       }
+
                        final Class lBeanClass = Class.forName(lBeanClassName);
                        Helper lHelper = repo.findHelper(lBeanClass);
-                       return lHelper.parseValue(aElement, this, aObjectPool);
-
+                       Object lResult =  lHelper.parseValue(aElement, this, aObjectPool);
+                       if(lId != null) aObjectPool.put(lId, lResult);
+                       return lResult;                       
                    }
                    catch (ClassNotFoundException e)
                    {

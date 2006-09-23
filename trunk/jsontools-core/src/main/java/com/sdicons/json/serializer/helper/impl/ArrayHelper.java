@@ -110,14 +110,6 @@ implements Helper
     public Object parseValue(JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException
     {
-        String lId = null;
-        try
-        {
-            JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_ID);
-            lId = ((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_ID)).getValue();
-        }
-        catch(Exception eIgnore){}
-
         JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_CLASS);
         final String lArrClassName =((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_CLASS)).getValue();
 
@@ -142,7 +134,6 @@ implements Helper
                     lArr[i] = ((Integer) lIter.next()).intValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             if("C".equals(lArrClassName))
@@ -155,7 +146,6 @@ implements Helper
                     lArr[i] = ((Character) lIter.next()).charValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("Z".equals(lArrClassName))
@@ -168,7 +158,6 @@ implements Helper
                     lArr[i] = ((Boolean) lIter.next()).booleanValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("S".equals(lArrClassName))
@@ -181,7 +170,6 @@ implements Helper
                     lArr[i] = ((Short) lIter.next()).shortValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("B".equals(lArrClassName))
@@ -194,7 +182,6 @@ implements Helper
                     lArr[i] = ((Byte) lIter.next()).byteValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("J".equals(lArrClassName))
@@ -207,7 +194,6 @@ implements Helper
                     lArr[i] = ((Long) lIter.next()).longValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("F".equals(lArrClassName))
@@ -220,7 +206,6 @@ implements Helper
                     lArr[i] = ((Float) lIter.next()).floatValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else if("D".equals(lArrClassName))
@@ -233,7 +218,6 @@ implements Helper
                     lArr[i] = ((Double) lIter.next()).doubleValue();
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             else
@@ -255,7 +239,6 @@ implements Helper
                     Array.set(lArr, i, lIter.next());
                     i++;
                 }
-                if(lId != null) aPool.put(lId, lArr);
                 return lArr;
             }
             catch(ClassNotFoundException e)
@@ -264,7 +247,7 @@ implements Helper
                 throw new MarshallException(lMsg);
             }
         }
-        // throw new MarshallException("Unknown array type: " + lArrClassName);
+//         throw new MarshallException("Unknown array type: " + lArrClassName);
     }
 
     public Class getHelpedClass()

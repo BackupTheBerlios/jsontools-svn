@@ -148,11 +148,11 @@ extends TestCase
             // Test if the contents are intact.
             Assert.assertNotNull(lLitmus);
             Assert.assertEquals(lLitmus.getEventType(), lID);
-            Assert.assertSame(lLitmus.getEventType(), lLitmus.getParentID());
-            Assert.assertSame(lLitmus.getEventType(), lLitmus.getSubObjectID());
-            Assert.assertSame(lLitmus.getEventType(), lLitmus.getObjectID());
+            Assert.assertTrue(lLitmus.getEventType() == lLitmus.getParentID());
+            Assert.assertTrue(lLitmus.getEventType() == lLitmus.getSubObjectID());
+            Assert.assertTrue(lLitmus.getEventType()== lLitmus.getObjectID());
             Assert.assertEquals(lLitmus.getParam1(), lStr);
-            Assert.assertSame(lLitmus.getParam1(), lLitmus.getParam2());
+            Assert.assertTrue(lLitmus.getParam1() == lLitmus.getParam2());
         }
         catch(Exception e)
         {

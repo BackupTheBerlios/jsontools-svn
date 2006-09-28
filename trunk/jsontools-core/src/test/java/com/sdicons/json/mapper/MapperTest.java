@@ -4,6 +4,10 @@ import junit.framework.TestCase;
 import junit.framework.Assert;
 import com.sdicons.json.model.JSONValue;
 
+import java.math.BigInteger;
+import java.math.BigDecimal;
+import java.util.Date;
+
 public class MapperTest
 extends TestCase
 {
@@ -12,11 +16,17 @@ extends TestCase
         private Boolean booleanMbr;
         private String stringMbr;
         private Integer integerMbr;
+        private int intMbr;
+
         private Short shortMbr;
         private Byte byteMbr;
         private Long longMbr;
         private Float floatMbr;
         private Double doubleMbr;
+        private BigInteger bigIntMbr;
+        private BigDecimal bigDecimalMbr;
+        private Character charMbr;
+        private Date date;
 
         public Integer getIntegerMbr()
         {
@@ -97,6 +107,56 @@ extends TestCase
         {
             this.floatMbr = floatMbr;
         }
+
+        public BigDecimal getBigDecimalMbr()
+        {
+            return bigDecimalMbr;
+        }
+
+        public void setBigDecimalMbr(BigDecimal bigDecimalMbr)
+        {
+            this.bigDecimalMbr = bigDecimalMbr;
+        }
+
+        public BigInteger getBigIntMbr()
+        {
+            return bigIntMbr;
+        }
+
+        public void setBigIntMbr(BigInteger bigIntMbr)
+        {
+            this.bigIntMbr = bigIntMbr;
+        }
+
+        public Character getCharMbr()
+        {
+            return charMbr;
+        }
+
+        public void setCharMbr(Character charMbr)
+        {
+            this.charMbr = charMbr;
+        }
+
+        public int getIntMbr()
+        {
+            return intMbr;
+        }
+
+        public void setIntMbr(int intMbr)
+        {
+            this.intMbr = intMbr;
+        }
+
+        public Date getDate()
+        {
+            return date;
+        }
+
+        public void setDate(Date date)
+        {
+            this.date = date;
+        }
     }
 
     public MapperTest(String lName)
@@ -110,6 +170,7 @@ extends TestCase
         {
             MapperTest.TestBean lDuupje = new MapperTest.TestBean();
             lDuupje.setIntegerMbr(new Integer(13));
+            lDuupje.setIntMbr(17);
             lDuupje.setShortMbr(new Short((short) 17));
             lDuupje.setStringMbr("It is not fair!");
             lDuupje.setBooleanMbr(true);
@@ -117,6 +178,10 @@ extends TestCase
             lDuupje.setLongMbr(12345l);
             lDuupje.setFloatMbr(123.12f);
             lDuupje.setDoubleMbr(987.89);
+            lDuupje.setBigIntMbr(new BigInteger("123654789555"));
+            lDuupje.setBigDecimalMbr(new BigDecimal("1111111465465.676476545"));
+            lDuupje.setCharMbr('A');
+            lDuupje.setDate(new Date());
 
             JSONValue lObj = JSONMapper.toJSON(lDuupje);
             System.out.println(lObj.render(true));

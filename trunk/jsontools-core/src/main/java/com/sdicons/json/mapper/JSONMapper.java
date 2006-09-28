@@ -17,14 +17,16 @@ public class JSONMapper
         repo.addHelper(new BooleanMapper());
         repo.addHelper(new ByteMapper());
         repo.addHelper(new ShortMapper());
+
         repo.addHelper(new IntegerMapper());
+
         repo.addHelper(new LongMapper());
         repo.addHelper(new FloatMapper());
         repo.addHelper(new DoubleMapper());
-//        repo.addHelper(new BigIntegerHelper());
-//        repo.addHelper(new BigDecimalHelper());
-//        repo.addHelper(new CharacterHelper());
-//        repo.addHelper(new DateHelper());
+        repo.addHelper(new BigIntegerMapper());
+        repo.addHelper(new BigDecimalMapper());
+        repo.addHelper(new CharacterMapper());
+        repo.addHelper(new DateMapper());
 //        repo.addHelper(new CollectionHelper());
 //        repo.addHelper(new MapHelper());
 //        repo.addHelper(new ColorHelper());
@@ -35,13 +37,26 @@ public class JSONMapper
     public static Object toJava(JSONValue aValue, Class aPojoClass)
     throws MapperException
     {
+        // Null references are not allowed.
         if(aValue == null)
         {
             final String lMsg = "Mapper does not support null values.";
             throw new MapperException(lMsg);
         }
+        // But null representations are.
         else if(aValue.isNull()) return null;
 
+        // Use the class helpers for built in types.
+        if(aPojoClass == Boolean.TYPE) aPojoClass = Boolean.class;
+        else if(aPojoClass == Byte.TYPE) aPojoClass = Byte.class;
+        else if(aPojoClass == Short.TYPE) aPojoClass = Short.class;
+        else if(aPojoClass == Integer.TYPE) aPojoClass = Integer.class;
+        else if(aPojoClass == Long.TYPE) aPojoClass = Long.class;
+        else if(aPojoClass == Float.TYPE) aPojoClass = Float.class;
+        else if(aPojoClass == Double.TYPE) aPojoClass = Double.class;
+        else if(aPojoClass == Character.TYPE) aPojoClass = Character.class;
+
+        // Find someone who can map it.
         final MapperHelper lHelper = repo.findHelper(aPojoClass);
 
         if(lHelper == null)
@@ -49,8 +64,7 @@ public class JSONMapper
             final String lMsg = "Could not find a mapper helper for class: " + aPojoClass.getName();
             throw new MapperException(lMsg);
         }
-
-        return lHelper.toJava(aValue, aPojoClass);
+        else return lHelper.toJava(aValue, aPojoClass);
     }
 
     public static JSONValue toJSON(Object aPojo)

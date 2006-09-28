@@ -24,13 +24,15 @@ package com.sdicons.json.serializer.helper;
 import com.sdicons.json.serializer.marshall.MarshallException;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.model.JSONObject;
+import com.sdicons.json.helper.Helper;
 
 import java.util.HashMap;
 
 /** A helper can render an instance of a specific class in a custom way.
  * It is the helpers responsability to render instances of a class to/from JSON.
  */
-public interface Helper
+public interface MarshallHelper
+extends Helper
 {
     /** Convert an element to JSON.
      *
@@ -54,10 +56,4 @@ public interface Helper
      */
     public Object parseValue(JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException;
-
-    /** The class for which instances can be handled.
-     *
-     * @return The class for which the helper can render/parse JSON.
-     */
-    public Class getHelpedClass();
 }

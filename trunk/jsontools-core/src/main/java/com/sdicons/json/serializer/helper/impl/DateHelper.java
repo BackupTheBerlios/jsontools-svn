@@ -21,7 +21,7 @@ package com.sdicons.json.serializer.helper.impl;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.serializer.helper.Helper;
+import com.sdicons.json.serializer.helper.MarshallHelper;
 import com.sdicons.json.serializer.marshall.MarshallException;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.model.JSONString;
@@ -31,7 +31,7 @@ import java.util.*;
 import java.text.*;
 
 public class DateHelper
-implements Helper
+implements MarshallHelper
 {
     private SimpleDateFormat dateFormat;
 

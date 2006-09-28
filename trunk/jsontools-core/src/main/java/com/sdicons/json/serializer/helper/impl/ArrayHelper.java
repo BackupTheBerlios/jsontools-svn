@@ -21,7 +21,7 @@ package com.sdicons.json.serializer.helper.impl;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.serializer.helper.Helper;
+import com.sdicons.json.serializer.helper.MarshallHelper;
 import com.sdicons.json.serializer.marshall.MarshallException;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.model.JSONObject;
@@ -33,7 +33,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 public class ArrayHelper
-implements Helper
+implements MarshallHelper
 {
     public void renderValue(Object aObj, JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException

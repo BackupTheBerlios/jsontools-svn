@@ -21,7 +21,7 @@ package com.sdicons.json.serializer.helper.impl;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.serializer.helper.Helper;
+import com.sdicons.json.serializer.helper.MarshallHelper;
 import com.sdicons.json.serializer.marshall.MarshallException;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.model.JSONObject;
@@ -30,11 +30,11 @@ import com.sdicons.json.model.JSONString;
 import java.util.*;
 
 public abstract class AbstractHelper
-implements Helper
+implements MarshallHelper
 {
     public boolean equals(Object obj)
     {
-        return this.getHelpedClass() == ((Helper) obj).getHelpedClass();
+        return this.getHelpedClass() == ((MarshallHelper) obj).getHelpedClass();
     }
 
     public void renderValue(Object aObj, JSONObject aParent, JSONMarshall aMarshall, HashMap aPool)

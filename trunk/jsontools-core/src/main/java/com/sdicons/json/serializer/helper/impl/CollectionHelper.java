@@ -25,7 +25,7 @@ import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.serializer.helper.Helper;
+import com.sdicons.json.serializer.helper.MarshallHelper;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.serializer.marshall.MarshallException;
 
@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class CollectionHelper
-implements Helper
+implements MarshallHelper
 {
     public CollectionHelper()
     {

@@ -23,8 +23,8 @@ package com.sdicons.json.serializer.marshall;
 
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
-import com.sdicons.json.serializer.helper.Helper;
-import com.sdicons.json.serializer.helper.HelperRepository;
+import com.sdicons.json.serializer.helper.MarshallHelper;
+import com.sdicons.json.helper.HelperRepository;
 import com.sdicons.json.serializer.helper.impl.*;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ implements Marshall
     public static final String ERR_MISSINGATTRVAL = "Attribute value is missing: ";
     public static final String ERR_MISSINGSTRING = "Attribute is not a string value: ";
 
-    private HelperRepository repo = new HelperRepository();
+    private HelperRepository<MarshallHelper> repo = new HelperRepository<MarshallHelper>();
 
     {
         repo.addHelper(new ObjectHelper());
@@ -214,7 +214,7 @@ implements Marshall
         lObjElement.getValue().put(RNDR_ATTR_ID, new JSONString(aObjId));
         lObjElement.getValue().put(RNDR_ATTR_CLASS, new JSONString(aObjClassName));
 
-        final Helper lHelper = repo.findHelper(aObjClass);
+        final MarshallHelper lHelper = repo.findHelper(aObjClass);
         lHelper.renderValue(aObj, lObjElement, this, aPool);
         return lObjElement;
     }
@@ -323,7 +323,7 @@ implements Marshall
                        }
 
                        final Class lBeanClass = Class.forName(lBeanClassName);
-                       Helper lHelper = repo.findHelper(lBeanClass);
+                       MarshallHelper lHelper = repo.findHelper(lBeanClass);
                        Object lResult =  lHelper.parseValue(aElement, this, aObjectPool);
                        if(lId != null) aObjectPool.put(lId, lResult);
                        return lResult;                       

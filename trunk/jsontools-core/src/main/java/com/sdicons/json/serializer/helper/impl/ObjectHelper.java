@@ -20,7 +20,7 @@ package com.sdicons.json.serializer.helper.impl;
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-import com.sdicons.json.serializer.helper.Helper;
+import com.sdicons.json.serializer.helper.MarshallHelper;
 import com.sdicons.json.serializer.marshall.MarshallException;
 import com.sdicons.json.serializer.marshall.JSONMarshall;
 import com.sdicons.json.model.JSONObject;
@@ -31,7 +31,7 @@ import java.beans.*;
 import java.lang.reflect.*;
 
 public class ObjectHelper
-implements Helper
+implements MarshallHelper
 {
     public void renderValue(Object aObj, JSONObject aObjectElement, JSONMarshall aMarshall, HashMap aPool)
     throws MarshallException

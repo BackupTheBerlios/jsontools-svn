@@ -25,6 +25,7 @@ import com.sdicons.json.parser.impl.ParserUtil;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 /**
  * Representation of a JSON object, a collection (unordered) of name/value pairs.
@@ -33,7 +34,10 @@ import java.util.Iterator;
 public class JSONObject
 extends JSONComplex
 {
-    private HashMap<String, JSONValue> map = new HashMap<String, JSONValue>();
+    // It is very important that the implementation is based on a linked hash map.
+    // The order of JSON object elements should remain in the same order as they are encountered.
+    // Especially the serializer relies on it.
+    private HashMap<String, JSONValue> map = new LinkedHashMap<String, JSONValue>();
 
     public int size()
     {

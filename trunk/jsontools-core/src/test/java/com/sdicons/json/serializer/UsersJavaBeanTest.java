@@ -1,5 +1,26 @@
 package com.sdicons.json.serializer;
 
+/*
+    JSONTools - Java JSON Tools
+    Copyright (C) 2006 S.D.I.-Consulting BVBA
+    http://www.sdi-consulting.com
+    mailto://nospam@sdi-consulting.com
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
 import junit.framework.TestCase;
 import junit.framework.Assert;
 import com.sdicons.json.serializer.marshall.Marshall;
@@ -102,15 +123,14 @@ extends TestCase
     throws Exception
     {
         marshall = new JSONMarshall();
-   }
-
+    }
 
     public void testIt()
     {
         try
         {
             Transportable lEvil = new Transportable();
-            Integer lID = new Integer(13);
+            Integer lID = 13;
             lEvil.setEventType(lID);
             lEvil.setParentID(lID);
             lEvil.setSubObjectID(lID);
@@ -127,16 +147,16 @@ extends TestCase
 
             // Test if the contents are intact.
             Assert.assertNotNull(lLitmus);
-//            Assert.assertEquals(lLitmus.getName(), "SISE Rules!");
-//            Assert.assertEquals(lLitmus.getId(), 100);
-//
-//            // Different physical objects should remain different, even if they
-//            // are equal.
-//            Assert.assertTrue(!(lLitmus.getInt1() == lLitmus.getInt2()));
+            Assert.assertEquals(lLitmus.getEventType(), lID);
+            Assert.assertSame(lLitmus.getEventType(), lLitmus.getParentID());
+            Assert.assertSame(lLitmus.getEventType(), lLitmus.getSubObjectID());
+            Assert.assertSame(lLitmus.getEventType(), lLitmus.getObjectID());
+            Assert.assertEquals(lLitmus.getParam1(), lStr);
+            Assert.assertSame(lLitmus.getParam1(), lLitmus.getParam2());
         }
         catch(Exception e)
         {
-             e.printStackTrace(System.out);
+            e.printStackTrace(System.out);
             Assert.fail();
         }
     }

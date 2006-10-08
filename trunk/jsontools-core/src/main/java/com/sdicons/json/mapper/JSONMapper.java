@@ -5,6 +5,11 @@ import com.sdicons.json.mapper.helper.MapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.serializer.helper.impl.CollectionHelper;
+
+import java.util.LinkedList;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class JSONMapper
 {
@@ -27,7 +32,7 @@ public class JSONMapper
         repo.addHelper(new BigDecimalMapper());
         repo.addHelper(new CharacterMapper());
         repo.addHelper(new DateMapper());
-//        repo.addHelper(new CollectionHelper());
+        repo.addHelper(new CollectionMapper());
 //        repo.addHelper(new MapHelper());
 //        repo.addHelper(new ColorHelper());
 //        repo.addHelper(new FontHelper());
@@ -65,6 +70,17 @@ public class JSONMapper
             throw new MapperException(lMsg);
         }
         else return lHelper.toJava(aValue, aPojoClass);
+    }
+
+    public static Object toJava(JSONValue aValue)
+    throws MapperException
+    {
+        if(aValue.isArray()) return toJava(aValue, LinkedList.class);
+        else if(aValue.isBoolean()) return toJava(aValue, Boolean.class);
+        else if(aValue.isDecimal()) return toJava(aValue, BigDecimal.class);
+        else if(aValue.isInteger()) return toJava(aValue, BigInteger.class);
+        else if(aValue.isString()) return toJava(aValue, String.class);
+        else return toJava(aValue, Object.class);
     }
 
     public static JSONValue toJSON(Object aPojo)

@@ -7,6 +7,8 @@ import com.sdicons.json.model.JSONValue;
 import java.math.BigInteger;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class MapperTest
 extends TestCase
@@ -27,6 +29,9 @@ extends TestCase
         private BigDecimal bigDecimalMbr;
         private Character charMbr;
         private Date date;
+
+        private LinkedList<String> linkedList;
+        private ArrayList<String> arrayList;
 
         public Integer getIntegerMbr()
         {
@@ -157,6 +162,27 @@ extends TestCase
         {
             this.date = date;
         }
+
+
+        public ArrayList<String> getArrayList()
+        {
+            return arrayList;
+        }
+
+        public void setArrayList(ArrayList<String> lArrayList)
+        {
+            this.arrayList = lArrayList;
+        }
+
+        public LinkedList<String> getLinkedList()
+        {
+            return linkedList;
+        }
+
+        public void setLinkedList(LinkedList<String> lLinkedList)
+        {
+            this.linkedList = lLinkedList;
+        }
     }
 
     public MapperTest(String lName)
@@ -182,6 +208,16 @@ extends TestCase
             lDuupje.setBigDecimalMbr(new BigDecimal("1111111465465.676476545"));
             lDuupje.setCharMbr('A');
             lDuupje.setDate(new Date());
+                        
+            LinkedList lLinkedList = new LinkedList();
+            lLinkedList.add("uno");
+            lLinkedList.add("duo");
+            lDuupje.setLinkedList(lLinkedList);
+
+            ArrayList lArrayList = new ArrayList();
+            lArrayList.add("ter");
+            lArrayList.add("quattuor");
+            lDuupje.setArrayList(lArrayList);
 
             JSONValue lObj = JSONMapper.toJSON(lDuupje);
             System.out.println(lObj.render(true));

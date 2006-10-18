@@ -72,7 +72,7 @@ public class JSONMapper
             throw new MapperException(lMsg);
         }
         // But null representations are.
-        else if(aValue.isNull()) return null;
+        else if(aValue.isNull()) return null;                
 
         // Use the class helpers for built in types.
         if(aPojoClass == Boolean.TYPE) aPojoClass = Boolean.class;

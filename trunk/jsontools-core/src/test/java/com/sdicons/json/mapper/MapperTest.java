@@ -31,7 +31,7 @@ extends TestCase
         private Date date;
 
         private LinkedList<String> linkedList;
-        public ArrayList<Date> arrayList;
+        private ArrayList<Date> arrayList;
 
         public Integer getIntegerMbr()
         {

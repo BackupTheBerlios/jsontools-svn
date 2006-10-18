@@ -1,13 +1,13 @@
 package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.mapper.helper.MapperHelper;
+import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.model.JSONBoolean;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.model.JSONString;
 
 public class BooleanMapper
-implements MapperHelper
+implements SimpleMapperHelper
 {
     public Class getHelpedClass()
     {

@@ -2,17 +2,15 @@ package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.JSONMapper;
 import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.mapper.helper.MapperHelper;
+import com.sdicons.json.mapper.helper.ComplexMapperHelper;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONValue;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedList;
 
 public class CollectionMapper
-implements MapperHelper
+implements ComplexMapperHelper
 {
     public Class getHelpedClass()
     {
@@ -22,8 +20,14 @@ implements MapperHelper
     public Object toJava(JSONValue aValue, Class aRequestedClass)
     throws MapperException
     {
+        return this.toJava(aValue, aRequestedClass, new Class[0]);
+    }
+
+    public Object toJava(JSONValue aValue, Class aRawClass, Class[] aHelperClasses)
+    throws MapperException
+    {
         if (!aValue.isArray()) throw new MapperException("CollectionMapper cannot map: " + aValue.getClass().getName());
-        if (!Collection.class.isAssignableFrom(aRequestedClass))
+        if (!Collection.class.isAssignableFrom(aRawClass))
             throw new MapperException("CollectionMapper cannot map: " + aValue.getClass().getName());
         JSONArray aObject = (JSONArray) aValue;
 
@@ -33,7 +37,7 @@ implements MapperHelper
         {
             // First we try to instantiate the correct
             // collection class.
-            lCollObj = (Collection) aRequestedClass.newInstance();
+            lCollObj = (Collection) aRawClass.newInstance();
         }
         catch (Exception e)
         {
@@ -44,24 +48,29 @@ implements MapperHelper
             lCollObj = new LinkedList();
         }
 
-        final Type lCollType = aRequestedClass;
-        final Type[] lContentTypes = aRequestedClass.getTypeParameters();
-        
-        if (lCollType instanceof ParameterizedType)
+        if(aHelperClasses.length == 0)
         {
-            final Type lContentType = ((ParameterizedType) lCollType).getRawType();
-            for (JSONValue lVal : aObject.getValue())
-            {
-                lCollObj.add(JSONMapper.toJava(lVal, lContentType.getClass()));
-            }
-        }
-        else
-        {
+            // Simple, raw collection.
             for (JSONValue lVal : aObject.getValue())
             {
                 lCollObj.add(JSONMapper.toJava(lVal));
             }
         }
+        else if(aHelperClasses.length == 1)
+        {
+            // Generic collection, we can make use of the type of the elements.            
+            for (JSONValue lVal : aObject.getValue())
+            {
+                lCollObj.add(JSONMapper.toJava(lVal, aHelperClasses[0]));
+            }
+        }
+        else
+        {
+            // Not possible, a collection cannot have more than two types for
+            // its contents.
+            throw new MapperException("CollectionMapper cannot map: " + aValue.getClass().getName());
+        }
+
         return lCollObj;
     }
 

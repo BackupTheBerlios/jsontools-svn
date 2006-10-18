@@ -1,7 +1,7 @@
 package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.mapper.helper.MapperHelper;
+import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.model.JSONDecimal;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.model.JSONString;
@@ -9,7 +9,7 @@ import com.sdicons.json.model.JSONString;
 import java.math.BigDecimal;
 
 public class FloatMapper
-implements MapperHelper
+implements SimpleMapperHelper
 {
     public Class getHelpedClass()
     {

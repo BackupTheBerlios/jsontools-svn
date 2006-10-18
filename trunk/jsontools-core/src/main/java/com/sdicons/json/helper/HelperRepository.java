@@ -70,10 +70,10 @@ public class HelperRepository<T extends Helper>
                 if(!insertedToSomeChild)
                 {
                     // Rebalance tree.
-                    Iterator lIter2 = children.iterator();
+                    final Iterator lIter2 = children.iterator();
                     while(lIter2.hasNext())
                     {
-                        HelperTreeNode<T> lChild = (HelperTreeNode<T>) lIter2.next();
+                        final HelperTreeNode<T> lChild = (HelperTreeNode<T>) lIter2.next();
                         if(aNode.getHelper().getHelpedClass().isAssignableFrom(lChild.getHelper().getHelpedClass()))
                         {
                             lIter2.remove();
@@ -90,23 +90,35 @@ public class HelperRepository<T extends Helper>
                 return false;
         }
 
+        /** Core finder algorithm
+         *
+         * @param aClass
+         * @return A Helper or null if no applicable helper could be found. We first try to
+         * find an exact match, and if it cannot be done, we try to find a mapper for the closest parent class.
+         */
         T findHelper(Class aClass)
         {
-            if(helper.getHelpedClass() == aClass)
-                return helper;
+            // If we have an exact match, we return the helper.
+            // This is the perfect case.
+            if(helper.getHelpedClass() == aClass) return helper;
             else
             {
+                // If we do not have an exact match, we go for the
+                // more specific match.
                 for (HelperTreeNode<T> lChildNode : children)
                 {
-                    T lHelper = lChildNode.findHelper(aClass);
+                    final T lHelper = lChildNode.findHelper(aClass);
                     if (lHelper != null) return lHelper;
                 }
             }
 
-            if(helper.getHelpedClass().isAssignableFrom(aClass))
-                return helper;
-            else
-                return null;
+            // If the current helper is not an exact match, and none of the
+            // subclasses (finer grained) provide a match, we test if the
+            // current helper might be applicable to the more specific class.
+            // In this case, we might loose information, but it is better than
+            // doing nothing. This case also lets us implement general mappers.
+            if(helper.getHelpedClass().isAssignableFrom(aClass)) return helper;
+            else return null;
         }
     }
 

@@ -2,7 +2,7 @@ package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.JSONMapper;
 import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.mapper.helper.MapperHelper;
+import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONValue;
 
@@ -13,7 +13,7 @@ import java.lang.reflect.*;
 import java.util.Iterator;
 
 public class ObjectMapper
-implements MapperHelper
+implements SimpleMapperHelper
 {
     public Class getHelpedClass()
     {
@@ -45,22 +45,32 @@ implements MapperHelper
                     if (lPropDesc[i].getName().equals(lPropname))
                     {
                         lFoundWriter = true;
-
-                        // If there is a field with the same name as the property,
-                        // we try to use that type information. In case of generic types,
-                        // the field contains more information than the property.
-                        // This is interesting in the case of generic collections for instance.
-                        final Type lFieldType = findFieldType(lBean, lPropname);
-                        
-                        final Object lProp = (lFieldType!=null)?JSONMapper.toJava(lSubEl, lFieldType.getClass()):JSONMapper.toJava(lSubEl, lPropDesc[i].getPropertyType());
-
                         final Method lWriter = lPropDesc[i].getWriteMethod();
                         if (lWriter == null)
                         {
                             final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
                             throw new MapperException(lMsg);
                         }
-                        lWriter.invoke(lBean, new Object[]{lProp});
+                        else
+                        {
+                            Object lProp = null;
+                            Type[] lTypes = lWriter.getGenericParameterTypes();
+                            if(lTypes.length == 1 && lTypes[0] instanceof ParameterizedType)
+                            {
+                                // We can make use of the extra type information of the parameter of the
+                                // seter. This extra type information can be exploited by the mapper
+                                // to produce a more fine grained mapping.
+                                lProp = lProp = JSONMapper.toJava(lSubEl, (ParameterizedType) lTypes[0]);
+                            }
+                            else
+                            {
+                                // We cannot use extra type information, we fall back on the
+                                // raw class information.
+                                lProp = JSONMapper.toJava(lSubEl, lPropDesc[i].getPropertyType());
+                            }
+
+                            lWriter.invoke(lBean, new Object[]{lProp});
+                        }
                         break;
                     }
                 }
@@ -92,25 +102,6 @@ implements MapperHelper
         {
             final String lMsg = "InvocationTargetException while trying to fill bean: " + aRequestedClass;
             throw new MapperException(lMsg);
-        }
-    }
-
-    private Type findFieldType(Object aBean, String aPropName)
-    {
-        try
-        {
-//            Field[] test = aBean.getClass().getFields();
-//            for(Field f: test)
-//            {
-//                System.out.println(f.getGenericType().getClass().getName());
-//            }
-            final Field lField = aBean.getClass().getDeclaredField(aPropName);
-            final ParameterizedType lType = (ParameterizedType) lField.getGenericType();
-            return lType;
-        }
-        catch (NoSuchFieldException e)
-        {
-            return null;
         }
     }
 

@@ -1,7 +1,8 @@
 package com.sdicons.json.mapper;
 
 import com.sdicons.json.helper.HelperRepository;
-import com.sdicons.json.mapper.helper.MapperHelper;
+import com.sdicons.json.mapper.helper.SimpleMapperHelper;
+import com.sdicons.json.mapper.helper.ComplexMapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
@@ -9,10 +10,13 @@ import com.sdicons.json.model.JSONValue;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedList;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 public class JSONMapper
 {
-    private static HelperRepository<MapperHelper> repo = new HelperRepository<MapperHelper>();
+    private static HelperRepository<SimpleMapperHelper> repo = new HelperRepository<SimpleMapperHelper>();
 
     static
     {
@@ -61,14 +65,47 @@ public class JSONMapper
         else if(aPojoClass == Character.TYPE) aPojoClass = Character.class;
 
         // Find someone who can map it.
-        final MapperHelper lHelper = repo.findHelper(aPojoClass);
+        final SimpleMapperHelper lHelperSimple = repo.findHelper(aPojoClass);
 
-        if(lHelper == null)
+        if(lHelperSimple == null)
         {
             final String lMsg = "Could not find a mapper helper for class: " + aPojoClass.getName();
             throw new MapperException(lMsg);
         }
-        else return lHelper.toJava(aValue, aPojoClass);
+        else return lHelperSimple.toJava(aValue, aPojoClass);
+    }
+
+    public static Object toJava(JSONValue aValue, ParameterizedType aGenericType)
+    throws MapperException
+    {
+        // Null references are not allowed.
+        if(aValue == null)
+        {
+            final String lMsg = "Mapper does not support null values.";
+            throw new MapperException(lMsg);
+        }
+        // But null representations are.
+        else if(aValue.isNull()) return null;
+
+        // First decompose the type in its raw class and the classes of the parameters.
+        final Class lRawClass = (Class) aGenericType.getRawType();
+        final Type[] lTypes = aGenericType.getActualTypeArguments();
+        final Class[] lClasses = new Class[lTypes.length];
+        for(int i = 0; i < lTypes.length; i++) lClasses[i] = (Class) lTypes[i];
+
+        // Find someone who can map it.
+        final SimpleMapperHelper lMapperHelper = repo.findHelper(lRawClass);
+
+        if(lMapperHelper == null)
+        {
+            final String lMsg = "Could not find a mapper helper for parameterized type: " + aGenericType;
+            throw new MapperException(lMsg);
+        }
+        else
+        {
+            if(lMapperHelper instanceof ComplexMapperHelper) return ((ComplexMapperHelper) lMapperHelper).toJava(aValue, lRawClass, lClasses);
+            else return lMapperHelper.toJava(aValue, lRawClass);
+        }
     }
 
     public static Object toJava(JSONValue aValue)
@@ -87,14 +124,14 @@ public class JSONMapper
     {
         if(aPojo == null) return JSONNull.NULL;
 
-        final MapperHelper lHelper = repo.findHelper(aPojo.getClass());
+        final SimpleMapperHelper lHelperSimple = repo.findHelper(aPojo.getClass());
 
-        if(lHelper == null)
+        if(lHelperSimple == null)
         {
             final String lMsg = "Could not find a mapper helper for class: " + aPojo.getClass().getName();
             throw new MapperException(lMsg);
         }
 
-        return lHelper.toJSON(aPojo);
+        return lHelperSimple.toJSON(aPojo);
     }
 }

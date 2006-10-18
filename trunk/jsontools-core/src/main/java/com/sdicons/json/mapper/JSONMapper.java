@@ -56,7 +56,7 @@ public class JSONMapper
         repo.addHelper(new CharacterMapper());
         repo.addHelper(new DateMapper());
         repo.addHelper(new CollectionMapper());
-//        repo.addHelper(new MapHelper());
+        repo.addHelper(new MapMapper());
 //        repo.addHelper(new ColorHelper());
 //        repo.addHelper(new FontHelper());
 //        repo.addHelper(new EnumHelper());

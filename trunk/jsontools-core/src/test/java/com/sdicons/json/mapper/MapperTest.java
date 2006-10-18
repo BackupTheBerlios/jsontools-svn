@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.LinkedHashMap;
 
 public class MapperTest
 extends TestCase
@@ -32,6 +33,8 @@ extends TestCase
 
         private LinkedList<String> linkedList;
         private ArrayList<Date> arrayList;
+
+        private LinkedHashMap<String, Date> linkedMap;
 
         public Integer getIntegerMbr()
         {
@@ -183,6 +186,16 @@ extends TestCase
         {
             this.linkedList = lLinkedList;
         }
+
+        public LinkedHashMap<String, Date> getLinkedMap()
+        {
+            return linkedMap;
+        }
+
+        public void setLinkedMap(LinkedHashMap<String, Date> linkedMap)
+        {
+            this.linkedMap = linkedMap;
+        }
     }
 
     public MapperTest(String lName)
@@ -218,6 +231,11 @@ extends TestCase
             lArrayList.add(new Date());
             lArrayList.add(new Date());
             lDuupje.setArrayList(lArrayList);
+
+            LinkedHashMap<String, Date> lMap = new LinkedHashMap<String, Date>();
+            lMap.put("uno", new Date());
+            lMap.put("duo", new Date());
+            lDuupje.setLinkedMap(lMap);
 
             JSONValue lObj = JSONMapper.toJSON(lDuupje);
             System.out.println(lObj.render(true));

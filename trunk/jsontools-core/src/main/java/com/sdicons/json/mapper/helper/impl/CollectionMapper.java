@@ -29,6 +29,7 @@ import com.sdicons.json.model.JSONValue;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.lang.reflect.Type;
 
 public class CollectionMapper
 implements ComplexMapperHelper
@@ -41,10 +42,10 @@ implements ComplexMapperHelper
     public Object toJava(JSONValue aValue, Class aRequestedClass)
     throws MapperException
     {
-        return this.toJava(aValue, aRequestedClass, new Class[0]);
+        return this.toJava(aValue, aRequestedClass, new Type[0]);
     }
 
-    public Object toJava(JSONValue aValue, Class aRawClass, Class[] aHelperClasses)
+    public Object toJava(JSONValue aValue, Class aRawClass, Type[] aTypes)
     throws MapperException
     {
         if (!aValue.isArray()) throw new MapperException("CollectionMapper cannot map: " + aValue.getClass().getName());
@@ -69,7 +70,7 @@ implements ComplexMapperHelper
             lCollObj = new LinkedList();
         }
 
-        if(aHelperClasses.length == 0)
+        if(aTypes.length == 0)
         {
             // Simple, raw collection.
             for (JSONValue lVal : aObject.getValue())
@@ -77,12 +78,12 @@ implements ComplexMapperHelper
                 lCollObj.add(JSONMapper.toJava(lVal));
             }
         }
-        else if(aHelperClasses.length == 1)
+        else if(aTypes.length == 1)
         {
             // Generic collection, we can make use of the type of the elements.            
             for (JSONValue lVal : aObject.getValue())
             {
-                lCollObj.add(JSONMapper.toJava(lVal, aHelperClasses[0]));
+                lCollObj.add(JSONMapper.toJava(lVal, (Class) aTypes[0]));
             }
         }
         else

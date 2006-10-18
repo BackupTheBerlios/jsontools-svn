@@ -25,10 +25,12 @@ import com.sdicons.json.helper.Helper;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.mapper.MapperException;
 
+import java.lang.reflect.Type;
+
 public interface ComplexMapperHelper
 extends SimpleMapperHelper    
 {
-    Object toJava(JSONValue aValue, Class aRequestedClass, Class[] aHelperClasses)
+    Object toJava(JSONValue aValue, Class aRequestedClass, Type[] aTypes)
     throws MapperException;
 
     JSONValue toJSON(Object aPojo)

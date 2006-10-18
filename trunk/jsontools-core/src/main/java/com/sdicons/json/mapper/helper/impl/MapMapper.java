@@ -8,6 +8,7 @@ import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONObject;
 
 import java.util.*;
+import java.lang.reflect.Type;
 
 public class MapMapper
 implements ComplexMapperHelper
@@ -20,10 +21,10 @@ implements ComplexMapperHelper
     public Object toJava(JSONValue aValue, Class aRequestedClass)
     throws MapperException
     {
-        return this.toJava(aValue, aRequestedClass, new Class[0]);
+        return this.toJava(aValue, aRequestedClass, new Type[0]);
     }
 
-    public Object toJava(JSONValue aValue, Class aRawClass, Class[] aHelperClasses)
+    public Object toJava(JSONValue aValue, Class aRawClass, Type[] aTypes)
     throws MapperException
     {
         if (!aValue.isObject()) throw new MapperException("MapMapper cannot map: " + aValue.getClass().getName());
@@ -48,7 +49,7 @@ implements ComplexMapperHelper
             lMapObj = new LinkedHashMap();
         }
 
-        if(aHelperClasses.length == 0)
+        if(aTypes.length == 0)
         {
             // Simple, raw collection.
             for (String lKey : aObject.getValue().keySet())
@@ -57,16 +58,16 @@ implements ComplexMapperHelper
                 lMapObj.put(lKey, JSONMapper.toJava(lVal));
             }
         }
-        else if(aHelperClasses.length == 2)
+        else if(aTypes.length == 2)
         {
             // Generic map, we can make use of the type of the elements.
-            if(!aHelperClasses[0].equals(String.class)) throw new MapperException("MapMapper currently only supports String keys.");
+            if(!aTypes[0].equals(String.class)) throw new MapperException("MapMapper currently only supports String keys.");
             else
             {
                 for (String lKey : aObject.getValue().keySet())
                 {
                     JSONValue lVal = aObject.getValue().get(lKey);
-                    lMapObj.put(lKey, JSONMapper.toJava(lVal, aHelperClasses[1]));
+                    lMapObj.put(lKey, JSONMapper.toJava(lVal, (Class) aTypes[1]));
                 }
             }
         }

@@ -110,8 +110,6 @@ public class JSONMapper
         // First decompose the type in its raw class and the classes of the parameters.
         final Class lRawClass = (Class) aGenericType.getRawType();
         final Type[] lTypes = aGenericType.getActualTypeArguments();
-        final Class[] lClasses = new Class[lTypes.length];
-        for(int i = 0; i < lTypes.length; i++) lClasses[i] = (Class) lTypes[i];
 
         // Find someone who can map it.
         final SimpleMapperHelper lMapperHelper = repo.findHelper(lRawClass);
@@ -123,7 +121,7 @@ public class JSONMapper
         }
         else
         {
-            if(lMapperHelper instanceof ComplexMapperHelper) return ((ComplexMapperHelper) lMapperHelper).toJava(aValue, lRawClass, lClasses);
+            if(lMapperHelper instanceof ComplexMapperHelper) return ((ComplexMapperHelper) lMapperHelper).toJava(aValue, lRawClass, lTypes);
             else return lMapperHelper.toJava(aValue, lRawClass);
         }
     }

@@ -9,8 +9,7 @@ import com.sdicons.json.model.JSONValue;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Iterator;
 
 public class ObjectMapper
@@ -29,14 +28,14 @@ implements MapperHelper
 
         try
         {
-            Object lBean = aRequestedClass.newInstance();
+            final Object lBean = aRequestedClass.newInstance();
             Iterator<String> lElIter = aObject.getValue().keySet().iterator();
 
             while (lElIter.hasNext())
             {
                 // Fetch subelement information.
-                String lPropname = lElIter.next();
-                JSONValue lSubEl = aObject.get(lPropname);
+                final String lPropname = lElIter.next();
+                final JSONValue lSubEl = aObject.get(lPropname);
 
                 // Put the property in the bean.
                 boolean lFoundWriter = false;
@@ -46,8 +45,16 @@ implements MapperHelper
                     if (lPropDesc[i].getName().equals(lPropname))
                     {
                         lFoundWriter = true;
-                        Object lProp = JSONMapper.toJava(lSubEl, lPropDesc[i].getPropertyType());
-                        Method lWriter = lPropDesc[i].getWriteMethod();
+
+                        // If there is a field with the same name as the property,
+                        // we try to use that type information. In case of generic types,
+                        // the field contains more information than the property.
+                        // This is interesting in the case of generic collections for instance.
+                        final Type lFieldType = findFieldType(lBean, lPropname);
+                        
+                        final Object lProp = (lFieldType!=null)?JSONMapper.toJava(lSubEl, lFieldType.getClass()):JSONMapper.toJava(lSubEl, lPropDesc[i].getPropertyType());
+
+                        final Method lWriter = lPropDesc[i].getWriteMethod();
                         if (lWriter == null)
                         {
                             final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
@@ -85,6 +92,25 @@ implements MapperHelper
         {
             final String lMsg = "InvocationTargetException while trying to fill bean: " + aRequestedClass;
             throw new MapperException(lMsg);
+        }
+    }
+
+    private Type findFieldType(Object aBean, String aPropName)
+    {
+        try
+        {
+//            Field[] test = aBean.getClass().getFields();
+//            for(Field f: test)
+//            {
+//                System.out.println(f.getGenericType().getClass().getName());
+//            }
+            final Field lField = aBean.getClass().getDeclaredField(aPropName);
+            final ParameterizedType lType = (ParameterizedType) lField.getGenericType();
+            return lType;
+        }
+        catch (NoSuchFieldException e)
+        {
+            return null;
         }
     }
 

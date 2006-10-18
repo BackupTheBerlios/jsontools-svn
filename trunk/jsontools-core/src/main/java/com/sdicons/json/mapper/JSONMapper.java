@@ -5,11 +5,10 @@ import com.sdicons.json.mapper.helper.MapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.serializer.helper.impl.CollectionHelper;
 
-import java.util.LinkedList;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.LinkedList;
 
 public class JSONMapper
 {

@@ -6,10 +6,10 @@ import com.sdicons.json.mapper.helper.MapperHelper;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONValue;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 
 public class CollectionMapper
 implements MapperHelper
@@ -44,9 +44,23 @@ implements MapperHelper
             lCollObj = new LinkedList();
         }
 
-        for (JSONValue lVal : aObject.getValue())
+        final Type lCollType = aRequestedClass;
+        final Type[] lContentTypes = aRequestedClass.getTypeParameters();
+        
+        if (lCollType instanceof ParameterizedType)
         {
-            lCollObj.add(JSONMapper.toJava(lVal));
+            final Type lContentType = ((ParameterizedType) lCollType).getRawType();
+            for (JSONValue lVal : aObject.getValue())
+            {
+                lCollObj.add(JSONMapper.toJava(lVal, lContentType.getClass()));
+            }
+        }
+        else
+        {
+            for (JSONValue lVal : aObject.getValue())
+            {
+                lCollObj.add(JSONMapper.toJava(lVal));
+            }
         }
         return lCollObj;
     }
@@ -64,4 +78,5 @@ implements MapperHelper
         }
         return lArray;
     }
+
 }

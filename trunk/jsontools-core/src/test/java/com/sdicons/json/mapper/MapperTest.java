@@ -1,14 +1,14 @@
 package com.sdicons.json.mapper;
 
-import junit.framework.TestCase;
-import junit.framework.Assert;
 import com.sdicons.json.model.JSONValue;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
-import java.math.BigInteger;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
-import java.util.ArrayList;
 
 public class MapperTest
 extends TestCase
@@ -31,7 +31,7 @@ extends TestCase
         private Date date;
 
         private LinkedList<String> linkedList;
-        private ArrayList<String> arrayList;
+        public ArrayList<Date> arrayList;
 
         public Integer getIntegerMbr()
         {
@@ -164,12 +164,12 @@ extends TestCase
         }
 
 
-        public ArrayList<String> getArrayList()
+        public ArrayList<Date> getArrayList()
         {
             return arrayList;
         }
 
-        public void setArrayList(ArrayList<String> lArrayList)
+        public void setArrayList(ArrayList<Date> lArrayList)
         {
             this.arrayList = lArrayList;
         }
@@ -214,9 +214,9 @@ extends TestCase
             lLinkedList.add("duo");
             lDuupje.setLinkedList(lLinkedList);
 
-            ArrayList lArrayList = new ArrayList();
-            lArrayList.add("ter");
-            lArrayList.add("quattuor");
+            ArrayList<Date> lArrayList = new ArrayList<Date>();
+            lArrayList.add(new Date());
+            lArrayList.add(new Date());
             lDuupje.setArrayList(lArrayList);
 
             JSONValue lObj = JSONMapper.toJSON(lDuupje);

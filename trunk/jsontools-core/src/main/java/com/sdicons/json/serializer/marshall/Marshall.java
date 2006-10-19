@@ -25,7 +25,16 @@ import com.sdicons.json.model.JSONObject;
 
 /**
  * This interface represents the functionality to convert a JSON representation to/from a
- * Java representation.
+ * Java representation. The serializer's goal is to preserve as much Java structure as
+ * possible: primitive types, arrays, object clusters containing recursive references and so on.
+ * As a consequence, the generated JSON is rather terse. The serializer is the best choice in a
+ * Java centric application where you want to write some object structures to JSON in a readable form.
+ * If the emphasis is on clean JSON, take a look at the Mapper tool, which does not support all Java constructs
+ * but which emits nice JSON which can easily be parsed in e.g. Javascript.
+ *
+ * * The main difference between the serializer and the mapper is that the serializer keeps as much
+ * type information and structure information in the JSON data where the mapper uses the type information
+ * in the provided Java classes to interprete the JSON data.
  */
 public interface Marshall
 {

@@ -34,6 +34,18 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedList;
 
+/**
+ * The mapper class is able to convert a JSON representation to/from a
+ * Java representation. The mapper's goal is to produce a nice and clean JSON output which can
+ * easily be used in e.g. Javascript context. As a consequence, not all Java constructs
+ * are preserved during the conversion to/from JSON. The mapper is the best choice in an application
+ * where the clean JSON format is central. If the emphasis is on exact Java serialization where types are
+ * preserved, take a look at the Serializer tool.
+ *
+ * The main difference between the serializer and the mapper is that the serializer keeps as much
+ * type information and structure information in the JSON data where the mapper uses the type information
+ * in the provided Java classes to interprete the JSON data.
+ */
 public class JSONMapper
 {
     private static HelperRepository<SimpleMapperHelper> repo = new HelperRepository<SimpleMapperHelper>();
@@ -62,6 +74,13 @@ public class JSONMapper
 //        repo.addHelper(new EnumHelper());
     }
 
+    /**
+     *
+     * @param aValue
+     * @param aPojoClass
+     * @return
+     * @throws MapperException
+     */
     public static Object toJava(JSONValue aValue, Class aPojoClass)
     throws MapperException
     {

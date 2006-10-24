@@ -1,0 +1,995 @@
+@SysInclude { cprint }
+@SysInclude { java }
+@SysInclude { tbl }
+@SysInclude { diag }
+@SysInclude { report }
+
+def @Tools {JSON Tools}
+def @Core  {JSON Tools Core}
+def @Quote right x {{@Char quotedbl}x{@Char quotedbl}}
+
+def @Prog
+ right content {@CP 
+      style { fixed }
+      numbered { No }
+      font { Courier }
+      size { 8p }
+      line { 0.7vx }
+      tabin { 3s }
+      tabout { 3s }
+      {content}}
+
+def @Ruledef
+  named @Title  {Title}
+  named @Params {Parameters}
+  named @Desc   {Description}
+  named @Ex     {Example}
+{
+@Tbl   
+   rule { yes }
+   aformat { @StartHSpan @Cell  paint { lightgrey }indent { ctr } @B A | @HSpan }
+   bformat { @Cell paint { lightgrey }  A | @Cell B }
+{
+   @Rowa
+     A { @Title }
+   @Rowb
+     A {Parameters}
+     B {@Params} 
+   @Rowb
+     A {Description}
+     B {@Desc}
+   @Rowb
+     A {Example}
+     B {ragged @Break @Ex}
+}}
+
+@Report
+	@Title {@Core
+Manual 
+version 1.4 }
+	@Author {Bruno Ranschaert}
+	@Institution {S.D.I.-Consulting BVBA}
+	@DateLine { Yes }
+	@AtEnd { }
+	@CoverSheet { No }
+	@ContentsSeparate { No }
+	@InitialFont { Times Base 12p }
+	@InitialBreak { hyphen adjust 1.2fx }
+	@InitialSpace { lout }
+	@InitialLanguage { English }
+	@PageOrientation { Portrait }
+	@PageHeaders { Simple }
+	@ColumnNumber { 1 }
+	@FirstPageNumber { 1 }
+	@OptimizePages { No }
+	@AbstractDisplay { No }
+	@AbstractTitle { Abstract }
+	@Abstract {}
+	@GlossaryText { @Null }
+	@IndexText { @Null }
+	@IndexAText { @Null }
+	@IndexBText { @Null }
+//
+### INTRODUCTION ###
+####################
+
+@Section
+@Title { Introduction }
+@Begin
+
+# INTRODUCTION
+##############
+
+@BeginSubSections
+@SubSection 
+@Title { Introduction }
+@Begin
+
+@LP JSON (JavaScript Object Notation) is a file format to represent data. It is similar to XML but has different characteristics.
+It is suited to represent configuration information, implement communication protocols and so on. 
+XML is more suited to represent annotated documents. 
+JSON parsing is very fast, the parser can be kept lean and mean. It is easy for humans to read and write.  
+It is based on a subset of the JavaScript Programming Language @FootNote { Standard ECMA-262 3rd Edition - December 1999}. 
+JSON is a text format that is completely language independent but uses conventions that are familiar to 
+programmers of the C-family of languages @FootNote { Including C, C++, "C#", Java, JavaScript, Perl, Python, and many others.}. 
+These properties make JSON an ideal data-interchange language. 
+The format is specified on  { the JSON web site } @FootNote { The JSON web site: "http://www.json.org/" @ExternalLink "http://www.json.org/"} , 
+for the details please visit this site.
+
+@DP JSON is a very simple format. 
+As a result, the parsing and rendering is fast and easy, you can concentrate on  the content of the file in stead of the format. 
+In XML it is often difficult to fully understand all features (e.g. name spaces, validation, ...).  
+As a result, XML tends to become part of the problem i.s.o. the solution. 
+In JSON everything is well defined, all aspects of the representation are clear, you can concentrate on how you are going to represent your application concepts. The following example comes from the  { JSON example page } @FootNote {JSON Example page: "http://www.json.org/example.html" @ExternalLink "http://www.json.org/example.html"}.
+
+@DP @Prog @Verbatim 
+{{
+   "widget" :
+      {
+         "debug" : "on",
+         "text" :
+            {
+               "onMouseUp" : "sun1.opacity = (sun1.opacity / 100) * 90;",
+               "hOffset" : 250,
+               "data" : "Click Here",
+               "alignment" : "center",
+               "style" : "bold",
+               "size" : 36,
+               "name" : "text1",
+               "vOffset" : 100
+            },
+         "image" :
+            {
+               "hOffset" : 250,
+               "alignment" : "center",
+               "src" : "Images/Sun.png",
+               "name" : "sun1",
+               "vOffset" : 250
+            },
+         "window" :
+            {
+               "width" : 500,
+               "height" : 500,
+               "title" : "Sample Konfabulator Widget",
+               "name" : "main_window"
+            }
+      }
+}}
+
+@DP This project wants to provide the tools to manipulate and use the format in a Java application. 
+@End @SubSection
+
+# DEPENDENCIES
+##############
+
+@SubSection
+@Title {Dependencies}
+@Begin
+@LP The parser uses ANTLR  2.7.6 @FootNote {ANTLR: "http://www.antlr.org/" @ExternalLink "http://www.antlr.org/"} , so the ANTLR runtime is needed for this. 
+It might work with other versions, I simply did not test it. 
+The project is based on the maven2 build system. 
+
+@LP @LP The @Tools libraries are written using the new language features from JDK 1.5 @FootNote {Sun Java 5: "http://java.sun.com/j2se/1.5" @ExternalLink "http://java.sun.com/j2se/1.5"}. 
+Enumerations and generics are used because these make the code nicer to read. 
+There are no dependencies to the new libraries. On the other hand, there is no guarantee we will keep it this way in future releases.
+If you want to use the libraries for an earlier version of the JDK, the retrotranslator tool @FootNote {Retrotranslator: "http://retrotranslator.sourceforge.net" @ExternalLink "http://retrotranslator.sourceforge.net"} might be an option.
+@End @SubSection
+
+# LICENSCE
+##########
+
+@SubSection
+@Title {License}
+@Begin
+
+@LP The library is released under the LGPL @FootNote {Gnu GPL: "http://www.gnu.org/licenses/lgpl.html" @ExternalLink "http://www.gnu.org/licenses/lgpl.html"}. You are free to use it for commercial or non-commercial applications as long as you leave the copyright intact and add a reference to the project. 
+You can find a copy of the license header in appendix @NumberOf { license }. 
+Let me know what you like and what you don't like about the library so that I can improve it.
+@End @SubSection
+
+# ABOUT SDI
+###########
+
+@SubSection
+@Title {About S.D.I.-Consulting}
+@Begin
+
+@LP Visit the web site "http://www.sdi-consulting.com" @ExternalLink "http://www.sdi-consulting.com" for more information.
+Visit the @Tools project summary @FootNote {@Tools summary: "http://jsontools.sdicons.com" @ExternalLink "http://jsontools.sdicons.com"} page, the project itself is hosted on the Berlios service @FootNote {@Tools  project page: "http://jsontools.berlios.de" @ExternalLink "http://jsontools.berlios.de" }.
+@End @SubSection
+
+# EXTENSIONS
+############
+
+@SubSection
+@Title {JSON Extensions}
+@Begin
+
+@LP Comments. I added line comments which start with "#". It is easier for the examples to be able to put comments in the file. The comments are not retained, they are skipped and ignored.
+@End @SubSection
+@EndSubSections
+@End @Section
+
+### THE CORE TOOLS ###
+######################
+
+@Section
+@Title { The Core Tools }
+@Begin
+
+@BeginSubSections
+
+# PARSING
+#########
+
+@SubSection
+@Title {Parsing - Reading JSON}
+@Begin
+
+@LP The most important tool in the tool set is the parser, it enables you to convert a JSON file or stream into a Java model. All JSON objects remember the position in the file (line, column), so if you are doing post processing of the data you can always refer to the position in the original file. 
+Invoking the parser is very simple as you can see in this example:
+
+@DP  @Java {
+JSONParser lParser = new JSONParser(JSONTest.class.getResourceAsStream("/config.json"));
+JSONValue lValue = lParser.nextValue();
+}
+
+@DP The JSON model is a hierarchy of types, the hierarchy looks like this:
+
+@LP @Prog @Verbatim 
+{JSONValue
+   JSONComplex
+      JSONObject
+      JSONArray
+   JSONSimple
+      JSONNull
+      JSONBoolean
+      JSONString
+      JSONNumber
+         JSONInteger
+         JSonDecimal
+}
+@End @SubSection
+
+# RENDERING
+###########
+
+@SubSection
+@Title {Rendering - Writing JSON}
+@Begin
+
+@LP The classes in the JSON model can render themselves to a String. You can choose to render to a pretty form, nicely indented and easily readable by humans, or you can render to a compact form, no spaces or indentations are provided. This is suited to use on a communications channel when you are implementing a communication protocol.
+
+@DP  In the introduction we already saw a pretty rendering of some widget data. The same structure can be rendered without pretty printing in order to reduce whitespace. This can be an interesting feature when space optimisation is very important, e.g. communication protocols.
+@End @SubSection
+
+# MAPPING
+#########
+
+@SubSection
+   @Title {Mapping}
+   @Tag {mapping}
+@Begin
+
+@LP
+Both mapping tool (this section) and serialisation tool (section @NumberOf serialisation on page @PageOf { serialisation }) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the mapper are:
+
+@DP @List
+@ListItem {The JSON text should be clean and straightforward. So no meta information can be stored.}
+@ListItem {The data contained in the JSON text should not be dependent on the Java programming language. You do not need to know that the data was produced in Java or that it will be parsed in Java.}
+@ListItem {Not all Java data structures have to be mapped: recursive structures, differentiation between primitives and reference types are less important. If a trade-off has to be made, it will be in favor of the JSON format.}
+@EndList
+
+@DP The JSON from the mapper can be easily interpreted in another lanugage. An example could be JavaScript in the context of an AJAX @FootNote {AJAX = Asynchronous JavaScript and XML, see "http://en.wikipedia.org/wiki/AJAX" @ExternalLink Wikipedia for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map Java data to JSON. It can be done like this:
+
+@DP @Java
+{
+import com.sdicons.json.mapper.*;
+...
+JSONValue lObj = JSONMapper.toJSON(myPojo);
+}
+
+@DP Converting back to Java is done like this:
+
+@DP @Java
+{
+import com.sdicons.json.mapper.*;
+...
+MyBean bean = (MyBean) JSONMapper.toJava(lObj, MyBean.class);
+}
+
+@DP Note that the mapper needs some help to convert JSON into Java. As we stated in the goals of the mapper, we cannot store meta information in the JSON text. As a result the mapper cannot know how the JSON text should be mapped. Therefore we pass a class to the mapper (line 3) so that the mapper can exploit this information. In fact, there are two kinds of information the mapper can work with (1) classes as in the example and (2) types e.g. List<Integer>. The rationale for this might be illustrated by the following example. Consider a JSON text 
+
+@DP @Prog @Verbatim
+{
+["01/12/2006", "03/12/2007", ... ]
+}
+
+@DP This list could be interpreted as a list of Strings, but also as a list of Dates. The mapper has no idea what to do with it. When we pass the type LinkedList<Date> or the type LinkedList<String>, the mapper can exploit this type information and do the right thing. Also note that the mapper automatically exploits this information when the outer layer is a bean, and the list is one of the beans properties.
+
+@End @SubSection
+
+# SERIALISATION
+###############
+
+@SubSection
+   @Title {Serialisation}
+   @Tag {serialisation}
+@Begin
+
+@LP Both mapping tool (section @NumberOf mapping on page @PageOf { mapping })  and serialisation tool (this section) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the serialiser are:
+
+@DP @List
+@ListItem {The serialisation tool could be an alternative for native serialisation @FootNote { Java serialisation: "http://java.sun.com/j2se/1.5.0/docs/guide/serialization/" @ExternalLink "http://java.sun.com/j2se/1.5.0/docs/guide/serialization/" } (regarding functionality). This does not mean that all kinds of classes are supported out of the box, but it means that the general mechanism should be there and there should be an easy way to extend the mechanism so that we can deal with all classes. }
+@ListItem {The serialisation tool should preserve the difference between reference types and primitive types.}
+@ListItem {Recursive types should be supported without putting the (de)serialiser into an infinite loop.}
+@ListItem {Instance identity should be preserved. If the same instance is referenced from other instances, the same structure should be reconstructed during de-serialisation. There should only be one instance representing the original referenced instance.}
+@ListItem {The content of the JSON text can contain meta information which can help de-serialisation. We are allowed to add extra information in the JSON text in order to accomplish the other goals.}
+@EndList
+
+@LP This tool enables you to render POJO's @FootNote {POJO = Plain Old Java Object. See "http://en.wikipedia.org/wiki/Plain_Old_Java_Object" @ExternalLink "Wikipedia" for more information.}  to a JSON file. It is similar to the XML serialisation in Java or the XML Stream library, but it uses the JSON format. The result is a very fast text serialisation, you can customise it if you want.  The code is based on the SISE project, it was adjusted to make use of and benefit from the JSON format. Marshalling (converting from Java to JSON) as well as un-marshalling is very straightforward:
+
+@DP  @Java
+{
+import com.sdicons.json.serializer.marshall.*;
+...
+myTestObject = ...
+Marshall marshall = new JSONMarshall();
+JSONObject result = marshall.marshall(myTestObject);
+}
+
+@DP  And the other way around:
+ 
+@DP  @Java
+{
+import com.sdicons.json.serializer.marshall.*;
+...
+JSONObject myJSONObject = ...
+MarshallValue lResult = marshall.unmarshall(myJSONObject);
+... = lResult.getReference()
+}
+
+@DP  You might wonder what the MarshallValue (on line 4) is all about, why is un-marshalling giving an extra object back? The answer is that we went to great lengths to provide marshalling or un-marshalling for both Java reference types as Java basic types. A basic type needs to be fetched using specific methods (there is no other way). In order to provide these specific methods we need an extra class.
+
+@BeginSubSubSections
+@SubSubSection @Title { Primitive Types }
+@Begin
+
+@LP Primitive types are represented like this.
+
+@LP @Prog @Verbatim 
+{{
+   ">" : "P",
+   "=" : "1",
+   "t" : "int"
+}}
+
+@DP  The  @Quote >  attribute with value @Quote P  indicates a primitive type. The @Quote  =  attribute contains the representation of the value and the @Quote t attribute contains the original java type.
+@End @SubSubSection
+
+@SubSubSection @Title { Reference Types }
+@Begin
+
+@LP An array is defined recursively like this. We can see the @Quote > attribute this time with the @Quote A  value, indicating that the object represents an array. The @Quote C attribute contains the type representation for arrays as it is defined in java. The @Quote =  attribute contains a list of the values.
+
+@LP @Prog @Verbatim 
+{{
+   ">" : "A",
+   "c" : "I",
+   "=" :
+      [
+         {
+            ">" : "P",
+            "=" : "0",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "1",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "2",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "3",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "4",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "5",
+            "t" : "int"
+         }
+      ]
+}
+}
+
+@DP  An object is represented like this.
+
+@LP @Prog @Verbatim 
+{{
+   ">" : "O",
+   "c" : "com.sdicons.json.serializer.MyBean",
+   "&" : "id0",
+   "=" :
+      {
+         "int2" :
+            {
+               ">" : "null"
+            },
+         "ptr" :
+            {
+               ">" : "R",
+               "*" : "id0"
+            },
+         "name" :
+            {
+               ">" : "O",
+               "c" : "java.lang.String",
+               "&" : "id2",
+               "=" : "This is a test..."
+            },
+         "int1" :
+            {
+               ">" : "null"
+            },
+         "id" :
+            {
+               ">" : "O",
+               "c" : "java.lang.Integer",
+               "&" : "id1",
+               "=" : "1003"
+            }
+      }
+}
+}
+
+@DP  The @Quote > marker contains @Quote O for object this time. The @Quote C attribute contains a fully qualified class name. The @Quote & contains a unique id, it can be used to refer to the object so that we are able to represent recursive data structures. The @Quote =  attribute contains a JSON object having a property for each Java Bean property.  The property value is recursively a representation of a Java object. Note that there is a special notation to represent java null values.
+
+@LP @Prog @Verbatim 
+{{
+   ">" : "null"
+}}
+
+@DP  Also note that you can refer to other objects with the reference object which looks like this:
+
+@LP @Prog @Verbatim 
+{{
+   ">" : "R",
+   "*" : "id0"
+}}
+ 
+@End @SubSubSection
+@EndSubSubSections
+@End @SubSection
+
+# VALIDATION
+############
+
+@SubSection
+@Title {Validation}
+@Begin
+
+@LP This tool enables you to validate your JSON files. You can specify which content you expect, the validator can check these constraints for you. The system is straightforward to use and extend. You can add your own rules if you have specific needs. The validation definition is in JSON - as you would expect. Built-in rules:
+
+@LP @Prog @Verbatim 
+{{
+   "name" : "Some rule name",
+   "type" : "<built-in-type>"
+}}
+
+@DP  A validation document consists of a validation rule. This rule will be applied to the JSONValue that has to be validated. The validation rules can be nested, so it is possible to create complex rules out of simpler ones. The “type” attribute is obligatory.  The  “name” is optional, it will be used during error reporting and for re-use.  The predefined rules are listed below. The name can come in handy while debugging. The name of the failing validation will be available in the exception. If you give each rule its own name or number, you can quickly find out on which predicate the validation fails. Here is an example of how you can create a validator.
+
+@DP  @Java {
+// First we create a parser to read the validator specification which is 
+// defined using the (what did you think) JSON format.
+// The validator definition is located in the "my-validator.json" resource in the
+// class path.
+JSONParser lParser = 
+   new JSONParser(
+      MyClass.class.getResourceAsStream("my-validator.json"));
+
+// We parse the validator spec and convert it into a Java representation.
+JSONObject lValidatorObject = (JSONObject) lParser.nextValue();
+
+// Finally we can convert our validator using the Java model.
+Validator lValidator = new JSONValidator(lValidatorObject);
+
+And now that you have the validator, you can start validating your data.
+
+// First we create a parser to read the data. 
+JSONParser lParser = new JSONParser(MyClass.class.getResourceAsStream("data.json"));
+
+// We parse the datafile and convert it into a Java representation.
+JSONValue lMyData = lParser.nextValue();
+
+// Now we can use the validtor to check on our data. We can test if the data has the 
+// correct format or not. 
+lValidator.validate(lMyData);
+}
+
+@BeginSubSubSections
+@SubSubSection
+@Title { Basic Rules }
+@Begin
+
+@LP These rules are the basic rules in boolean logic. 
+
+@DP @CNP @Ruledef
+  @Title {@Verbatim {"type"  : "true" }}
+  @Params {-}
+  @Desc {This rule always succeeds.}
+  @Ex {A validator that will succeed on all JSON data structures. 
+       @LP @Prog @Verbatim 
+{{
+   "name" :"This validator validates *everything*",
+   "type" :"true"
+}}
+  }
+//
+
+@DP @CNP @Ruledef
+   @Title {@Verbatim {"type" : "false"  }}
+   @Params {-}
+   @Desc {This rule always fails.}
+   @Ex {A validator that rejects all data structures.
+        @LP @Prog @Verbatim 
+{{
+   "name" :"This validator rejects all",
+   "type" :"false"
+}}}
+//
+
+@DP  @Ruledef
+   @Title {@Verbatim {"type":"and" }}
+   @Params {@Quote rules : Array of nested rules.}
+   @Desc { All nested rules have to hold for the and rule to succeed.}
+   @Ex {A validator that succeeds if the object under scrutiny is both a list and has content consisting of integers.
+        @LP @Prog @Verbatim 
+{{
+   "name" :"List of integers",
+   "type" :"and",
+   "rules" : [{"type":"array"},{"type":"content","rule":{"type":"int"}}]
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title { @Verbatim {"type" : "or" }}
+   @Params {@Quote rules : Array of nested rules.}
+   @Desc { One of the nested rules has to succeed for this rule to succeed.}
+   @Ex {A validator that validates booleans or integers.
+        @LP @Prog @Verbatim  
+{{
+   "name" :"Null or int",
+   "type" :"or",
+   "rules" : [{"type":"int"},{"type":"bool"}]
+}}}
+//
+
+@LP @LP @Ruledef
+   @Title { @Verbatim {"type" : "not" }}
+   @Params {@Quote rule : A single nested rule.}
+   @Desc { The rule succeeds if the nested rule fails and vice versa.}
+   @Ex {-}
+//
+@End @SubSubSection
+
+@SubSubSection
+@Title { Type Rules }
+@Begin
+
+@LP These rules are predefined rules which allows you to specify type restrictions on the JSON data elements. The meaning of these predicates is obvious, they will not be discussed. See the examples for more information. Following type clauses can be used: 
+
+@DP @BulletList gap {0.8v} 
+@LI @Verbatim {"type":"complex"}
+@LI @Verbatim {"type":"array"}
+@LI @Verbatim {"type":"object"}
+@LI @Verbatim {"type":"simple"}
+@LI @Verbatim {"type":"null"}
+@LI @Verbatim {"type":"bool"}
+@LI @Verbatim {"type":"string"}
+@LI @Verbatim {"type":"number"}
+@LI @Verbatim {"type":"int"}
+@LI @Verbatim {"type":"decimal"}
+@EndList
+
+@End @SubSubSection
+
+@SubSubSection
+@Title { Attribute Rules }
+@Begin
+@LP These rules check for attributes of certain types.
+
+@DP @CNP @Ruledef
+  @Title { @Quote type : @Quote length }
+  @Params { @List @LI {@Quote min : (optional) The minimal length of the array.} @LI { @Quote max : (optional) The maximal length of the array.} @EndList }
+  @Desc { Applicable to complex objects and string objects. The rule will fail if the object under investigation has another type. For array objects the number of elements is counted, for objects the number of properties and for strings, the length of its value in Java (not the JSON representation; "\n" in the file counts as a single character).}
+  @Ex {A validator that only wants arrays of length 5.
+       @LP @Prog @Verbatim 
+{{
+   "name"  :"Array of length 5",
+   "type"  :"and",
+   "rules" : [{"type":"array"}, {"type":"length","min":5,"max":5}]
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title { @Quote type : @Quote range }
+   @Params {@List @LI { @Quote min : (optional) The minimal value.} @LI { @Quote max : (optional) The maximal value.} @EndList}
+   @Desc {Applicable to JSONNumbers, i.e. JSONInteger and JSONDecimal.}
+   @Ex { Allow numbers between 50 and 100.
+         @LP @Prog @Verbatim 
+{{
+   "name" :"Range validator",
+   "type" :"range",
+   "min" : 50,
+   "max" : 100
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote enum }
+   @Params { @Quote values : An array of JSON values.}
+   @Desc { The value has to occur in the provided list. The list can contain simple types as well as complex nested types.}
+   @Ex { An enum validator.
+         @LP @Prog  @Verbatim 
+{{
+   "name" :"Enum validator",
+   "type" :"enum",
+   "values" : [13, 17, "JSON", 123.12, [1, 2, 3], {"key":"value"}]
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote regexp }
+   @Params {@Quote pattern : A regexp pattern.}
+   @Desc {For strings, requires a predefined format according to the regular expression.}
+   @Ex {A validator that validates strings containing a sequence of a's , b's and c's.
+        @LP @Prog @Verbatim 
+{{
+   "name" :"A-B-C validator",
+   "type" :"regexp",
+   "pattern" : "a*b*c*"
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote content}
+   @Params {@Quote rule :  The rule that specifies how the content of a complex structure -  an array or the property values of an object -  should behave.}
+   @Desc { Note that in contrast with the @Quote properties  rule (for objects), you can specify in a single rule what all property values of an object should look like.}
+   @Ex {See @Quote type : @Quote and }
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote properties}
+   @Params {@Quote pairs : A list of "key/value" pair descriptions.  Each description contains three properties: @Quote key the key string; @Quote optional a boolean indicating whether this property is optional or not and @Quote rule a validation rule that should be applied to the properties value. Note that in contrast wit the @Quote content rule above you can specify a rule per attribute.}
+   @Desc {This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
+   @Ex { It will validate objects looking like this: @Verbatim {{"name":"Bruno Ranschaert", "country":"Belgium", "salary":100.0 }}
+         @LP @Prog @Verbatim 
+{{
+   "name" :"Contact spec.",
+   "type" :"properties",
+   "pairs" : [{"key":"name", "optional":false, "rule":{"type":"string"}},
+              {"key":"country", "optional":false, "rule":{"type":"string"}},
+              {"key":"salary", "optional":true, "rule":{"type":"decimal"}}
+             ]
+}}}
+//
+
+@End @SubSubSection
+
+@SubSubSection
+@Title { Structural Rules }
+@Begin
+
+@DP @CNP @Ruledef
+   @Title { @Quote type : @Quote ref}
+   @Params { @Quote * : The name of the rule to invoke.}
+   @Desc { This rule lets you specify recursive rules. Be careful not to create infinite validations which is quite possible using this rule. The containing rule will be fetched just before validation, there will be no error message during construction when the containing rule is not found. The rule will fail in this case. If there are several rules with the same name, only the last one with that name is remembered and the last one will be used.}
+   @Ex {A validator that validates nested lists of integers. A ref is needed to enable recursion in the validator.
+        @LP @Prog @Verbatim
+{{
+   "name" :"Nested list of integers",
+   "type" :"and",
+   "rules" :
+      [ 
+         {"type":"array"},
+         {"type":"content",
+          "rule":
+             {"type" : "or",
+              "rules": 
+                [{"type":"int"}, 
+                 {"type":"ref", "*" : "Nested list of integers"}]
+             }}
+       ]
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote let}
+   @Params {@List @LI {@Quote rules : A list of rules.} @LI {@Quote * : The name of the rule that should be used.} @EndList}
+   @Desc {Lets you specify a number of named rules in advance. It is a convenience rule that lets you specify a list of global shared validation rules in advance before using these later on. It becomes possible to first define a number of recurring types and then give the starting point. It is a utility rule that lets you tackle more complex validations. Note that it  makes no sense to define anonymous rules inside the list, it is impossible to refer to these later on.}
+   @Ex {@Prog @Verbatim 
+{{
+   "name" :"Let test -  a's or b's",
+   "type" :"let",
+   "*"    : "start",
+   "rules" : 
+      [{"name":"start", "type":"or", "rules":[{"type":"ref", "*":"a"}, 
+                                              {"type":"ref", "*":"b"}]},
+       {"name":"a", "type":"regexp", "pattern":"a*"},
+       {"name":"b", "type":"regexp", "pattern":"b*"}
+      ]
+}}
+@DP The validator class looks like this:
+
+@DP @Java
+{public class MyValidator
+extends CustomValidator
+{
+    public MyValidator(
+       String aName, JSONObject aRule,
+       HashMap<String, Validator> aRuleset)
+    {
+        super(aName, aRule, aRuleset);
+    }
+
+    public void validate(JSONValue aValue) 
+    throws ValidationException
+    {
+        // Do whatever you need to do on aValue ...
+        // If validation is ok, simply return.
+        // If validation fails, you can use:
+        // fail(JSONValue aValue) or 
+        //    fail(String aReason, JSONValue aValue)
+        // to throw the Validation exception for you.
+    }
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote custom }
+   @Params {@Quote class :  The fully qualified class name of the validator.}
+   @Desc {An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from com.sdicons.json.validator.impl.predicates.CustomValidator. }
+   @Ex {@LP @Prog @Verbatim 
+{{
+   "name" :"Custom test",
+   "type" :"custom",
+   "class" : "com.sdicons.json.validator.MyValidator"
+}}}
+//
+
+@DP @CNP @Ruledef
+   @Title {@Quote type : @Quote switch}
+   @Params {@List @LI {@Quote key : The key name of the object that will act as the discriminator.} @LI {@Quote case :  A list of objects containing the parameters “values” and “rule”. The first one is a list of values the second one a validator rule.} @EndList}
+   @Desc { The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
+Example: The top level rule in the validator for validators contains a switch that could have been described by an or, but the switch gives better error messages.}
+   @Ex {-}
+//
+@End @SubSubSection
+@EndSubSubSections
+@End @SubSection
+
+@EndSubSections
+@End @Section
+
+@Appendix
+@Title { License Header }
+   @Tag {license}
+@Begin
+@LP @Prog  @Verbatim 
+{JSONTOOLS - Java JSON Tools
+Copyright (C) 2006 S.D.I.-Consulting BVBA
+http://www.sdi-consulting.com
+mailto://nospam@sdi-consulting.com
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA }
+@End @Appendix
+
+@Appendix
+@Title { Validator for Validators }
+@Begin
+
+@LP This example validator is able to validate validators. The example is a bit contrived because the validators really don't need validation because it is built-in in the construction. It is interesting because it can serve as a definition of how to construct a validator.
+
+@LP @CP 
+   size { 7p }
+   line { 0.8vx }
+   tabin { 3 }
+   tabout { 8s } {
+{
+   "name":"Validator validator",
+   "type":"let",
+   "*":"rule",
+   "rules":
+   [
+      ########## START ##########
+      {
+         "name":"rule",
+         "type":"switch",
+         "key":"type",
+         "case":
+         [
+            {"values":["true", "false", "null"], "rule":{"type":"ref","*":"atom-rule"}},
+            {"values":["int", "complex", "array", "object", "simple",
+                       "null", "bool", "string", "number", "decimal"],
+                       "rule":{"type":"ref","*":"type-rule"}},
+            {"values":["not", "content"], "rule":{"type":"ref","*":"rules-rule"}},
+            {"values":["and", "or"], "rule":{"type":"ref","*":"ruleset-rule"}},
+            {"values":["length", "range"], "rule":{"type":"ref","*":"minmax-rule"}},
+            {"values":["ref"], "rule":{"type":"ref","*":"ref-rule"}},
+            {"values":["custom"], "rule":{"type":"ref","*":"custom-rule"}},
+            {"values":["enum"], "rule":{"type":"ref","*":"enum-rule"}},
+            {"values":["let"], "rule":{"type":"ref","*":"let-rule"}},
+            {"values":["regexp"], "rule":{"type":"ref","*":"regexp-rule"}},
+            {"values":["properties"], "rule":{"type":"ref","*":"properties-rule"}},
+            {"values":["switch"], "rule": {"type":"ref","*":"switch-rule"}}
+         ]
+      },
+      ########## RULESET ##########
+      {
+         "name":"ruleset",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"rule"}}]
+      },
+      ########## PAIRS ##########
+      {
+         "name":"pairs",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"pair"}}]
+      },
+      ########## PAIR ##########
+      {
+         "name":"pair",
+         "type":"properties",
+         "pairs" :
+          [{"key":"key",      "optional":false, "rule":{"type":"string"}},
+           {"key":"optional", "optional":false, "rule":{"type":"bool"}},
+           {"key":"rule",     "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## CASES ##########
+      {
+         "name":"cases",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"case"}}]
+      },
+      ########## CASE ##########
+      {
+         "name":"case",
+         "type":"properties",
+         "pairs" :
+          [{"key":"values",   "optional":false, "rule":{"type":"array"}},
+           {"key":"rule",     "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## ATOM ##########
+      {
+         "name":"atom-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":
+                          {"type":"enum","values":["true", "false", "null"]}}
+          ]
+      },
+      ########## RULESET-RULE ##########
+      {
+         "name":"ruleset-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true,  "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["and", "or"]}},
+           {"key":"rules", "optional":false, "rule":{"type":"ref","*":"ruleset"}}
+          ]
+      },
+      ########## RULES-RULE ##########
+      {
+         "name":"rules-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true,  "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["not", "content"]}},
+           {"key":"rule", "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## TYPE ##########
+      {
+         "name":"type-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum",
+                    "values":["int", "complex", "array", "object", 
+                    "simple", "null", "bool", "string", "number", 
+                    "decimal"]}}
+          ]
+      },
+      ########## MINMAX ##########
+      {
+         "name":"minmax-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["length", "range"]}},
+           {"key":"min", "optional":true, "rule":{"type":"number"}},
+           {"key":"max", "optional":true, "rule":{"type":"number"}}
+          ]
+      },
+      ########## REF ##########
+      {
+         "name":"ref-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["ref"]}},
+           {"key":"*",    "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## CUSTOM ##########
+      {
+         "name":"custom-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["custom"]}},
+           {"key":"class", "optional":true, "rule":{"type":"string"}}
+          ]
+      },
+      ########## ENUM ##########
+      {
+         "name":"enum-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["enum"]}},
+           {"key":"values", "optional":true, "rule":{"type":"array"}}
+          ]
+      },
+      ########## LET ##########
+      {
+         "name":"let-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true,  "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["let"]}},
+           {"key":"rules", "optional":false, "rule":{"type":"ref","*":"ruleset"}},
+           {"key":"*",     "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## REGEXP ##########
+      {
+         "name":"regexp-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["regexp"]}},
+           {"key":"pattern", "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## PROPERTIES ##########
+      {
+         "name":"properties-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true, "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["properties"]}},
+           {"key":"pairs", "optional":false, "rule":{"type":"ref","*":"pairs"}}
+          ]
+      },
+      ########## SWITCH ##########
+      {
+         "name":"switch-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true, "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["switch"]}},
+           {"key":"key",   "optional":false, "rule":{"type":"string"}},
+           {"key":"case",  "optional":false, "rule":{"type":"ref","*":"cases"}}
+          ]
+      }
+   ]
+}
+
+}
+@End @Appendix

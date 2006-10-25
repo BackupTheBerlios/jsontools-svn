@@ -61,9 +61,7 @@ extends JSONSimple
 
         final JSONBoolean that = (JSONBoolean) o;
 
-        if (value != that.value) return false;
-
-        return true;
+        return value == that.value;
     }
 
     public int hashCode()

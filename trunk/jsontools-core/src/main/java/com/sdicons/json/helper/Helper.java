@@ -21,12 +21,6 @@ package com.sdicons.json.helper;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.model.JSONObject;
-import com.sdicons.json.serializer.marshall.JSONMarshall;
-import com.sdicons.json.serializer.marshall.MarshallException;
-
-import java.util.HashMap;
-
 public interface Helper
 {
     public Class getHelpedClass();

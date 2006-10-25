@@ -22,9 +22,8 @@ package com.sdicons.json.mapper.helper;
 */
 
 import com.sdicons.json.helper.Helper;
-import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.mapper.MapperException;
+import com.sdicons.json.model.JSONValue;
 
 public interface SimpleMapperHelper
         extends Helper

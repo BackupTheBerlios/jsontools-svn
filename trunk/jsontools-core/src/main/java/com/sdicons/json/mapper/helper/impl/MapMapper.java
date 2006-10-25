@@ -1,14 +1,14 @@
 package com.sdicons.json.mapper.helper.impl;
 
-import com.sdicons.json.mapper.helper.ComplexMapperHelper;
-import com.sdicons.json.mapper.MapperException;
 import com.sdicons.json.mapper.JSONMapper;
-import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.model.JSONArray;
+import com.sdicons.json.mapper.MapperException;
+import com.sdicons.json.mapper.helper.ComplexMapperHelper;
 import com.sdicons.json.model.JSONObject;
+import com.sdicons.json.model.JSONValue;
 
-import java.util.*;
 import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class MapMapper
 implements ComplexMapperHelper

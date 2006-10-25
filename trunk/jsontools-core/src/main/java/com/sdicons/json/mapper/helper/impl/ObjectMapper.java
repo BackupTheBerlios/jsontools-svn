@@ -30,8 +30,10 @@ import com.sdicons.json.model.JSONValue;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.*;
-import java.util.Iterator;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class ObjectMapper
 implements SimpleMapperHelper
@@ -50,23 +52,21 @@ implements SimpleMapperHelper
         try
         {
             final Object lBean = aRequestedClass.newInstance();
-            Iterator<String> lElIter = aObject.getValue().keySet().iterator();
 
-            while (lElIter.hasNext())
+            for (String lPropname : aObject.getValue().keySet())
             {
                 // Fetch subelement information.
-                final String lPropname = lElIter.next();
                 final JSONValue lSubEl = aObject.get(lPropname);
 
                 // Put the property in the bean.
                 boolean lFoundWriter = false;
                 PropertyDescriptor[] lPropDesc = Introspector.getBeanInfo(aRequestedClass, Introspector.USE_ALL_BEANINFO).getPropertyDescriptors();
-                for (int i = 0; i < lPropDesc.length; i++)
+                for (PropertyDescriptor aLPropDesc : lPropDesc)
                 {
-                    if (lPropDesc[i].getName().equals(lPropname))
+                    if (aLPropDesc.getName().equals(lPropname))
                     {
                         lFoundWriter = true;
-                        final Method lWriter = lPropDesc[i].getWriteMethod();
+                        final Method lWriter = aLPropDesc.getWriteMethod();
                         if (lWriter == null)
                         {
                             final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
@@ -74,9 +74,9 @@ implements SimpleMapperHelper
                         }
                         else
                         {
-                            Object lProp = null;
+                            Object lProp;
                             Type[] lTypes = lWriter.getGenericParameterTypes();
-                            if(lTypes.length == 1 && lTypes[0] instanceof ParameterizedType)
+                            if (lTypes.length == 1 && (lTypes[0] instanceof ParameterizedType))
                             {
                                 // We can make use of the extra type information of the parameter of the
                                 // seter. This extra type information can be exploited by the mapper
@@ -87,10 +87,10 @@ implements SimpleMapperHelper
                             {
                                 // We cannot use extra type information, we fall back on the
                                 // raw class information.
-                                lProp = JSONMapper.toJava(lSubEl, lPropDesc[i].getPropertyType());
+                                lProp = JSONMapper.toJava(lSubEl, aLPropDesc.getPropertyType());
                             }
 
-                            lWriter.invoke(lBean, new Object[]{lProp});
+                            lWriter.invoke(lBean, lProp);
                         }
                         break;
                     }
@@ -145,7 +145,7 @@ implements SimpleMapperHelper
                 // Only serialize if the property is READ-WRITE.
                 if (lReader != null && lWriter != null)
                 {
-                    lElements.getValue().put(lPropName, JSONMapper.toJSON(lReader.invoke(aPojo, new Object[]{})));
+                    lElements.getValue().put(lPropName, JSONMapper.toJSON(lReader.invoke(aPojo)));
                 }
             }
             

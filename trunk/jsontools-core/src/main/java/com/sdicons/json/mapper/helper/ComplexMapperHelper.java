@@ -21,9 +21,8 @@ package com.sdicons.json.mapper.helper;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.helper.Helper;
-import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.mapper.MapperException;
+import com.sdicons.json.model.JSONValue;
 
 import java.lang.reflect.Type;
 

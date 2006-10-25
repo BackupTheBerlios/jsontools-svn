@@ -75,11 +75,11 @@ public class JSONMapper
     }
 
     /**
-     *
-     * @param aValue
-     * @param aPojoClass
-     * @return
-     * @throws MapperException
+     * Map a JSON representation to a Java object.
+     * @param aValue The JSON value that has to be mapped.
+     * @param aPojoClass The class to which the JSON object should be mapped.
+     * @return  The resulting Java object, the POJO representation.
+     * @throws MapperException when an error occurs during mapping.
      */
     public static Object toJava(JSONValue aValue, Class aPojoClass)
     throws MapperException
@@ -114,6 +114,13 @@ public class JSONMapper
         else return lHelperSimple.toJava(aValue, aPojoClass);
     }
 
+    /**
+     *  Map a JSON representation to a Java object.
+     * @param aValue The JSON value that has to be mapped.
+     * @param aGenericType A type indication to help the mapper map the JSON text.
+     * @return The resulting Java POJO.
+     * @throws MapperException When the JSON text cannot be mapped to POJO.
+     */
     public static Object toJava(JSONValue aValue, ParameterizedType aGenericType)
     throws MapperException
     {
@@ -145,6 +152,13 @@ public class JSONMapper
         }
     }
 
+    /**
+     * Map a JSON representation to a Java object. Since no class nor type hint is passed to the
+     * mapper, this method can only handle the most basic mappings.
+     * @param aValue The JSON value that has to be mapped.
+     * @return he resulting Java POJO.
+     * @throws MapperException When the JSON text cannot be mapped to POJO.
+     */
     public static Object toJava(JSONValue aValue)
     throws MapperException
     {
@@ -156,6 +170,12 @@ public class JSONMapper
         else return toJava(aValue, Object.class);
     }
 
+    /**
+     * Map a POJO to the JSON representation.
+     * @param aPojo to be mapped to JSON.
+     * @return The JSON representation.
+     * @throws MapperException If something goes wrong during mapping.
+     */
     public static JSONValue toJSON(Object aPojo)
     throws MapperException
     {
@@ -168,7 +188,6 @@ public class JSONMapper
             final String lMsg = "Could not find a mapper helper for class: " + aPojo.getClass().getName();
             throw new MapperException(lMsg);
         }
-
         return lHelperSimple.toJSON(aPojo);
     }
 }

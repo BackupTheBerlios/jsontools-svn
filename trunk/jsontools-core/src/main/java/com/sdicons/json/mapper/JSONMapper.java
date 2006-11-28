@@ -27,6 +27,7 @@ import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.serializer.helper.impl.ArrayHelper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -92,7 +93,10 @@ public class JSONMapper
         }
         // But null representations are.
         else if(aValue.isNull()) return null;                
-
+        if(aPojoClass.isArray()){
+        	ArrayMapper arrayMapper=new ArrayMapper();
+        	return arrayMapper.toJava(aValue, aPojoClass);
+        }
         // Use the class helpers for built in types.
         if(aPojoClass == Boolean.TYPE) aPojoClass = Boolean.class;
         else if(aPojoClass == Byte.TYPE) aPojoClass = Byte.class;
@@ -180,7 +184,12 @@ public class JSONMapper
     throws MapperException
     {
         if(aPojo == null) return JSONNull.NULL;
-
+        final Class lObjectClass =  aPojo.getClass();
+        if(lObjectClass.isArray()){
+            final ArrayMapper arrayMapper = new ArrayMapper();            
+        	return arrayMapper.toJSON(aPojo);
+        }
+        
         final SimpleMapperHelper lHelperSimple = repo.findHelper(aPojo.getClass());
 
         if(lHelperSimple == null)

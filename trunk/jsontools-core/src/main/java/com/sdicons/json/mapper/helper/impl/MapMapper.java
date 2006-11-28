@@ -6,6 +6,7 @@ import com.sdicons.json.mapper.helper.ComplexMapperHelper;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONValue;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -67,7 +68,10 @@ implements ComplexMapperHelper
                 for (String lKey : aObject.getValue().keySet())
                 {
                     JSONValue lVal = aObject.getValue().get(lKey);
-                    lMapObj.put(lKey, JSONMapper.toJava(lVal, (Class) aTypes[1]));
+                    if(aTypes[1] instanceof Class)
+                    	lMapObj.put(lKey, JSONMapper.toJava(lVal, (Class) aTypes[1]));
+                    else
+                    	lMapObj.put(lKey, JSONMapper.toJava(lVal, (ParameterizedType) aTypes[1]));
                 }
             }
         }

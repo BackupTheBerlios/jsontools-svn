@@ -7,9 +7,13 @@ import junit.framework.TestCase;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
+import java.util.Vector;
 
 public class MapperTest
 extends TestCase
@@ -30,6 +34,12 @@ extends TestCase
         private BigDecimal bigDecimalMbr;
         private Character charMbr;
         private Date date;
+        private Boolean true1;
+        private Boolean true2;
+        private Boolean true3;
+        private Boolean false1;
+        private Boolean false2;
+        private Boolean false3;
 
         private LinkedList<String> linkedList;
         private ArrayList<Date> arrayList;
@@ -196,6 +206,54 @@ extends TestCase
         {
             this.linkedMap = linkedMap;
         }
+
+		public Boolean getFalse1() {
+			return false1;
+		}
+
+		public void setFalse1(Boolean false1) {
+			this.false1 = false1;
+		}
+
+		public Boolean getFalse2() {
+			return false2;
+		}
+
+		public void setFalse2(Boolean false2) {
+			this.false2 = false2;
+		}
+
+		public Boolean getFalse3() {
+			return false3;
+		}
+
+		public void setFalse3(Boolean false3) {
+			this.false3 = false3;
+		}
+
+		public Boolean getTrue1() {
+			return true1;
+		}
+
+		public void setTrue1(Boolean true1) {
+			this.true1 = true1;
+		}
+
+		public Boolean getTrue2() {
+			return true2;
+		}
+
+		public void setTrue2(Boolean true2) {
+			this.true2 = true2;
+		}
+
+		public Boolean getTrue3() {
+			return true3;
+		}
+
+		public void setTrue3(Boolean true3) {
+			this.true3 = true3;
+		}
     }
 
     public MapperTest(String lName)
@@ -221,7 +279,15 @@ extends TestCase
             lDuupje.setBigDecimalMbr(new BigDecimal("1111111465465.676476545"));
             lDuupje.setCharMbr('A');
             lDuupje.setDate(new Date());
-                        
+            Boolean trueBoolean=new Boolean(true);
+            Boolean falseBoolean=new Boolean(false);
+            lDuupje.setTrue1(trueBoolean);
+            lDuupje.setTrue2(trueBoolean);
+            lDuupje.setTrue3(trueBoolean);
+            lDuupje.setFalse1(falseBoolean);
+            lDuupje.setFalse2(falseBoolean);
+            lDuupje.setFalse3(falseBoolean);
+            
             LinkedList lLinkedList = new LinkedList();
             lLinkedList.add("uno");
             lLinkedList.add("duo");
@@ -247,6 +313,160 @@ extends TestCase
         {
             e.printStackTrace(System.out);
             Assert.fail();
+        }
+    }
+    public static class Graph{
+    	private HashMap<String, ArrayList<Integer>> nodes;
+    	private ArrayList edges;
+    	private Collection<HashMap<String,String>> col;
+    	
+		public ArrayList getEdges() {
+			return edges;
+		}
+		public void setEdges(ArrayList edges) {
+			this.edges = edges;
+		}
+		public HashMap<String, ArrayList<Integer>> getNodes() {
+			return nodes;
+		}
+		public void setNodes(HashMap<String, ArrayList<Integer>> nodes) {
+			this.nodes = nodes;
+		}
+		public Collection<HashMap<String, String>> getCol() {
+			return col;
+		}
+		public void setCol(Collection<HashMap<String, String>> col) {
+			this.col = col;
+		}
+    	
+    }
+    public void test2(){    	
+    	HashMap<String, ArrayList<Integer>> nodes = new HashMap<String, ArrayList<Integer>>();
+
+    	ArrayList<Integer> nodeInfo = new ArrayList<Integer>();
+    	nodeInfo.add(new Integer(270));
+    	nodeInfo.add(new Integer(360));
+
+    	nodes.put("uniqueNodeId1", nodeInfo);
+    	Collection<HashMap<String,String>> collection=new Vector<HashMap<String,String>>();
+    	HashMap<String,String> hashMap=new HashMap<String, String>();
+    	hashMap.put("index1","value1");
+    	collection.add(hashMap);
+    	
+    	Graph graph = new Graph();
+    	graph.setNodes(nodes);
+    	graph.setEdges(new ArrayList());
+    	graph.setCol(collection);
+    	JSONValue lObj = null;
+    	try {
+    	lObj = JSONMapper.toJSON(graph);
+    	}
+    	catch (MapperException e) {
+    	e.printStackTrace();
+    	}
+
+    	System.out.println(lObj.render(true)); // works
+
+    	Object javaObj = null;
+    	try {
+    	javaObj = JSONMapper.toJava(lObj, graph.getClass());
+    	Graph graph2=(Graph)javaObj;
+    	HashMap<String, ArrayList<Integer>> nodes2=graph2.getNodes();
+    	ArrayList<Integer> nodeInfo2=nodes2.get("uniqueNodeId1");
+    	Iterator<Integer> iterator=nodeInfo2.iterator();
+    	while(iterator.hasNext()){
+    		System.out.println(iterator.next());	
+    	}
+    	
+    	}
+    	catch (Exception e) {
+    	e.printStackTrace();
+    	}
+
+    	System.out.println(javaObj);
+    }
+    public void test3(){
+    	String[] strings={"abc","bcd","def"};
+    	System.out.println("String[] class:"+strings.getClass());
+    	JSONValue lObj = null;
+    	try {
+        	lObj = JSONMapper.toJSON(strings);
+        }catch (MapperException e) {
+        	e.printStackTrace();
+        }
+        System.out.println(lObj.render(true)); 
+        
+        Object javaObj = null;
+        try {
+        	javaObj = JSONMapper.toJava(lObj, strings.getClass());
+        	String[] strings2=(String[])javaObj;
+        	System.out.println(strings2[0]+strings2[1]+strings2[2]);
+        }
+       	catch (Exception e) {
+        	e.printStackTrace();
+        }
+    }
+    public static class TestBean4
+    {
+        private String myString;
+        
+        public TestBean4(){
+        	this.myString="";
+        }
+		public TestBean4(String myString) {
+			super();
+			this.myString = myString;
+		}
+
+		public String getMyString() {
+			return myString;
+		}
+
+		public void setMyString(String myString) {
+			this.myString = myString;
+		}
+        
+    }
+    public void test4(){
+    	TestBean4[] bean4s={new TestBean4("abc"),new TestBean4("bcd"),new TestBean4("def")};
+    	
+    	JSONValue lObj = null;
+    	try {
+        	lObj = JSONMapper.toJSON(bean4s);
+        }catch (MapperException e) {
+        	e.printStackTrace();
+        }
+        System.out.println(lObj.render(true)); 
+        
+        Object javaObj = null;
+        try {
+        	javaObj = JSONMapper.toJava(lObj, bean4s.getClass());
+        	TestBean4[] beans=(TestBean4[])javaObj;
+        	System.out.println(beans[0].getMyString()+beans[1].getMyString()+beans[2].getMyString());
+        }
+       	catch (Exception e) {
+        	e.printStackTrace();
+        }
+    }
+    public void test5(){
+    	String[][] strings={{"abc","bcd","def"},{"abc","bcd","def"}};
+    	System.out.println("String[] class:"+strings.getClass());
+    	JSONValue lObj = null;
+    	try {
+        	lObj = JSONMapper.toJSON(strings);
+        }catch (MapperException e) {
+        	e.printStackTrace();
+        }
+        System.out.println(lObj.render(true)); 
+        
+        Object javaObj = null;
+        try {
+        	javaObj = JSONMapper.toJava(lObj, strings.getClass());
+        	String[][] strings2=(String[][])javaObj;
+        	System.out.println(strings2[0][0]+strings2[0][1]+strings2[0][2]);
+        }
+       	catch (Exception e) {
+        	e.printStackTrace();
         }
     }
 }

@@ -29,6 +29,7 @@ import com.sdicons.json.model.JSONValue;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public class CollectionMapper
@@ -83,7 +84,11 @@ implements ComplexMapperHelper
             // Generic collection, we can make use of the type of the elements.            
             for (JSONValue lVal : aObject.getValue())
             {
-                lCollObj.add(JSONMapper.toJava(lVal, (Class) aTypes[0]));
+                
+                if(aTypes[0] instanceof Class)
+                	lCollObj.add(JSONMapper.toJava(lVal, (Class) aTypes[0]));
+                else
+                	lCollObj.add(JSONMapper.toJava(lVal, (ParameterizedType) aTypes[0]));                	               
             }
         }
         else

@@ -81,7 +81,7 @@ implements SimpleMapperHelper
                                 // We can make use of the extra type information of the parameter of the
                                 // seter. This extra type information can be exploited by the mapper
                                 // to produce a more fine grained mapping.
-                                lProp = lProp = JSONMapper.toJava(lSubEl, (ParameterizedType) lTypes[0]);
+                                lProp = JSONMapper.toJava(lSubEl, (ParameterizedType) lTypes[0]);
                             }
                             else
                             {

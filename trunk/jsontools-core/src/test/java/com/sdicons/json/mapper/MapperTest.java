@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 public class MapperTest
@@ -468,5 +471,47 @@ extends TestCase
        	catch (Exception e) {
         	e.printStackTrace();
         }
+    }
+    public static class SetAndListBean{
+    	private Set<String> stringSet;
+    	private List<String> stringList;
+		public List<String> getStringList() {
+			return stringList;
+		}
+		public void setStringList(List<String> stringList) {
+			this.stringList = stringList;
+		}
+		public Set<String> getStringSet() {
+			return stringSet;
+		}
+		public void setStringSet(Set<String> stringSet) {
+			this.stringSet = stringSet;
+		}
+    	
+    }
+    public void testSetAndList(){
+    	SetAndListBean setAndListBean=new SetAndListBean();
+    	Set<String> stringSet=new HashSet<String>();
+    	stringSet.add("abc");
+    	stringSet.add("bcd");
+    	List<String> stringList=new Vector<String>();
+    	stringList.add("abc");
+    	stringList.add("bcd");
+    	setAndListBean.setStringSet(stringSet);
+    	setAndListBean.setStringList(stringList);
+    	try{
+    		JSONValue jsonValue=JSONMapper.toJSON(setAndListBean);
+    		System.out.println(jsonValue.render(true));
+    		Object object=JSONMapper.toJava(jsonValue,setAndListBean.getClass());    		
+    		SetAndListBean setAndListBean2=(SetAndListBean)object;
+    		Iterator<String> iterator=setAndListBean2.getStringList().iterator();
+    		System.out.println(iterator.next());
+    		System.out.println(iterator.next());
+    		iterator=setAndListBean2.getStringSet().iterator();
+    		System.out.println(iterator.next());
+    		System.out.println(iterator.next());
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
     }
 }

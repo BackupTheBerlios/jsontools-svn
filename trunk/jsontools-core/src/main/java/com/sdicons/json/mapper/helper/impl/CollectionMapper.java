@@ -28,7 +28,11 @@ import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONValue;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -60,7 +64,18 @@ implements ComplexMapperHelper
         {
             // First we try to instantiate the correct
             // collection class.
-            lCollObj = (Collection) aRawClass.newInstance();
+            if(aRawClass.isInterface()){
+            	//we still can't deal with some unusual interfaces. 
+            	if(aRawClass==Set.class){
+            		lCollObj = new HashSet();
+            	}else if(aRawClass==SortedSet.class){
+            		lCollObj = new TreeSet();
+            	}else{
+            		lCollObj = new LinkedList();
+            	}
+            }else{
+            	lCollObj = (Collection) aRawClass.newInstance();	
+            }
         }
         catch (Exception e)
         {

@@ -1,5 +1,6 @@
 package com.sdicons.json.mapper;
 
+import com.sdicons.json.mapper.helper.impl.DateMapper;
 import com.sdicons.json.model.JSONValue;
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -514,4 +515,30 @@ extends TestCase
     		e.printStackTrace();
     	}
     }
+    public void testDateMapper(){
+    	
+    	try {    	
+    		//By Default,DateMapper will ignore the timezone.
+    		//it's convenient for me,and maybe others. 
+    		Date date1=new Date();
+    		JSONValue lObj = JSONMapper.toJSON(date1);        
+    		System.out.println(lObj.render(true));         
+    		Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
+        	Date date2=(Date)javaObj;
+        	Assert.assertEquals(date1, date2);      
+        	System.out.println(date2);
+        	
+        	DateMapper.setTimeZoneIgnored(false);
+    		date1=new Date();
+    		lObj = JSONMapper.toJSON(date1);        
+    		System.out.println(lObj.render(true));         
+    		javaObj = JSONMapper.toJava(lObj, date1.getClass());
+        	date2=(Date)javaObj;
+        	Assert.assertEquals(date1, date2);      
+        	System.out.println(date2);
+    	}catch (Exception e) {
+        	e.printStackTrace();
+        }
+       	
+    }    
 }

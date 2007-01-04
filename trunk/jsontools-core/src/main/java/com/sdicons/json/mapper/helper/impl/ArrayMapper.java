@@ -148,7 +148,25 @@ implements SimpleMapperHelper
         for (JSONValue jsonValue : lValues.getValue())
         {
             try {
-				lElements.add(JSONMapper.toJava(jsonValue,Class.forName(lArrClassName)));
+            	if(isPrimitiveArray(lArrClassName)){
+            		Class primitiveClass=null;
+            		if("I".equals(lArrClassName)) primitiveClass=Integer.class;
+            		else  if("C".equals(lArrClassName))	primitiveClass=Character.class;
+                    else if("Z".equals(lArrClassName)) 	primitiveClass=Boolean.class;
+                    else if("S".equals(lArrClassName)) 	primitiveClass=Short.class;
+                    else if("B".equals(lArrClassName)) 	primitiveClass=Byte.class;
+                    else if("J".equals(lArrClassName)) 	primitiveClass=Long.class;
+                    else if("F".equals(lArrClassName)) 	primitiveClass=Float.class;
+                    else if("D".equals(lArrClassName))	primitiveClass=Double.class;
+                    else {
+                        final String lMsg = "Unknown primitive array type: " + lArrClassName;
+                        throw new  MapperException(lMsg);
+                    }
+            		lElements.add(JSONMapper.toJava(jsonValue,primitiveClass));
+            	}else{
+            		lElements.add(JSONMapper.toJava(jsonValue,Class.forName(lArrClassName)));	
+            	}
+            	
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				throw new MapperException("No Class Found: " + lArrClassName);

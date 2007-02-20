@@ -69,8 +69,11 @@ implements SimpleMapperHelper
                         final Method lWriter = aLPropDesc.getWriteMethod();
                         if (lWriter == null)
                         {
+                        	//Ignore the case of no setter                        	
                             final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
-                            throw new MapperException(lMsg);
+                            System.out.println("WARNING:"+lMsg);
+                            break;
+                            //throw new MapperException(lMsg);
                         }
                         else
                         {
@@ -140,10 +143,10 @@ implements SimpleMapperHelper
             {
                 Method lReader = aLPropDesc.getReadMethod();
                 Method lWriter = aLPropDesc.getWriteMethod();
-                String lPropName = aLPropDesc.getName();
-
-                // Only serialize if the property is READ-WRITE.
-                if (lReader != null && lWriter != null)
+                String lPropName = aLPropDesc.getName();                
+                // Only serialize if the property is READABLE
+                // Ignore the getClass() for any objects
+                if (lReader != null&&(!lPropName.equalsIgnoreCase("class")||lWriter != null))
                 {
                     lElements.getValue().put(lPropName, JSONMapper.toJSON(lReader.invoke(aPojo)));
                 }

@@ -2,9 +2,13 @@ package com.sdicons.json.mapper;
 
 import com.sdicons.json.mapper.helper.impl.DateMapper;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.parser.JSONParser;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -44,7 +48,8 @@ extends TestCase
         private Boolean false1;
         private Boolean false2;
         private Boolean false3;
-
+        private String onlyReadableProperty="read me";
+        private String onlyWritableProperty;
         private LinkedList<String> linkedList;
         private ArrayList<Date> arrayList;
 
@@ -60,7 +65,15 @@ extends TestCase
             this.integerMbr = integerMbr;
         }
 
-        public Short getShortMbr()
+		public void setOnlyWritableProperty(String onlyWritableProperty) {
+			this.onlyWritableProperty = onlyWritableProperty;
+		}
+
+		public String getOnlyReadableProperty() {
+			return onlyReadableProperty;
+		}
+
+		public Short getShortMbr()
         {
             return shortMbr;
         }
@@ -100,7 +113,7 @@ extends TestCase
             this.byteMbr = byteMbr;
         }
 
-        public long getLongMbr()
+        public Long getLongMbr()
         {
             return longMbr;
         }
@@ -308,10 +321,18 @@ extends TestCase
             lDuupje.setLinkedMap(lMap);
 
             JSONValue lObj = JSONMapper.toJSON(lDuupje);
-            System.out.println(lObj.render(true));
-
+            String toJS=lObj.render(true);
+            System.out.println(toJS);
+            
+            String fromJS=toJS.replaceAll("onlyReadableProperty","onlyWritableProperty");
+            fromJS=fromJS.replaceAll("read me","changed me");
+            Reader stringReader=new StringReader(fromJS);			
+			JSONParser jsonParser=new JSONParser(stringReader,fromJS); 
+			lObj=jsonParser.nextValue();
+			
             MapperTest.TestBean lLitmus = (MapperTest.TestBean) JSONMapper.toJava(lObj, TestBean.class);
             Assert.assertNotNull(lLitmus);
+            assertEquals("changed me",lLitmus.onlyWritableProperty);
         }
         catch(Exception e)
         {

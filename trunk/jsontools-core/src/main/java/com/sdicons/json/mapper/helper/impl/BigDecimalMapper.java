@@ -23,6 +23,7 @@ package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.mapper.MapperException;
+import com.sdicons.json.model.JSONInteger;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONDecimal;
@@ -51,6 +52,7 @@ implements SimpleMapperHelper
             }
         }
         else if(aValue.isDecimal()) return ((JSONDecimal) aValue).getValue();
+        else if(aValue.isInteger()) return new BigDecimal(((JSONInteger)aValue).getValue());
         else throw new MapperException("BigDecimalMapper cannot map: " + aValue.getClass().getName());
     }
 

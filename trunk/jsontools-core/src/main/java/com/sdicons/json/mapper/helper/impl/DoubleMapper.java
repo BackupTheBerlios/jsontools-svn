@@ -24,6 +24,7 @@ package com.sdicons.json.mapper.helper.impl;
 import com.sdicons.json.mapper.MapperException;
 import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.model.JSONDecimal;
+import com.sdicons.json.model.JSONInteger;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.model.JSONString;
 
@@ -51,6 +52,7 @@ implements SimpleMapperHelper
             }
         }
         else if(aValue.isDecimal()) return ((JSONDecimal) aValue).getValue().doubleValue();
+        else if(aValue.isInteger()) return ((JSONInteger)aValue).getValue().doubleValue();
         else throw new MapperException("DoubleMapper cannot map: " + aValue.getClass().getName());
     }
 

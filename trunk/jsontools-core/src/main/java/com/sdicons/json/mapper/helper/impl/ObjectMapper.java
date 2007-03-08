@@ -134,7 +134,7 @@ implements SimpleMapperHelper
     {
          // We will render the bean properties as the elements of a JSON object.
         final JSONObject lElements = new JSONObject();
-
+        String lPropName="";
         try
         {
             Class lClass = aPojo.getClass();
@@ -143,7 +143,7 @@ implements SimpleMapperHelper
             {
                 Method lReader = aLPropDesc.getReadMethod();
                 Method lWriter = aLPropDesc.getWriteMethod();
-                String lPropName = aLPropDesc.getName();                
+                lPropName = aLPropDesc.getName();                
                 // Only serialize if the property is READABLE
                 // Ignore the getClass() for any objects
                 if (lReader != null&&(!lPropName.equalsIgnoreCase("class")||lWriter != null))
@@ -156,17 +156,17 @@ implements SimpleMapperHelper
         }
         catch(IntrospectionException e)
         {
-            final String lMsg = "Error while introspecting JavaBean.";
+            final String lMsg = "Error while introspecting JavaBean."+" Class:"+aPojo.getClass();
             throw new MapperException(lMsg);
         }
         catch(IllegalAccessException e)
         {
-            final String lMsg = "Illegal access while trying to fetch a bean property (1).";
+            final String lMsg = "Illegal access while trying to fetch a bean property (1).Property:"+lPropName+" Object: "+aPojo;
             throw new MapperException(lMsg);
         }
         catch(InvocationTargetException e)
         {
-            final String lMsg = "Illegal access while trying to fetch a bean property (2).";
+            final String lMsg = "Illegal access while trying to fetch a bean property (2).Property:"+lPropName+" Object: "+aPojo;
             throw new MapperException(lMsg);
         }
     }

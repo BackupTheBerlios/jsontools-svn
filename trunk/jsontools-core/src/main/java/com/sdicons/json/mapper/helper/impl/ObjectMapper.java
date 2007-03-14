@@ -145,8 +145,22 @@ implements SimpleMapperHelper
                 Method lWriter = aLPropDesc.getWriteMethod();
                 lPropName = aLPropDesc.getName();                
                 // Only serialize if the property is READABLE
-                // Ignore the getClass() for any objects
-                if (lReader != null&&(!lPropName.equalsIgnoreCase("class")||lWriter != null))
+                // ignore the properties created by a proxy from Hibernate
+                if(lReader!=null&&
+                		(lReader.getReturnType().toString().contains("net.sf.cglib.proxy.Callback")||
+                		 lReader.getReturnType().toString().contains("org.hibernate.proxy.LazyInitializer"))){
+                	continue;
+                }
+                // Ignore the getClass() for any objects   
+                if(lReader!=null&&lPropName.equals("class")){
+                	continue;
+                }
+                
+/*                if(lReader != null&&(lWriter == null)){
+                	System.out.println("Property without a set method :"+lPropName+" Object: "+aPojo+" Property Type:"+lReader.getReturnType());
+                }*/
+                
+                if (lReader != null)
                 {
                     lElements.getValue().put(lPropName, JSONMapper.toJSON(lReader.invoke(aPojo)));
                 }

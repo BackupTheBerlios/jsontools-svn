@@ -22,6 +22,8 @@ package com.sdicons.json.mapper.helper.impl;
 */
 
 import com.sdicons.json.mapper.MapperException;
+import com.sdicons.json.model.JSONDecimal;
+import com.sdicons.json.model.JSONInteger;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 
@@ -35,6 +37,9 @@ extends AbstractMapper
 
     public Object toJava(JSONValue aValue, Class aRequestedClass) throws MapperException
     {
+    	//lenient to the data to be converted.
+    	if(aValue.isDecimal()) return ((JSONDecimal)aValue).getValue().toString();
+    	if(aValue.isInteger()) return ((JSONInteger)aValue).getValue().toString();
         if (!aValue.isString()) throw new MapperException("StringMapper cannot map class: " + aValue.getClass().getName());
         return ((JSONString) aValue).getValue();
     }

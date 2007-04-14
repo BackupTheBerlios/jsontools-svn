@@ -32,6 +32,10 @@
             <email>nospam@sdi-consulting.com</email>
             <url>http://www.sdi-consulting.com</url>
         </developer>
+	<developer>
+            <name>Changdong Li</name>
+            <email>changdongli@bat.berlios.de</email>            
+        </developer>
     </developers>
 
     <dependencies>

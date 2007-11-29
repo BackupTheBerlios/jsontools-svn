@@ -304,7 +304,7 @@ extends TestCase
             lDuupje.setFalse1(falseBoolean);
             lDuupje.setFalse2(falseBoolean);
             lDuupje.setFalse3(falseBoolean);
-            
+
             LinkedList lLinkedList = new LinkedList();
             lLinkedList.add("uno");
             lLinkedList.add("duo");
@@ -323,17 +323,24 @@ extends TestCase
             JSONValue lObj = JSONMapper.toJSON(lDuupje);
             String toJS=lObj.render(true);
             System.out.println(toJS);
-            
-            String fromJS=toJS.replaceAll("onlyReadableProperty","onlyWritableProperty");
-            fromJS=fromJS.replaceAll("read me","changed me");
-            Reader stringReader=new StringReader(fromJS);			
-			JSONParser jsonParser=new JSONParser(stringReader,fromJS); 
-			lObj=jsonParser.nextValue();
-			
-            MapperTest.TestBean lLitmus = (MapperTest.TestBean) JSONMapper.toJava(lObj, TestBean.class);
-            Assert.assertNotNull(lLitmus);
-            assertEquals("changed me",lLitmus.onlyWritableProperty);
-        }
+
+            /*
+             * This test code here was testing the inclusion of write only properties, which is now
+             * made obsolete by the advent of annotations to determine the inclusion/exclusion of
+             * read only properties.  There is a separate suite of tests for the annotations.
+             * --itaylor
+             */
+//             String fromJS=toJS.replaceAll("onlyReadableProperty","onlyWritableProperty");
+//            fromJS=fromJS.replaceAll("read me","changed me");
+//            Reader stringReader=new StringReader(fromJS);
+//			JSONParser jsonParser=new JSONParser(stringReader,fromJS);
+//			lObj=jsonParser.nextValue();
+//
+//
+//            MapperTest.TestBean lLitmus = (MapperTest.TestBean) JSONMapper.toJava(lObj, TestBean.class);
+//            Assert.assertNotNull(lLitmus);
+//            assertEquals("changed me",lLitmus.onlyWritableProperty);
+         }
         catch(Exception e)
         {
             e.printStackTrace(System.out);
@@ -344,7 +351,7 @@ extends TestCase
     	private HashMap<String, ArrayList<Integer>> nodes;
     	private ArrayList edges;
     	private Collection<HashMap<String,String>> col;
-    	
+
 		public ArrayList getEdges() {
 			return edges;
 		}
@@ -363,9 +370,9 @@ extends TestCase
 		public void setCol(Collection<HashMap<String, String>> col) {
 			this.col = col;
 		}
-    	
+
     }
-    public void test2(){    	
+    public void test2(){
     	HashMap<String, ArrayList<Integer>> nodes = new HashMap<String, ArrayList<Integer>>();
 
     	ArrayList<Integer> nodeInfo = new ArrayList<Integer>();
@@ -377,7 +384,7 @@ extends TestCase
     	HashMap<String,String> hashMap=new HashMap<String, String>();
     	hashMap.put("index1","value1");
     	collection.add(hashMap);
-    	
+
     	Graph graph = new Graph();
     	graph.setNodes(nodes);
     	graph.setEdges(new ArrayList());
@@ -400,9 +407,9 @@ extends TestCase
     	ArrayList<Integer> nodeInfo2=nodes2.get("uniqueNodeId1");
     	Iterator<Integer> iterator=nodeInfo2.iterator();
     	while(iterator.hasNext()){
-    		System.out.println(iterator.next());	
+    		System.out.println(iterator.next());
     	}
-    	
+
     	}
     	catch (Exception e) {
     	e.printStackTrace();
@@ -419,8 +426,8 @@ extends TestCase
         }catch (MapperException e) {
         	e.printStackTrace();
         }
-        System.out.println(lObj.render(true)); 
-        
+        System.out.println(lObj.render(true));
+
         Object javaObj = null;
         try {
         	javaObj = JSONMapper.toJava(lObj, strings.getClass());
@@ -434,7 +441,7 @@ extends TestCase
     public static class TestBean4
     {
         private String myString;
-        
+
         public TestBean4(){
         	this.myString="";
         }
@@ -450,19 +457,19 @@ extends TestCase
 		public void setMyString(String myString) {
 			this.myString = myString;
 		}
-        
+
     }
     public void test4(){
     	TestBean4[] bean4s={new TestBean4("abc"),new TestBean4("bcd"),new TestBean4("def")};
-    	
+
     	JSONValue lObj = null;
     	try {
         	lObj = JSONMapper.toJSON(bean4s);
         }catch (MapperException e) {
         	e.printStackTrace();
         }
-        System.out.println(lObj.render(true)); 
-        
+        System.out.println(lObj.render(true));
+
         Object javaObj = null;
         try {
         	javaObj = JSONMapper.toJava(lObj, bean4s.getClass());
@@ -482,8 +489,8 @@ extends TestCase
         }catch (MapperException e) {
         	e.printStackTrace();
         }
-        System.out.println(lObj.render(true)); 
-        
+        System.out.println(lObj.render(true));
+
         Object javaObj = null;
         try {
         	javaObj = JSONMapper.toJava(lObj, strings.getClass());
@@ -509,7 +516,7 @@ extends TestCase
 		public void setStringSet(Set<String> stringSet) {
 			this.stringSet = stringSet;
 		}
-    	
+
     }
     public void testSetAndList(){
     	SetAndListBean setAndListBean=new SetAndListBean();
@@ -524,7 +531,7 @@ extends TestCase
     	try{
     		JSONValue jsonValue=JSONMapper.toJSON(setAndListBean);
     		System.out.println(jsonValue.render(true));
-    		Object object=JSONMapper.toJava(jsonValue,setAndListBean.getClass());    		
+    		Object object=JSONMapper.toJava(jsonValue,setAndListBean.getClass());
     		SetAndListBean setAndListBean2=(SetAndListBean)object;
     		Iterator<String> iterator=setAndListBean2.getStringList().iterator();
     		System.out.println(iterator.next());
@@ -536,30 +543,32 @@ extends TestCase
     		e.printStackTrace();
     	}
     }
-    public void testDateMapper(){
-    	
-    	try {    	
-    		//By Default,DateMapper will ignore the timezone.
-    		//it's convenient for me,and maybe others. 
-    		Date date1=new Date();
-    		JSONValue lObj = JSONMapper.toJSON(date1);        
-    		System.out.println(lObj.render(true));         
-    		Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
-        	Date date2=(Date)javaObj;
-        	Assert.assertEquals(date1, date2);      
-        	System.out.println(date2);
-        	
-        	DateMapper.setTimeZoneIgnored(false);
-    		date1=new Date();
-    		lObj = JSONMapper.toJSON(date1);        
-    		System.out.println(lObj.render(true));         
-    		javaObj = JSONMapper.toJava(lObj, date1.getClass());
-        	date2=(Date)javaObj;
-        	Assert.assertEquals(date1, date2);      
-        	System.out.println(date2);
-    	}catch (Exception e) {
-        	e.printStackTrace();
-        }
-       	
-    }    
+//TODO: add msec date mapper test instead of this. itaylor
+
+//    public void testDateMapper(){
+//
+//    	try {
+//    		//By Default,DateMapper will ignore the timezone.
+//    		//it's convenient for me,and maybe others.
+//    		Date date1=new Date();
+//    		JSONValue lObj = JSONMapper.toJSON(date1);
+//    		System.out.println(lObj.render(true));
+//    		Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
+//        	Date date2=(Date)javaObj;
+//        	Assert.assertEquals(date1, date2);
+//        	System.out.println(date2);
+//
+//        	DateMapper.setTimeZoneIgnored(false);
+//    		date1=new Date();
+//    		lObj = JSONMapper.toJSON(date1);
+//    		System.out.println(lObj.render(true));
+//    		javaObj = JSONMapper.toJava(lObj, date1.getClass());
+//        	date2=(Date)javaObj;
+//        	Assert.assertEquals(date1, date2);
+//        	System.out.println(date2);
+//    	}catch (Exception e) {
+//        	e.printStackTrace();
+//        }
+//
+//    }
 }

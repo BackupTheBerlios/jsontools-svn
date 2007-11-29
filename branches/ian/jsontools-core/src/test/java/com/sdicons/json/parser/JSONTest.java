@@ -35,8 +35,6 @@ extends TestCase
 {
     public void testExamples()
     {
-        try
-        {
             final JSONParser lParser = new JSONParser(JSONTest.class.getResourceAsStream("/data/config.json"));
             final JSONValue lConfig = lParser.nextValue();
             assertTrue(lConfig.isArray());
@@ -63,16 +61,7 @@ extends TestCase
                     TestCase.fail(e.getMessage());
                 }
             }
-        }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-           TestCase.fail(e.getMessage());
-        }
+
     }
 
 }

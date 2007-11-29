@@ -34,11 +34,11 @@
         </developer>
 	    <developer>
             <name>Changdong Li</name>
-            <email>changdongli@bat.berlios.de</email>            
+            <email>changdongli@bat.berlios.de</email>
         </developer>
         <developer>
             <name>Ian Taylor</name>
-            <email>itaylor@bat.berlios.de</email>            
+            <email>itaylor@bat.berlios.de</email>
         </developer>
     </developers>
 
@@ -49,6 +49,15 @@
             <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+		    <groupId>org.testng</groupId>
+		    <artifactId>testng</artifactId>
+		    <version>5.0.2</version>
+		    <!-- using 5.0.2 because of a bug with 5.1+ and surefire 2.3 http://jira.codehaus.org/browse/SUREFIRE-59 (fixed in surefire 2.4) -->
+		    <scope>test</scope>
+		    <classifier>jdk15</classifier>
+		</dependency>
 
         <dependency>
             <groupId>antlr</groupId>

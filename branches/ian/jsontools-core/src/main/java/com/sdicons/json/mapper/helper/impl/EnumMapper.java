@@ -12,27 +12,30 @@ package com.sdicons.json.mapper.helper.impl;
  * for more details. You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ *
+ * Added by Ian Taylor @ zloop.com June 2007
  */
 
 import com.sdicons.json.mapper.MapperException;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 
-public class StringMapper extends AbstractMapper
+public class EnumMapper extends AbstractMapper
 {
 	public Class getHelpedClass()
 	{
-		return String.class;
+		return Enum.class;
 	}
-	
-	public Object toJava(JSONValue aValue, Class aRequestedClass, Object aPojo)
-	        throws MapperException
+
+	public Object toJava(JSONValue aValue, Class aRequestedClass, Object aPojo) throws MapperException
 	{
 		if (!aValue.isString())
 		{
-			throw new MapperException("StringMapper cannot map class: " +
-			        aValue.getClass().getName());
+			throw new MapperException("EnumMapper cannot map class: " +
+			        aValue.getClass().getName() +
+			        " enums are mapped as their string representation");
 		}
-		return ((JSONString) aValue).getValue();
+
+		return Enum.valueOf(aRequestedClass, ((JSONString) aValue).getValue());
 	}
 }

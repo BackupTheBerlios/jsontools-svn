@@ -41,16 +41,7 @@ extends TestCase
             // The code is kept as simple and complete as possible.
             final JSONParser lParser = new JSONParser(ValidatorTest.class.getResourceAsStream("/rules/simple.json"));
             final Validator lChecker = new JSONValidator((JSONObject) lParser.nextValue());
-            lChecker.validate(new JSONObject());                  
-        }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-            TestCase.fail(e.getMessage());
+            lChecker.validate(new JSONObject());
         }
         catch (ValidationException e)
         {
@@ -87,16 +78,6 @@ extends TestCase
                     TestCase.fail(e.getMessage());
                 }
             }
-        }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
         }
         catch (ValidationException e)
         {
@@ -151,15 +132,6 @@ extends TestCase
                 {
                 }
             }
-        }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-            TestCase.fail(e.getMessage());
         }
         catch (ValidationException e)
         {

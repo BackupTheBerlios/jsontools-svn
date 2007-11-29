@@ -16,7 +16,6 @@
         <module>jsontools-core</module>
         <module>jsontools-log4j</module>
         <module>jsontools-servlet</module>
-        <module>jsontools-hibernate</module>
     </modules>
 
 </project>

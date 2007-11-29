@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sdicons.jsontools</groupId>
+  <artifactId>jsontools-servlet</artifactId>
+  <name>Java JSON Tools - Servlet</name>
+  <version>1.6-SNAPSHOT</version>
+  <description>Java JSON Tools servlet library. This provides a simple and extensible JSON RPC servlet that allows you to annotate Java methods
+        that will be exposed as RPC calls.  It also provides a Javascript API to access these RPC calls with "one line" execution by leveraging
+        the Prototype.js Javascript library.</description>
+  <url>http://jsontools.berlios.de</url>
+  <developers>
+    <developer>
+      <name>Bruno Ranschaert</name>
+      <email>nospam@sdi-consulting.com</email>
+      <url>http://www.sdi-consulting.com</url>
+    </developer>
+    <developer>
+      <name>Changdong Li</name>
+      <email>changdongli@bat.berlios.de</email>
+    </developer>
+    <developer>
+      <name>Ian Taylor</name>
+      <email>itaylor@bat.berlios.de</email>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>GNU LESSER GENERAL PUBLIC LICENSE Version 2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:http://svn.berlios.de/jsontools/trunk/jsontools-servlet</connection>
+    <developerConnection>scm:svn:https://svn.berlios.de/svnroot/repos/jsontools/trunk/jsontools-servlet</developerConnection>
+    <url>http://svn.berlios.de/viewcvs/jsontools/</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+		<groupId>org.testng</groupId>
+		<artifactId>testng</artifactId>
+		<version>5.0.2</version>
+		<!-- using 5.0.2 because of a bug with 5.1+ and surefire 2.3 http://jira.codehaus.org/browse/SUREFIRE-59 (fixed in surefire 2.4) -->
+		<scope>test</scope>
+	    <classifier>jdk15</classifier>
+	</dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>httpunit</groupId>
+      <artifactId>httpunit</artifactId>
+      <version>1.6.2</version>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+	  <groupId>log4j</groupId>
+	  <artifactId>log4j</artifactId>
+	  <version>1.2.12</version>
+	</dependency>
+    <dependency>
+      <groupId>com.sdicons.jsontools</groupId>
+      <artifactId>jsontools-core</artifactId>
+      <version>[1.2, 2.0)</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

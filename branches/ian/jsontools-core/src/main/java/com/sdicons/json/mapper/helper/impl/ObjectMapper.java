@@ -60,15 +60,7 @@ public class ObjectMapper implements ComplexMapperHelper
 			throw new MapperException("ObjectMapper cannot map: " + aValue.getClass().getName());
 		}
 
-		for (Class i : aRequestedClass.getInterfaces())
-		{
-			if (i.getName() == "org.hibernate.proxy.HibernateProxy")
-			{
-				//Hibernate classes don't have the annotations that are on the
-				//actual object.  This gets those annotations back.
-				aRequestedClass =  (Class) aRequestedClass.getGenericSuperclass();
-			}
-		}
+		aRequestedClass = getHibernateClassForAnnotations(aRequestedClass, aPojo);
 
 		JSONObject aObject = (JSONObject) aValue;
 
@@ -79,9 +71,8 @@ public class ObjectMapper implements ComplexMapperHelper
 			correctTypes = new HashMap<String, Type>();
 
 			TypeVariable[] typeParameters = aRequestedClass.getTypeParameters();
-			if (types.length == typeParameters.length) // It should always...
+			if (types.length == typeParameters.length) 
 			{
-				// Types must have already been in correct order...
 				for (int i = 0; i < typeParameters.length; i++)
 				{
 					TypeVariable tv = typeParameters[i];
@@ -131,7 +122,7 @@ public class ObjectMapper implements ComplexMapperHelper
 								ParameterizedType pt = (ParameterizedType) lTypes[0];
 								// We can make use of the extra type information
 								// of the parameter of the
-								// seter. This extra type information can be
+								// setter. This extra type information can be
 								// exploited by the mapper
 								// to produce a more fine grained mapping.
 								lProp = JSONMapper.toJava(lSubEl, lProp, pt);
@@ -153,12 +144,7 @@ public class ObjectMapper implements ComplexMapperHelper
 								{
 									Type[] propTypes = lWriter.getGenericParameterTypes();
 
-									if (propTypes.length == 1) // I think all
-									// properties
-									// have to only
-									// have one
-									// param?
-									// correct?
+									if (propTypes.length == 1) 
 									{
 										if (propTypes[0] instanceof TypeVariable)
 										{
@@ -269,15 +255,8 @@ public class ObjectMapper implements ComplexMapperHelper
 		{
 
 			Class lClass = aPojo.getClass();
-			for (Class i : lClass.getInterfaces())
-			{
-				if (i.getName() == "org.hibernate.proxy.HibernateProxy")
-				{
-					//Hibernate classes don't have the annotations that are on the
-					//actual object.  This gets those annotations back.
-					lClass =  (Class) aPojo.getClass().getGenericSuperclass();
-				}
-			}
+			lClass = getHibernateClassForAnnotations(lClass, aPojo);
+
 			PropertyDescriptor[] lPropDesc = Introspector.getBeanInfo(lClass,
 			        Introspector.USE_ALL_BEANINFO).getPropertyDescriptors();
 			for (PropertyDescriptor aLPropDesc : lPropDesc)
@@ -338,4 +317,19 @@ public class ObjectMapper implements ComplexMapperHelper
 		}
 		return false;
 	}
+
+	private Class getHibernateClassForAnnotations(Class clazz, Object aPojo)
+	{
+		for (Class i : clazz.getInterfaces())
+		{
+			if (i.getName() == "org.hibernate.proxy.HibernateProxy")
+			{
+				//Hibernate classes don't have the annotations that are on the
+				//actual object.  This gets those annotations back.
+				clazz =  (Class) aPojo.getClass().getGenericSuperclass();
+			}
+		}
+		return clazz;
+	}
+
 }

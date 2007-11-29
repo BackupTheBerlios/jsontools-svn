@@ -113,7 +113,7 @@ extends TestCase
                 {
                     JSONValue lVal = lLogParser.nextValue();
                     lLogValidator.validate(lVal);
-                    
+
                     JSONObject lLogObj = (JSONObject) lVal;
                     String lLevel = ((JSONString) lLogObj.getValue().get("level")).getValue();
                     if(lStats.containsKey(lLevel))
@@ -145,16 +145,6 @@ extends TestCase
             TestCase.fail(e.getMessage());
         }
         catch (ValidationException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
         {
             e.printStackTrace();
             TestCase.fail(e.getMessage());

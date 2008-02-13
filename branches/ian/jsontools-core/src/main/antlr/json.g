@@ -54,7 +54,7 @@ class JSONLexer extends Lexer;
 
 options {
     k=2; // needed for newline junk
-    charVocabulary='\u0003'..'\uFFFF';   
+    charVocabulary='\u0003'..'\uFFFF';
 }
 
 LPAREN: '(' ;
@@ -68,7 +68,7 @@ QUOTES: '"' ;
 COLON:  ':' ;
 TRUE:   "true";
 FALSE:  "false";
-NULL:   "null";
+NULL:   ("null" | "undefined");
 
 // string literals
 STRING

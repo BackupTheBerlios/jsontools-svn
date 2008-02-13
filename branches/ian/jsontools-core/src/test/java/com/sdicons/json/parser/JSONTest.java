@@ -26,6 +26,7 @@ import antlr.TokenStreamException;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.model.JSONObject;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
@@ -62,6 +63,12 @@ extends TestCase
                 }
             }
 
+    }
+    public void testUndefinedTurnsToNull()
+    {
+	   JSONParser lParser = new JSONParser(JSONTest.class.getResourceAsStream("/data/undefinedTurnsToNull.json"));
+       JSONObject topObj = (JSONObject) lParser.nextValue();
+       TestCase.assertTrue("The json literal value undefined was not parsed as a Java null", topObj.get("item2").isNull());
     }
 
 }

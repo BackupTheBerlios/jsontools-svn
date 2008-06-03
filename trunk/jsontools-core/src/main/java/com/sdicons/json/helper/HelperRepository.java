@@ -119,6 +119,18 @@ public class HelperRepository<T extends Helper>
             if(helper.getHelpedClass().isAssignableFrom(aClass)) return helper;
             else return null;
         }
+
+        public String prettyPrint(String aIndent)
+        {
+            StringBuilder lBld = new StringBuilder(aIndent);
+            lBld.append(helper.getHelpedClass().getName());
+            for(HelperTreeNode<T> lChild : children)
+            {
+                lBld.append("\n");
+                lBld.append(lChild.prettyPrint(aIndent + "   "));
+            }
+            return lBld.toString();
+        }
     }
 
     private static class RootHelper
@@ -154,5 +166,10 @@ public class HelperRepository<T extends Helper>
     public T findHelper(Class aClass)
     {
         return root.findHelper(aClass);
+    }
+
+    public String prettyPrint()
+    {
+        return root.prettyPrint("");
     }
 }

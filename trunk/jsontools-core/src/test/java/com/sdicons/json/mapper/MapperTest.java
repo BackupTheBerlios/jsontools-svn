@@ -3,6 +3,8 @@ package com.sdicons.json.mapper;
 import com.sdicons.json.mapper.helper.impl.DateMapper;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.parser.JSONParser;
+import com.sdicons.json.helper.JSONMap;
+import com.sdicons.json.helper.JSONConstruct;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;

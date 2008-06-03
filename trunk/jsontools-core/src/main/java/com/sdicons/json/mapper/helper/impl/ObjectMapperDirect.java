@@ -2,8 +2,8 @@ package com.sdicons.json.mapper.helper.impl;
 
 import com.sdicons.json.mapper.JSONMapper;
 import com.sdicons.json.mapper.MapperException;
-import com.sdicons.json.mapper.JSONMap;
-import com.sdicons.json.mapper.JSONConstruct;
+import com.sdicons.json.helper.JSONMap;
+import com.sdicons.json.helper.JSONConstruct;
 import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONValue;

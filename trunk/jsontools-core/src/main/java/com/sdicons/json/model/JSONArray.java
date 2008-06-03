@@ -52,7 +52,7 @@ extends JSONComplex
 
     public String toString()
     {
-        final StringBuffer lBuf = new StringBuffer();
+        final StringBuilder lBuf = new StringBuilder();
         lBuf.append("JSONArray(").append(getLine()).append(":").append(getCol()).append(")[");
         for (int i = 0; i < array.size(); i++)
         {
@@ -78,7 +78,7 @@ extends JSONComplex
 
     protected String render(boolean aPretty, String aIndent)
     {
-        final StringBuffer lBuf = new StringBuffer();
+        final StringBuilder lBuf = new StringBuilder();
         if(aPretty)
         {
             lBuf.append(aIndent).append("[\n");

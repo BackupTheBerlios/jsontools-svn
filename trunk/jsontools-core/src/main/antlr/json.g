@@ -72,7 +72,7 @@ NULL:   "null";
 
 // string literals
 STRING
-{StringBuffer lBuf = new StringBuffer();}
+{StringBuilder lBuf = new StringBuilder();}
 	:	'"' (escaped:ESC {lBuf.append(escaped.getText());}| normal:~('"'|'\\'|'\n'|'\r') {lBuf.append(normal);} )* '"' {$setText(lBuf.toString());}
 	;
 

@@ -51,7 +51,7 @@ extends JSONComplex
 
     public String toString()
     {
-        final StringBuffer lBuf = new StringBuffer();
+        final StringBuilder lBuf = new StringBuilder();
         lBuf.append("JSONObject(").append(getLine()).append(":").append(getCol()).append(")[");
         Iterator<String> lIter = map.keySet().iterator();
         while(lIter.hasNext())
@@ -66,7 +66,7 @@ extends JSONComplex
 
     protected String render(boolean aPretty, String aIndent)
     {
-        final StringBuffer lBuf = new StringBuffer();
+        final StringBuilder lBuf = new StringBuilder();
         final Iterator<String> lKeyIter = map.keySet().iterator();
         if(aPretty)
         {

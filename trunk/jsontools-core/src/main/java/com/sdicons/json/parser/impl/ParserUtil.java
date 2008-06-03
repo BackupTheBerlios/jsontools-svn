@@ -30,7 +30,7 @@ public class ParserUtil
 
     public static String render(String value, boolean pretty, String indent)
     {
-        final StringBuffer lBuf = new StringBuffer();
+        final StringBuilder lBuf = new StringBuilder();
         if(pretty) lBuf.append(indent);
         lBuf.append("\"");
         for(int i = 0; i < value.length(); i++)

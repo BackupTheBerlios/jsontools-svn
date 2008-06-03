@@ -59,7 +59,7 @@ extends Layout
 
         JSONArray lLogTimes = new JSONArray();
         lLogTimes.getValue().add(new JSONString(lFormat.format(new Date(loggingEvent.timeStamp))));
-        lLogTimes.getValue().add(new JSONInteger(new BigInteger(new Long(loggingEvent.timeStamp).toString())));
+        lLogTimes.getValue().add(new JSONInteger(new BigInteger(Long.toString(loggingEvent.timeStamp))));
         lLogObj.getValue().put("timestamp", lLogTimes);
 
         ThrowableInformation lTi = loggingEvent.getThrowableInformation();

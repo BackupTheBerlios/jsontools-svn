@@ -165,17 +165,17 @@ implements SimpleMapperHelper
         }
         catch(IntrospectionException e)
         {
-            final String lMsg = "Error while introspecting JavaBean."+" Class:"+aPojo.getClass();
+            final String lMsg = "Error while introspecting JavaBean." + " Class: "+ aPojo.getClass();
             throw new MapperException(lMsg);
         }
         catch(IllegalAccessException e)
         {
-            final String lMsg = "Illegal access while trying to fetch a bean property (1).Property:"+lPropName+" Object: "+aPojo;
+            final String lMsg = "Illegal access while trying to fetch a bean property (1).Property: " + lPropName + " Object: " + aPojo;
             throw new MapperException(lMsg);
         }
         catch(InvocationTargetException e)
         {
-            final String lMsg = "Illegal access while trying to fetch a bean property (2).Property:"+lPropName+" Object: "+aPojo;
+            final String lMsg = "Illegal access while trying to fetch a bean property (2).Property: " + lPropName + " Object: " + aPojo;
             throw new MapperException(lMsg);
         }
     }

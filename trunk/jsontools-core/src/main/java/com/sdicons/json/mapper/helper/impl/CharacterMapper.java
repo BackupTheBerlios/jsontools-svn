@@ -38,6 +38,6 @@ extends AbstractMapper
         if (!aValue.isString()) throw new MapperException("CharacterMapper cannot map class: " + aValue.getClass().getName());
         final String lRepr = ((JSONString) aValue).getValue();
         if(lRepr.length() != 1) throw new MapperException("CharacterMapper cannot map value: " + lRepr);
-        return new Character(lRepr.charAt(0));
+        return lRepr.charAt(0);
     }
 }

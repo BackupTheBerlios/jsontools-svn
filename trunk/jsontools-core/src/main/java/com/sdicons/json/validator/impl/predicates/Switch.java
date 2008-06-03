@@ -68,7 +68,7 @@ extends Predicate
         super(aName, aRule);
 
         ValidatorUtil.requiresAttribute(aRule, ValidatorUtil.PARAM_CASE, JSONArray.class);
-        List<JSONValue> lCases = (List<JSONValue>) ((JSONArray) aRule.get(ValidatorUtil.PARAM_CASE)).getValue();
+        List<JSONValue> lCases = ((JSONArray) aRule.get(ValidatorUtil.PARAM_CASE)).getValue();
         for (JSONValue lCase : lCases)
         {
             if(!lCase.isObject()) fail("A case in a swicht should be an object type.", lCase);

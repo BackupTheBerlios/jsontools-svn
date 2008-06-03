@@ -27,7 +27,6 @@ import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
-import com.sdicons.json.serializer.helper.impl.ArrayHelper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

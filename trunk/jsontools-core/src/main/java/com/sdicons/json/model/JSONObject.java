@@ -76,7 +76,7 @@ extends JSONComplex
             while(lKeyIter.hasNext())
             {
                 final String lKey = lKeyIter.next();
-                final JSONValue jsonValue = (com.sdicons.json.model.JSONValue) map.get(lKey);
+                final JSONValue jsonValue = map.get(lKey);
 
                 lBuf.append(lIndent).append(ParserUtil.render(lKey, false, ""));
                 if(jsonValue.isSimple())
@@ -100,7 +100,7 @@ extends JSONComplex
             while(lKeyIter.hasNext())
             {
                 final String lKey = lKeyIter.next();
-                final JSONValue jsonValue = (com.sdicons.json.model.JSONValue) map.get(lKey);
+                final JSONValue jsonValue = map.get(lKey);
 
                 lBuf.append(ParserUtil.render(lKey, false, "")).append(":").append(jsonValue.render(false));
                 if(lKeyIter.hasNext()) lBuf.append(",");
@@ -116,10 +116,7 @@ extends JSONComplex
         if (o == null || getClass() != o.getClass()) return false;
 
         final JSONObject that = (JSONObject) o;
-
-        if (!map.equals(that.map)) return false;
-
-        return true;
+        return map.equals(that.map);
     }
 
     public int hashCode()

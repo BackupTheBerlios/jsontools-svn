@@ -23,7 +23,6 @@ package com.sdicons.json.validator.impl.predicates;
 
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.validator.Validator;
-import com.sdicons.json.validator.impl.predicates.Predicate;
 
 import java.util.HashMap;
 

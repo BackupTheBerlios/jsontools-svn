@@ -55,10 +55,9 @@ public class HelperRepository<T extends Helper>
             else if(helper.getHelpedClass().isAssignableFrom(aNode.getHelper().getHelpedClass()))
             {
                 boolean insertedToSomeChild = false;
-                for (Object aChildren : children)
+                for (HelperTreeNode<T> lChildren : children)
                 {
-                    HelperTreeNode<T> lChild = (HelperTreeNode<T>) aChildren;
-                    boolean lSuccess = lChild.insertNode(aNode);
+                    boolean lSuccess = lChildren.insertNode(aNode);
                     if (lSuccess)
                     {
                         insertedToSomeChild = true;
@@ -70,10 +69,10 @@ public class HelperRepository<T extends Helper>
                 if(!insertedToSomeChild)
                 {
                     // Rebalance tree.
-                    final Iterator lIter2 = children.iterator();
+                    final Iterator<HelperTreeNode<T>> lIter2 = children.iterator();
                     while(lIter2.hasNext())
                     {
-                        final HelperTreeNode<T> lChild = (HelperTreeNode<T>) lIter2.next();
+                        final HelperTreeNode<T> lChild = lIter2.next();
                         if(aNode.getHelper().getHelpedClass().isAssignableFrom(lChild.getHelper().getHelpedClass()))
                         {
                             lIter2.remove();
@@ -92,7 +91,7 @@ public class HelperRepository<T extends Helper>
 
         /** Core finder algorithm
          *
-         * @param aClass
+         * @param aClass The class for which we want to find a helper.
          * @return A Helper or null if no applicable helper could be found. We first try to
          * find an exact match, and if it cannot be done, we try to find a mapper for the closest parent class.
          */
@@ -122,7 +121,7 @@ public class HelperRepository<T extends Helper>
         }
     }
 
-    private class RootHelper
+    private static class RootHelper
     implements Helper
     {
         public Class getHelpedClass()
@@ -138,7 +137,7 @@ public class HelperRepository<T extends Helper>
 
     /**
      * Add a helper to the repository.
-     * @param aHelper
+     * @param aHelper   The helper to add.
      */
     public void addHelper(T aHelper)
     {

@@ -115,9 +115,9 @@ extends AbstractMapper
 	        int dayOfYear = (timeMatcher.group(8)==null)?-1:Integer.parseInt(timeMatcher.group(8));
 	        int week = (timeMatcher.group(10)==null)?-1:Integer.parseInt(timeMatcher.group(10));	        
 	        int dayOfWeek =(timeMatcher.group(12)==null)?Calendar.MONDAY:Integer.parseInt(timeMatcher.group(12))+1;
-	        if(dayOfWeek==8) {dayOfWeek=1;week=week+1;};
+	        if(dayOfWeek==8) {dayOfWeek=1;week=week+1;}
 
-	        calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.YEAR, year);
 	        if(week!=-1){
 	        	calendar.set(Calendar.WEEK_OF_YEAR,week);	        	
 	        	calendar.set(Calendar.DAY_OF_WEEK,dayOfWeek);

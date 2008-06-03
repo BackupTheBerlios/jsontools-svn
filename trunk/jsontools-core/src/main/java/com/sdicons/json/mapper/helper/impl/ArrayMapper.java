@@ -167,8 +167,9 @@ implements SimpleMapperHelper
             		lElements.add(JSONMapper.toJava(jsonValue,Class.forName(lArrClassName)));	
             	}
             	
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
+			}
+            catch (ClassNotFoundException e)
+            {
 				throw new MapperException("No Class Found: " + lArrClassName);
 			}
         }

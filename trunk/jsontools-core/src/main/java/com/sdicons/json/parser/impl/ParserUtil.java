@@ -23,7 +23,7 @@ package com.sdicons.json.parser.impl;
 
 public class ParserUtil
 {
-    public static final String hexToChar(String i, String j, String k, String l)
+    public static String hexToChar(String i, String j, String k, String l)
     {
          return Character.toString((char)Integer.parseInt("" + i + j + k + l, 16));
     }

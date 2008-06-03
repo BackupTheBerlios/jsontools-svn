@@ -141,8 +141,7 @@ implements SimpleMapperHelper
             PropertyDescriptor[] lPropDesc = Introspector.getBeanInfo(lClass, Introspector.USE_ALL_BEANINFO).getPropertyDescriptors();
             for (PropertyDescriptor aLPropDesc : lPropDesc)
             {
-                Method lReader = aLPropDesc.getReadMethod();
-                Method lWriter = aLPropDesc.getWriteMethod();
+                final Method lReader = aLPropDesc.getReadMethod();
                 lPropName = aLPropDesc.getName();                
                 // Only serialize if the property is READABLE
                 // ignore the properties created by a proxy from Hibernate
@@ -155,10 +154,6 @@ implements SimpleMapperHelper
                 if(lReader!=null&&lPropName.equals("class")){
                 	continue;
                 }
-                
-/*                if(lReader != null&&(lWriter == null)){
-                	System.out.println("Property without a set method :"+lPropName+" Object: "+aPojo+" Property Type:"+lReader.getReturnType());
-                }*/
                 
                 if (lReader != null)
                 {

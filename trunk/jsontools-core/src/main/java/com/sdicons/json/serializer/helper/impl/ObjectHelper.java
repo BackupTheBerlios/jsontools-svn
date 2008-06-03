@@ -53,7 +53,7 @@ implements MarshallHelper
                 // Only serialize if the property is READ-WRITE.
                 if (lReader != null && lWriter != null)
                 {
-                    lElements.getValue().put(lPropName, aMarshall.marshallImpl(lReader.invoke(aObj, new Object[]{}), aPool));
+                    lElements.getValue().put(lPropName, aMarshall.marshallImpl(lReader.invoke(aObj), aPool));
                 }
             }
         }
@@ -97,35 +97,33 @@ implements MarshallHelper
             if (lId != null) aPool.put(lId, lBean);
 
             JSONObject lProperties = (JSONObject) aObjectElement.get(JSONMarshall.RNDR_ATTR_VALUE);
-            Iterator<String> lElIter = lProperties.getValue().keySet().iterator();
 
-            while (lElIter.hasNext())
+            for(String lPropname : lProperties.getValue().keySet())
             {
                 // Fetch subelement information.
-                String lPropname = lElIter.next();
                 JSONObject lSubEl = (JSONObject) lProperties.get(lPropname);
                 Object lProp = aMarshall.unmarshallImpl(lSubEl, aPool);
 
                 // Put the property in the bean.
                 boolean lFoundWriter = false;
                 PropertyDescriptor[] lPropDesc = Introspector.getBeanInfo(lBeanClass, Introspector.USE_ALL_BEANINFO).getPropertyDescriptors();
-                for (int i = 0; i < lPropDesc.length; i++)
+                for(PropertyDescriptor aLPropDesc : lPropDesc)
                 {
-                    if (lPropDesc[i].getName().equals(lPropname))
+                    if(aLPropDesc.getName().equals(lPropname))
                     {
                         lFoundWriter = true;
-                        Method lWriter = lPropDesc[i].getWriteMethod();
-                        if (lWriter == null)
+                        Method lWriter = aLPropDesc.getWriteMethod();
+                        if(lWriter == null)
                         {
                             final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + lBeanClassName;
                             throw new MarshallException(lMsg);
                         }
-                        lWriter.invoke(lBean, new Object[]{lProp});
+                        lWriter.invoke(lBean, lProp);
                         break;
                     }
                 }
 
-                if (!lFoundWriter)
+                if(!lFoundWriter)
                 {
                     final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + lBeanClassName;
                     throw new MarshallException(lMsg);

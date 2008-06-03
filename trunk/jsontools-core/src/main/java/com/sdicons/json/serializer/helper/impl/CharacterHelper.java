@@ -37,7 +37,7 @@ extends AbstractHelper
         JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_VALUE);
         final String lValue = ((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_VALUE)).getValue();
         if(lValue.length() < 1) throw new MarshallException("Length of value too short: " + lValue);
-        return new Character(lValue.charAt(0));
+        return lValue.charAt(0);
     }
 
     public Class getHelpedClass()

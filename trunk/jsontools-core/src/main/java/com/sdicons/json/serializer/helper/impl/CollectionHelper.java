@@ -31,7 +31,6 @@ import com.sdicons.json.serializer.marshall.MarshallException;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class CollectionHelper
 implements MarshallHelper
@@ -51,10 +50,8 @@ implements MarshallHelper
         // We iterate through the elements of the collection, render these as
         // JSON values and put these values in the array created above.
         final Collection lCollection = (Collection) aObj;
-        final Iterator lIter = lCollection.iterator();
-        while(lIter.hasNext())
+        for(Object lColEl : lCollection)
         {
-            Object lColEl = lIter.next();
             lArray.getValue().add(aMarshall.marshallImpl(lColEl, aPool));
         }
     }
@@ -70,7 +67,7 @@ implements MarshallHelper
         try
         {
             Class lCollectionClass = Class.forName(lCollectionClassName);
-            Collection lCollection = null;
+            Collection lCollection;
 
             lCollection = (Collection) lCollectionClass.newInstance();
 //            if (lId != null) aPool.put(lId, lCollection);

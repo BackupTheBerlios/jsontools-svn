@@ -46,10 +46,10 @@ extends Predicate
 
         ruleset = aRuleset;
         ValidatorUtil.requiresAttribute(aRule, ValidatorUtil.PARAM_RULES, JSONArray.class);
-        List<JSONValue> lRules = (List<JSONValue>) ((JSONArray) aRule.get(ValidatorUtil.PARAM_RULES)).getValue();
+        List<JSONValue> lRules = ((JSONArray) aRule.get(ValidatorUtil.PARAM_RULES)).getValue();
         for (JSONValue lRule : lRules)
         {
-            JSONValue lVal = (JSONValue) lRule;
+            JSONValue lVal = lRule;
             ValidatorUtil.buildValidator(lVal, ruleset);
         }
 

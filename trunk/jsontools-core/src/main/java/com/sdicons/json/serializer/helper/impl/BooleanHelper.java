@@ -35,7 +35,7 @@ extends AbstractHelper
     throws MarshallException
     {
         JSONMarshall.requireStringAttribute(aObjectElement, JSONMarshall.RNDR_ATTR_VALUE);
-        return new Boolean(((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_VALUE)).getValue());
+        return Boolean.valueOf(((JSONString) aObjectElement.get(JSONMarshall.RNDR_ATTR_VALUE)).getValue());
     }
 
     public Class getHelpedClass()

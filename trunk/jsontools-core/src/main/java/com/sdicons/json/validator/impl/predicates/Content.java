@@ -58,10 +58,13 @@ extends Predicate
         else fail("The value is not a JSONComplex, it has no content.", aValue);
 
         // Finally we apply the internal rule to all elements.
-        while(lIter.hasNext())
+        if(lIter != null)
         {
-            JSONValue lVal = (JSONValue) lIter.next();
-            rule.validate(lVal);
+            while(lIter.hasNext())
+            {
+                JSONValue lVal = (JSONValue) lIter.next();
+                rule.validate(lVal);
+            }
         }
     }
 }

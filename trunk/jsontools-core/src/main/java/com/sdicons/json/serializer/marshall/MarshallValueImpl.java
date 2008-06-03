@@ -21,9 +21,6 @@ package com.sdicons.json.serializer.marshall;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.serializer.marshall.MarshallException;
-import com.sdicons.json.serializer.marshall.MarshallValue;
-
 public class MarshallValueImpl
 implements MarshallValue
 {

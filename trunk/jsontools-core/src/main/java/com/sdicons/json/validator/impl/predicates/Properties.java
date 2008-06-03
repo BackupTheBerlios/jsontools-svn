@@ -21,15 +21,14 @@ package com.sdicons.json.validator.impl.predicates;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import com.sdicons.json.validator.Validator;
-import com.sdicons.json.validator.ValidationException;
-import com.sdicons.json.validator.impl.ValidatorUtil;
 import com.sdicons.json.model.*;
+import com.sdicons.json.validator.ValidationException;
+import com.sdicons.json.validator.Validator;
+import com.sdicons.json.validator.impl.ValidatorUtil;
 
-import java.util.List;
-import java.util.LinkedList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Properties
 extends Predicate
@@ -87,7 +86,7 @@ extends Predicate
         super(aName, aRule);
         ValidatorUtil.requiresAttribute(aRule, ValidatorUtil.PARAM_PAIRS, JSONArray.class);
 
-        List<JSONValue> lPairs = (List<JSONValue>) ((JSONArray) aRule.get(ValidatorUtil.PARAM_PAIRS)).getValue();
+        List<JSONValue> lPairs = ((JSONArray) aRule.get(ValidatorUtil.PARAM_PAIRS)).getValue();
         for (JSONValue lPair : lPairs)
         {
             if(!lPair.isObject())
@@ -129,25 +128,21 @@ extends Predicate
         JSONObject lObj = (JSONObject) aValue;
 
         // First we check if required keys are there.
-        final Iterator<PropRule> lIter = required.iterator();
-        while (lIter.hasNext())
+        for(PropRule aRequired : required)
         {
-            PropRule lRule = (PropRule) lIter.next();
-            if(!lObj.containsKey(lRule.getKey())) fail("The object lacks a required key: \"" + lRule.getKey() + "\".", aValue);
+            if(!lObj.containsKey(aRequired.getKey())) fail("The object lacks a required key: \"" + aRequired.getKey() + "\".", aValue);
         }
 
         // Now we iterate over all keys in the object and lookup the spec.
-        final Iterator<String> lKeyIter = lObj.getValue().keySet().iterator();
-        while (lKeyIter.hasNext())
+        for(String lKey : lObj.getValue().keySet())
         {
-            String lKey = (String) lKeyIter.next();
             if(!all.containsKey(lKey)) fail("The object contains an unspecified key: \"" + lKey + "\".", aValue);
             PropRule lRule = all.get(lKey);
             try
             {
                 lRule.getRule().validate(lObj.get(lKey));
             }
-            catch (ValidationException e)
+            catch(ValidationException e)
             {
                 fail("The object property: \"" + lKey + "\" has invalid content. Internal message: " + e.getMessage(), aValue);
             }

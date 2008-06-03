@@ -51,10 +51,9 @@ implements MarshallHelper
         // JSON values and put these values in the array created above.
         final Map lMap = (Map) aObj;
         final Iterator lIter = lMap.keySet().iterator();
-        while(lIter.hasNext())
+        for(Object lKey : lMap.keySet())
         {
             // Get hold of each key-value pair.
-            final Object lKey = lIter.next();
             final Object lValue = lMap.get(lKey);
 
             // We create a JSON object to render the key-value pairs.
@@ -76,7 +75,7 @@ implements MarshallHelper
         try
         {
             Class lMapClass = Class.forName(lMapClassName);
-            Map lMap = null;
+            Map lMap;
 
             lMap = (Map) lMapClass.newInstance();
 

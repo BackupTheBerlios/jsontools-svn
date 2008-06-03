@@ -60,10 +60,7 @@ extends JSONNumber
         if (o == null || getClass() != o.getClass()) return false;
 
         final JSONInteger that = (JSONInteger) o;
-
-        if (!value.equals(that.value)) return false;
-
-        return true;
+        return value.equals(that.value);
     }
 
     public int hashCode()

@@ -60,10 +60,7 @@ extends JSONSimple
         if (o == null || getClass() != o.getClass()) return false;
 
         final JSONString that = (JSONString) o;
-
-        if (!value.equals(that.value)) return false;
-
-        return true;
+        return value.equals(that.value);
     }
 
     public int hashCode()

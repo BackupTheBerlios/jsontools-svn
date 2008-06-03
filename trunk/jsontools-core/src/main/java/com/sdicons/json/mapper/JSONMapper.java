@@ -199,4 +199,14 @@ public class JSONMapper
         }
         return lHelperSimple.toJSON(aPojo);
     }
+
+    public static void usePojoAccess()
+    {
+        repo.addHelper(new ObjectMapperDirect());
+    }
+
+    public static void useJavaBeanAccess()
+    {
+        repo.addHelper(new ObjectMapper());
+    }
 }

@@ -273,6 +273,25 @@ extends TestCase
 		}
     }
 
+    public static class MyDate
+    {
+        private Date theDate;
+        private String theTimeZone;
+
+        @JSONConstruct
+        public MyDate(long aTime, String aTimeZone)
+        {
+            theDate = new Date(aTime);
+            theTimeZone = aTimeZone;
+        }
+
+        @JSONMap
+        public Object[] getTime()
+        {
+            return new Object[]{theDate.getTime(), theTimeZone};
+        }
+    }
+
     public MapperTest(String lName)
     {
         super(lName);
@@ -405,8 +424,9 @@ extends TestCase
     	
     	}
     	catch (Exception e) {
-    	e.printStackTrace();
-    	}
+        e.printStackTrace();
+            Assert.fail();
+        }
 
     	System.out.println(javaObj);
     }
@@ -418,6 +438,7 @@ extends TestCase
         	lObj = JSONMapper.toJSON(strings);
         }catch (MapperException e) {
         	e.printStackTrace();
+            Assert.fail();
         }
         System.out.println(lObj.render(true)); 
         
@@ -429,6 +450,7 @@ extends TestCase
         }
        	catch (Exception e) {
         	e.printStackTrace();
+               Assert.fail();
         }
     }
     public static class TestBean4
@@ -450,116 +472,147 @@ extends TestCase
 		public void setMyString(String myString) {
 			this.myString = myString;
 		}
-        
     }
-    public void test4(){
-    	TestBean4[] bean4s={new TestBean4("abc"),new TestBean4("bcd"),new TestBean4("def")};
-    	
-    	JSONValue lObj = null;
-    	try {
-        	lObj = JSONMapper.toJSON(bean4s);
-        }catch (MapperException e) {
-        	e.printStackTrace();
+
+    public void test4()
+    {
+        try
+        {
+            TestBean4[] bean4s = {new TestBean4("abc"), new TestBean4("bcd"), new TestBean4("def")};
+            JSONValue lObj = null;
+            lObj = JSONMapper.toJSON(bean4s);
+            System.out.println(lObj.render(true));
+            Object javaObj = null;
+            javaObj = JSONMapper.toJava(lObj, bean4s.getClass());
+            TestBean4[] beans = (TestBean4[]) javaObj;
+            System.out.println(beans[0].getMyString() + beans[1].getMyString() + beans[2].getMyString());
         }
-        System.out.println(lObj.render(true)); 
-        
-        Object javaObj = null;
-        try {
-        	javaObj = JSONMapper.toJava(lObj, bean4s.getClass());
-        	TestBean4[] beans=(TestBean4[])javaObj;
-        	System.out.println(beans[0].getMyString()+beans[1].getMyString()+beans[2].getMyString());
-        }
-       	catch (Exception e) {
-        	e.printStackTrace();
+        catch(MapperException e)
+        {
+            e.printStackTrace();
+            Assert.fail();
         }
     }
-    public void test5(){
-    	String[][] strings={{"abc","bcd","def"},{"abc","bcd","def"}};
-    	System.out.println("String[] class:"+strings.getClass());
-    	JSONValue lObj = null;
-    	try {
-        	lObj = JSONMapper.toJSON(strings);
-        }catch (MapperException e) {
-        	e.printStackTrace();
+
+    public void test5()
+    {
+        try
+        {
+            String[][] strings = {{"abc", "bcd", "def"}, {"abc", "bcd", "def"}};
+            System.out.println("String[] class:" + strings.getClass());
+            JSONValue lObj = null;
+            lObj = JSONMapper.toJSON(strings);
+            System.out.println(lObj.render(true));
+            Object javaObj = null;
+            javaObj = JSONMapper.toJava(lObj, strings.getClass());
+            String[][] strings2 = (String[][]) javaObj;
+            System.out.println(strings2[0][0]+strings2[0][1]+strings2[0][2]);
         }
-        System.out.println(lObj.render(true)); 
-        
-        Object javaObj = null;
-        try {
-        	javaObj = JSONMapper.toJava(lObj, strings.getClass());
-        	String[][] strings2=(String[][])javaObj;
-        	System.out.println(strings2[0][0]+strings2[0][1]+strings2[0][2]);
-        }
-       	catch (Exception e) {
-        	e.printStackTrace();
+        catch(MapperException e)
+        {
+            e.printStackTrace();
+            Assert.fail();
         }
     }
-    public static class SetAndListBean{
+
+    public static class SetAndListBean
+    {
     	private Set<String> stringSet;
     	private List<String> stringList;
-		public List<String> getStringList() {
+		public List<String> getStringList()
+        {
 			return stringList;
 		}
-		public void setStringList(List<String> stringList) {
+		public void setStringList(List<String> stringList)
+        {
 			this.stringList = stringList;
 		}
-		public Set<String> getStringSet() {
+		public Set<String> getStringSet()
+        {
 			return stringSet;
 		}
-		public void setStringSet(Set<String> stringSet) {
+		public void setStringSet(Set<String> stringSet)
+        {
 			this.stringSet = stringSet;
 		}
-    	
     }
-    public void testSetAndList(){
-    	SetAndListBean setAndListBean=new SetAndListBean();
-    	Set<String> stringSet=new HashSet<String>();
-    	stringSet.add("abc");
-    	stringSet.add("bcd");
-    	List<String> stringList=new Vector<String>();
-    	stringList.add("abc");
-    	stringList.add("bcd");
-    	setAndListBean.setStringSet(stringSet);
-    	setAndListBean.setStringList(stringList);
-    	try{
-    		JSONValue jsonValue=JSONMapper.toJSON(setAndListBean);
-    		System.out.println(jsonValue.render(true));
-    		Object object=JSONMapper.toJava(jsonValue,setAndListBean.getClass());    		
-    		SetAndListBean setAndListBean2=(SetAndListBean)object;
-    		Iterator<String> iterator=setAndListBean2.getStringList().iterator();
-    		System.out.println(iterator.next());
-    		System.out.println(iterator.next());
-    		iterator=setAndListBean2.getStringSet().iterator();
-    		System.out.println(iterator.next());
-    		System.out.println(iterator.next());
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    }
-    public void testDateMapper(){
-    	
-    	try {    	
-    		//By Default,DateMapper will ignore the timezone.
-    		//it's convenient for me,and maybe others. 
-    		Date date1=new Date();
-    		JSONValue lObj = JSONMapper.toJSON(date1);        
-    		System.out.println(lObj.render(true));         
-    		Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
-        	Date date2=(Date)javaObj;
-        	Assert.assertEquals(date1, date2);      
-        	System.out.println(date2);
-        	
-        	DateMapper.setTimeZoneIgnored(false);
-    		date1=new Date();
-    		lObj = JSONMapper.toJSON(date1);        
-    		System.out.println(lObj.render(true));         
-    		javaObj = JSONMapper.toJava(lObj, date1.getClass());
-        	date2=(Date)javaObj;
-        	Assert.assertEquals(date1, date2);      
-        	System.out.println(date2);
-    	}catch (Exception e) {
-        	e.printStackTrace();
+
+    public void testSetAndList()
+    {
+        try
+        {
+            SetAndListBean setAndListBean = new SetAndListBean();
+            Set<String> stringSet = new HashSet<String>();
+            stringSet.add("abc");
+            stringSet.add("bcd");
+            List<String> stringList = new Vector<String>();
+            stringList.add("abc");
+            stringList.add("bcd");
+            setAndListBean.setStringSet(stringSet);
+            setAndListBean.setStringList(stringList);
+
+            JSONValue jsonValue = JSONMapper.toJSON(setAndListBean);
+            System.out.println(jsonValue.render(true));
+            Object object = JSONMapper.toJava(jsonValue, setAndListBean.getClass());
+            SetAndListBean setAndListBean2 = (SetAndListBean) object;
+            Iterator<String> iterator = setAndListBean2.getStringList().iterator();
+            System.out.println(iterator.next());
+            System.out.println(iterator.next());
+            iterator = setAndListBean2.getStringSet().iterator();
+            System.out.println(iterator.next());
+            System.out.println(iterator.next());
         }
-       	
-    }    
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    public void testDateMapper()
+    {
+        try
+        {
+            //By Default,DateMapper will ignore the timezone.
+            //it's convenient for me,and maybe others.
+            Date date1 = new Date();
+            JSONValue lObj = JSONMapper.toJSON(date1);
+            System.out.println(lObj.render(true));
+            Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
+            Date date2 = (Date) javaObj;
+            Assert.assertEquals(date1, date2);
+            System.out.println(date2);
+
+            DateMapper.setTimeZoneIgnored(false);
+            date1 = new Date();
+            lObj = JSONMapper.toJSON(date1);
+            System.out.println(lObj.render(true));
+            javaObj = JSONMapper.toJava(lObj, date1.getClass());
+            date2 = (Date) javaObj;
+            Assert.assertEquals(date1, date2);
+            System.out.println(date2);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    public void testAnnotatedMapper()
+    {
+        try
+        {
+            JSONMapper.usePojoAccess();
+            MyDate lMyDate = new MyDate(new Date().getTime(), "CEST");
+            JSONValue lObj = JSONMapper.toJSON(lMyDate);
+            System.out.println(lObj.render(true));
+            Object javaObj = JSONMapper.toJava(lObj, MyDate.class);
+        }
+        catch(MapperException e)
+        {
+            e.printStackTrace();
+            Assert.fail();
+        }      
+    }
 }

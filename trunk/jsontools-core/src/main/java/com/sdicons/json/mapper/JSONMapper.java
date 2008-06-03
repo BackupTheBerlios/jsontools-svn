@@ -53,6 +53,7 @@ public class JSONMapper
     static
     {
         repo.addHelper(new ObjectMapper());
+//        repo.addHelper(new ObjectMapperDirect());
         repo.addHelper(new StringMapper());
         repo.addHelper(new BooleanMapper());
         repo.addHelper(new ByteMapper());

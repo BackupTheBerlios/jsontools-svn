@@ -1,7 +1,7 @@
 package com.sdicons.json.serializer.helper.impl;
 /*
     JSONTools - Java JSON Tools
-    Copyright (C) 2006 S.D.I.-Consulting BVBA
+    Copyright (C) 2006-2008 S.D.I.-Consulting BVBA
     http://www.sdi-consulting.com
     mailto://nospam@sdi-consulting.com
 

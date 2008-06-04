@@ -2,7 +2,7 @@ package com.sdicons.json.serializer;
 
 /*
     JSONTools - Java JSON Tools
-    Copyright (C) 2006 S.D.I.-Consulting BVBA
+    Copyright (C) 2006-2008 S.D.I.-Consulting BVBA
     http://www.sdi-consulting.com
     mailto://nospam@sdi-consulting.com
 
@@ -21,16 +21,60 @@ package com.sdicons.json.serializer;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import junit.framework.TestCase;
-import junit.framework.Assert;
-import com.sdicons.json.serializer.marshall.Marshall;
-import com.sdicons.json.serializer.marshall.JSONMarshall;
-import com.sdicons.json.serializer.marshall.MarshallValue;
+import com.sdicons.json.helper.JSONConstruct;
+import com.sdicons.json.helper.JSONSerialize;
 import com.sdicons.json.model.JSONObject;
+import com.sdicons.json.serializer.marshall.JSONMarshall;
+import com.sdicons.json.serializer.marshall.Marshall;
+import com.sdicons.json.serializer.marshall.MarshallException;
+import com.sdicons.json.serializer.marshall.MarshallValue;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import java.util.Date;
 
 public class UsersJavaBeanTest
 extends TestCase
 {
+    public static class MyDate
+    {
+        private Date theDate;
+        private String theTimeZone;
+
+        @JSONConstruct
+        public MyDate(long aTime, String aTimeZone)
+        {
+            theDate = new Date(aTime);
+            theTimeZone = aTimeZone;
+        }
+
+        @JSONSerialize
+        public Object[] getTime()
+        {
+            return new Object[]{theDate.getTime(), theTimeZone};
+        }
+    }
+
+    public static class MyPojo
+    {
+        private String firstName;
+        private String lastName;
+
+        public void setNames(String aFirst, String aLast)
+        {
+            firstName = aFirst;
+            lastName = aLast;
+        }
+
+        public String toString()
+        {
+            return "MyPojo{" +
+                    "firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    '}';
+        }
+    }
+
     public static class Transportable
     {
         private String param1;
@@ -157,6 +201,46 @@ extends TestCase
         catch(Exception e)
         {
             e.printStackTrace(System.out);
+            Assert.fail();
+        }
+    }
+
+    public void testAnnotatedSerializer()
+    {
+        try
+        {
+            // Map fields, not properties.
+            ((JSONMarshall) marshall).usePojoAccess();
+            MyDate lMyDate = new MyDate(new Date().getTime(), "CEST");
+            JSONObject lObj = marshall.marshall(lMyDate);
+            System.out.println(lObj.render(true));
+
+            Object javaObj = marshall.unmarshall(lObj);
+        }
+        catch(MarshallException e)
+        {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    public void testDirectHelper()
+    {
+       try
+        {
+            // Map fields, not properties.
+            ((JSONMarshall) marshall).usePojoAccess();
+            MyPojo lPojo = new MyPojo();
+            lPojo.setNames("Homer", "Simpson");
+            JSONObject lObj = marshall.marshall(lPojo);
+            System.out.println(lObj.render(true));
+
+            Object javaObj =  marshall.unmarshall(lObj);
+            System.out.println(javaObj.toString());
+        }
+        catch(MarshallException e)
+        {
+            e.printStackTrace();
             Assert.fail();
         }
     }

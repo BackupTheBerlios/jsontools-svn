@@ -2,7 +2,7 @@ package com.sdicons.json.serializer.marshall;
 
 /*
     JSONTools - Java JSON Tools
-    Copyright (C) 2006 S.D.I.-Consulting BVBA
+    Copyright (C) 2006-2008 S.D.I.-Consulting BVBA
     http://www.sdi-consulting.com
     mailto://nospam@sdi-consulting.com
 
@@ -21,10 +21,10 @@ package com.sdicons.json.serializer.marshall;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+import com.sdicons.json.helper.HelperRepository;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.serializer.helper.MarshallHelper;
-import com.sdicons.json.helper.HelperRepository;
 import com.sdicons.json.serializer.helper.impl.*;
 
 import java.util.HashMap;
@@ -65,6 +65,7 @@ implements Marshall
 
     {
         repo.addHelper(new ObjectHelper());
+//        repo.addHelper(new ObjectHelperDirect());
         repo.addHelper(new StringHelper());
         repo.addHelper(new BooleanHelper());
         repo.addHelper(new ByteHelper());
@@ -394,5 +395,37 @@ implements Marshall
             final String lMsg = ERR_MISSINGSTRING + anAttribute + " for object at location " + aElement.getLine() + ":" + aElement.getCol() + ".";
             throw new MarshallException(lMsg);
         }
+    }
+
+    /**
+     * Add custom helper class.
+     *
+     * @param aHelper the custom helper you want to add to the serializer.
+     */
+    public void addHelper(MarshallHelper aHelper)
+    {
+        repo.addHelper(aHelper);
+    }
+
+    /**
+     * The objects that fall back on the general object helper will be serialized by
+     * using their fields directly. Without further annotations, the default
+     * constructor without arguments will be used in the POJO. If this is not sufficient,
+     * the @JSONConstruct and @JSONSerialize annotations can be used as well in the  POJO to
+     * indicate which constructor has to be used.
+     */
+    public void usePojoAccess()
+    {
+        addHelper(new ObjectHelperDirect());
+    }
+
+    /**
+     * The objects that fall back on the general object helper will be serialized by
+     * using their JavaBean properties. The  JavaBean always needs a
+     * default constructor without arguments.
+     */
+    public void useJavaBeanAccess()
+    {
+        addHelper(new ObjectHelper());
     }
 }

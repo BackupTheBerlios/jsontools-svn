@@ -200,13 +200,35 @@ public class JSONMapper
         return lHelperSimple.toJSON(aPojo);
     }
 
-    public static void usePojoAccess()
+    /**
+     * Add custom helper class.
+     *
+     * @param aHelper the custom helper you want to add to the mapper.
+     */
+    public static void addHelper(SimpleMapperHelper aHelper)
     {
-        repo.addHelper(new ObjectMapperDirect());
+        repo.addHelper(aHelper);
     }
 
+    /**
+     * The objects that fall back on the general object mapper will be mapped by
+     * using their fields directly. Without further annotations, the default
+     * constructor without arguments will be used in the POJO. If this is not sufficient,
+     * the @JSONConstruct and @JSONMap annotations can be used as well in the mapped POJO to
+     * indicate which constructor has to be used.
+     */
+    public static void usePojoAccess()
+    {
+        addHelper(new ObjectMapperDirect());
+    }
+
+    /**
+     * The objects that fall back on the general object mapper will be mapped by
+     * using their JavaBean properties. The mapped JavaBean always needs a
+     * default constructor without arguments.
+     */
     public static void useJavaBeanAccess()
     {
-        repo.addHelper(new ObjectMapper());
+        addHelper(new ObjectMapper());
     }
 }

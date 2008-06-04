@@ -294,6 +294,26 @@ extends TestCase
         }
     }
 
+    public static class MyPojo
+    {
+        private String firstName;
+        private String lastName;
+
+        public void setNames(String aFirst, String aLast)
+        {
+            firstName = aFirst;
+            lastName = aLast;
+        }
+
+        public String toString()
+        {
+            return "MyPojo{" +
+                    "firstName='" + firstName + '\'' +
+                    ", lastName='" + lastName + '\'' +
+                    '}';
+        }
+    }
+
     public MapperTest(String lName)
     {
         super(lName);
@@ -605,6 +625,7 @@ extends TestCase
     {
         try
         {
+            // Map fields, not properties.
             JSONMapper.usePojoAccess();
             MyDate lMyDate = new MyDate(new Date().getTime(), "CEST");
             JSONValue lObj = JSONMapper.toJSON(lMyDate);
@@ -616,5 +637,25 @@ extends TestCase
             e.printStackTrace();
             Assert.fail();
         }      
+    }
+
+    public void testDirectMapper()
+    {
+       try
+        {
+            // Map fields, not properties.
+            JSONMapper.usePojoAccess();
+            MyPojo lPojo = new MyPojo();
+            lPojo.setNames("Homer", "Simpson");          
+            JSONValue lObj = JSONMapper.toJSON(lPojo);
+            System.out.println(lObj.render(true));
+            Object javaObj = JSONMapper.toJava(lObj, MyPojo.class);
+            System.out.println(javaObj.toString());
+        }
+        catch(MapperException e)
+        {
+            e.printStackTrace();
+            Assert.fail();
+        }
     }
 }

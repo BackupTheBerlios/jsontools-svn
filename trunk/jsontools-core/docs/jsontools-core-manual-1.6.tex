@@ -1,0 +1,483 @@
+\documentclass[a4paper]{article}
+
+%%
+%% Packages in use.
+%%
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage{avant}
+\usepackage{color}
+% The following is needed in order to make the code compatible
+% with both latex/dvips and pdflatex.
+\ifx\pdftexversion\undefined
+\usepackage[dvips]{graphicx}
+\else
+\usepackage[pdftex]{graphicx}
+\DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+
+%%
+%% Configuration of the document properties.
+%%
+\definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{codebackground}{rgb}{0.9,0.9,0.9}
+\lstset{
+    numbers=left, 
+    numberstyle=\tiny, 
+    escapeinside={//*}{\^^M}, 
+    frame=none, 
+    fontadjust=true, 
+    backgroundcolor=\color{codebackground},
+    basicstyle=\ttfamily\small{}, 
+    keywordstyle=\color{OliveGreen}\bfseries,
+    identifierstyle=\color{CadetBlue}, 
+    commentstyle=\color{Brown}\itshape,
+    stringstyle=\ttfamily,
+    showstringspaces=true,
+     language=java}
+\usepackage{fullpage}
+\addtolength{\oddsidemargin}{0.3cm}
+\addtolength{\evensidemargin}{0.3cm}
+% No indentation at start of a paragraph.
+\setlength{\parindent}{0in}
+\renewcommand*\familydefault{\sfdefault}     
+
+\newcommand{\ruledef}[3]{
+\medskip
+\textbf{#1}
+
+\begin{itemize}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+   \item Parameters: #2
+   \item Description: #3
+\end{itemize}
+}
+
+%% 
+%% Title information
+%%
+\title{JSON Tools Core}
+\author{Bruno Ranschaert}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+%%
+%% SECTION - INTRO
+%%
+\section{Introduction}
+\subsection{Introduction}
+
+JSON (JavaScript Object Notation) is a file format to represent data. It is similar to XML but has different characteristics. It is suited to represent configuration information, implement communication protocols and so on.  XML is more suited to represent annotated documents. 
+JSON parsing is very fast, the parser can be kept lean and mean. It is easy for humans to read and write.  
+It is based on a subset of the JavaScript Programming Language\footnote{Standard ECMA-262 3rd Edition - December 1999}.  JSON is a text format that is completely language independent but uses conventions that are familiar to programmers of the C-family of languages\footnote{Including C, C++, "C\#", Java, JavaScript, Perl, Python, and many others.}.  These properties make JSON an ideal data-interchange language. 
+The format is specified on the JSON web site\footnote{The JSON web site: \url{http://www.json.org/}}, for the details please visit this site.
+
+JSON is a very simple format. As a result, the parsing and rendering is fast and easy, you can concentrate on  the content of the file in stead of the format.  
+In XML it is often difficult to fully understand all features (e.g. name spaces, validation, ...).  
+As a result, XML tends to become part of the problem i.s.o. the solution. 
+In JSON everything is well defined, all aspects of the representation are clear, you can concentrate on how you are going to represent your application concepts. The following example comes from the JSON example page  \footnote{JSON Example page: \url{http://www.json.org/example.html}}.
+
+\medskip
+\begin{lstlisting}
+{
+   "widget" :
+      {
+         "debug" : "on",
+         "text" :
+            {
+               "onMouseUp" : "sun1.opacity = (sun1.opacity / 100) * 90;",
+               "hOffset" : 250,
+               "data" : "Click Here",
+               "alignment" : "center",
+               "style" : "bold",
+               "size" : 36,
+               "name" : "text1",
+               "vOffset" : 100
+            },
+         "image" :
+            {
+               "hOffset" : 250,
+               "alignment" : "center",
+               "src" : "Images/Sun.png",
+               "name" : "sun1",
+               "vOffset" : 250
+            },
+         "window" :
+            {
+               "width" : 500,
+               "height" : 500,
+               "title" : "Sample Konfabulator Widget",
+               "name" : "main_window"
+            }
+      }
+}
+\end{lstlisting}
+\medskip
+
+This project wants to provide the tools to manipulate and use the format in a Java application. 
+
+\subsection{Dependencies}
+
+The parser uses ANTLR  2.7.7\footnote{ANTLR: \url{http://www.antlr.org/}} , so the ANTLR runtime is needed for this.  It might work with other versions, I simply did not test it. The project is based on the maven2 build system. 
+
+The @Tools libraries are written using the new language features from JDK 1.5 \footnote{Sun Java 5: \url{http://java.sun.com/j2se/1.5}}.  Enumerations and generics are used because these make the code nicer to read.  There are no dependencies to the new libraries. On the other hand, there is no guarantee we will keep it this way in future releases. If you want to use the libraries for an earlier version of the JDK, the retrotranslator tool\footnote{Retrotranslator: \url{http://retrotranslator.sourceforge.net}} might be an option.
+
+\subsection{License}
+
+The library is released under the LGPL\footnote{Gnu GPL: \url{http://www.gnu.org/licenses/lgpl.html}}. You are free to use it for commercial or non-commercial applications as long as you leave the copyright intact and add a reference to the project. You can find a copy of the license header in appendix @NumberOf { license }. 
+Let me know what you like and what you don't like about the library so that I can improve it.
+
+\subsection{About S.D.I-Consulting}
+
+Visit the web site \url{http://www.sdi-consulting.com} for more information.
+Visit the @Tools project summary\footnote{@Tools summary: \url{http://jsontools.sdicons.com}} page, the project itself is hosted on the Berlios service\footnote{@Tools  project page: \url{http://jsontools.berlios.de}}.
+
+\subsection{JSON Extensions}
+
+Comments. I added line comments which start with "\#". It is easier for the examples to be able to put comments in the file. The comments are not retained, they are skipped and ignored.
+
+%%
+%% SECTION - CORE TOOLS
+%%
+\section{The Core Tools}
+\subsection{Parsing - Reading JSON}
+
+The most important tool in the tool set is the parser, it enables you to convert a JSON file or stream into a Java model. All JSON objects remember the position in the file (line, column), so if you are doing post processing of the data you can always refer to the position in the original file. 
+Invoking the parser is very simple as you can see in this example:
+
+\medskip
+\begin{lstlisting}
+JSONParser lParser = new JSONParser(JSONTest.class.getResourceAsStream("/config.json"));
+JSONValue lValue = lParser.nextValue();
+\end{lstlisting}
+\medskip
+
+DP The JSON model is a hierarchy of types, the hierarchy looks like this:
+
+\medskip
+\begin{lstlisting}
+JSONValue
+   JSONComplex
+      JSONObject
+      JSONArray
+   JSONSimple
+      JSONNull
+      JSONBoolean
+      JSONString
+      JSONNumber
+         JSONInteger
+         JSonDecimal
+\end{lstlisting}
+\medskip
+
+\subsection{Mapping}
+
+Both mapping tool (this section) and serialisation tool (section @NumberOf serialisation on page @PageOf { serialisation }) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the mapper are:
+
+\begin{itemize}
+	\item The JSON text should be clean and straightforward. So no meta information can be stored.
+	\item The data contained in the JSON text should not be dependent on the Java programming language. You do not need to know that the data was produced in Java or that it will be parsed in Java.
+	\item Not all Java data structures have to be mapped: recursive structures, differentiation between primitives and reference types are less important. If a trade-off has to be made, it will be in favor of the JSON format.
+\end{itemize}
+
+The JSON from the mapper can be easily interpreted in another lanugage. An example could be JavaScript in the context of an AJAX @FootNote {AJAX = Asynchronous JavaScript and XML, see \url{http://en.wikipedia.org/wiki/AJAX} for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map Java data to JSON. It can be done like this:
+
+\medskip
+\begin{lstlisting}
+import com.sdicons.json.mapper.*;
+...
+JSONValue lObj = JSONMapper.toJSON(myPojo);
+\end{lstlisting}
+\medskip
+
+Converting back to Java is done like this:
+
+\medskip
+\begin{lstlisting}
+import com.sdicons.json.mapper.*;
+...
+MyBean bean = (MyBean) JSONMapper.toJava(lObj, MyBean.class);
+\end{lstlisting}
+\medskip
+
+Note that the mapper needs some help to convert JSON into Java. As we stated in the goals of the mapper, we cannot store meta information in the JSON text. As a result the mapper cannot know how the JSON text should be mapped. Therefore we pass a class to the mapper (line 3) so that the mapper can exploit this information. In fact, there are two kinds of information the mapper can work with (1) classes as in the example and (2) types e.g. List<Integer>. The rationale for this might be illustrated by the following example. Consider a JSON text 
+
+\medskip
+\begin{lstlisting}
+["01/12/2006", "03/12/2007", ... ]
+\end{lstlisting}
+\medskip
+
+This list could be interpreted as a list of Strings, but also as a list of Dates. The mapper has no idea what to do with it. When we pass the type LinkedList<Date> or the type LinkedList<String>, the mapper can exploit this type information and do the right thing. Also note that the mapper automatically exploits this information when the outer layer is a bean, and the list is one of the beans properties.
+
+\subsection{Serialisation}
+
+Both mapping tool (section @NumberOf mapping on page @PageOf { mapping })  and serialisation tool (this section) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the serialiser are:
+
+\begin{itemize}
+	\item The serialisation tool could be an alternative for native serialisation\footnote{Java serialisation: \url{http://java.sun.com/j2se/1.5.0/docs/guide/serialization/}} (regarding functionality). This does not mean that all kinds of classes are supported out of the box, but it means that the general mechanism should be there and there should be an easy way to extend the mechanism so that we can deal with all classes.
+	\item The serialisation tool should preserve the difference between reference types and primitive types.
+	\item Recursive types should be supported without putting the (de)serialiser into an infinite loop.
+	\item Instance identity should be preserved. If the same instance is referenced from other instances, the same structure should be reconstructed during de-serialisation. There should only be one instance representing the original referenced instance.
+	\item The content of the JSON text can contain meta information which can help de-serialisation. We are allowed to add extra information in the JSON text in order to accomplish the other goals.
+\end{itemize}
+
+This tool enables you to render POJO's \footnote{POJO = Plain Old Java Object. See \url{http://en.wikipedia.org/wiki/Plain_Old_Java_Object} for more information.}  to a JSON file. It is similar to the XML serialisation in Java or the XML Stream library, but it uses the JSON format. The result is a very fast text serialisation, you can customise it if you want.  The code is based on the SISE project, it was adjusted to make use of and benefit from the JSON format. Marshalling (converting from Java to JSON) as well as un-marshalling is very straightforward:
+
+\medskip
+\begin{lstlisting}
+import com.sdicons.json.serializer.marshall.*;
+...
+myTestObject = ...
+Marshall marshall = new JSONMarshall();
+JSONObject result = marshall.marshall(myTestObject);
+\end{lstlisting}
+\medskip
+
+And the other way around:
+ 
+\medskip
+\begin{lstlisting}
+import com.sdicons.json.serializer.marshall.*;
+...
+JSONObject myJSONObject = ...
+MarshallValue lResult = marshall.unmarshall(myJSONObject);
+... = lResult.getReference()
+\end{lstlisting}
+\medskip
+
+You might wonder what the MarshallValue (on line 4) is all about, why is un-marshalling giving an extra object back? The answer is that we went to great lengths to provide marshalling or un-marshalling for both Java reference types as Java basic types. A basic type needs to be fetched using specific methods (there is no other way). In order to provide these specific methods we need an extra class.
+
+\subsubsection{Primitive Types}
+
+Primitive types are represented like this.
+
+\medskip
+\begin{lstlisting}
+{
+   ">" : "P",
+   "=" : "1",
+   "t" : "int"
+}
+\end{lstlisting}
+\medskip
+
+The  @Quote >  attribute with value @Quote P  indicates a primitive type. The @Quote  =  attribute contains the representation of the value and the @Quote t attribute contains the original java type.
+
+\subsubsection{Reference Types}
+
+An array is defined recursively like this. We can see the @Quote > attribute this time with the @Quote A  value, indicating that the object represents an array. The @Quote C attribute contains the type representation for arrays as it is defined in java. The @Quote =  attribute contains a list of the values.
+
+\medskip
+\begin{lstlisting}
+{
+   ">" : "A",
+   "c" : "I",
+   "=" :
+      [
+         {
+            ">" : "P",
+            "=" : "0",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "1",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "2",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "3",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "4",
+            "t" : "int"
+         },
+         {
+            ">" : "P",
+            "=" : "5",
+            "t" : "int"
+         }
+      ]
+}
+\end{lstlisting}
+\medskip
+
+An object is represented like this.
+
+\medskip
+\begin{lstlisting}
+{
+   ">" : "O",
+   "c" : "com.sdicons.json.serializer.MyBean",
+   "&" : "id0",
+   "=" :
+      {
+         "int2" :
+            {
+               ">" : "null"
+            },
+         "ptr" :
+            {
+               ">" : "R",
+               "*" : "id0"
+            },
+         "name" :
+            {
+               ">" : "O",
+               "c" : "java.lang.String",
+               "&" : "id2",
+               "=" : "This is a test..."
+            },
+         "int1" :
+            {
+               ">" : "null"
+            },
+         "id" :
+            {
+               ">" : "O",
+               "c" : "java.lang.Integer",
+               "&" : "id1",
+               "=" : "1003"
+            }
+      }
+}
+\end{lstlisting}
+\medskip
+
+The @Quote > marker contains @Quote O for object this time. The @Quote C attribute contains a fully qualified class name. The @Quote \& contains a unique id, it can be used to refer to the object so that we are able to represent recursive data structures. The @Quote =  attribute contains a JSON object having a property for each Java Bean property.  The property value is recursively a representation of a Java object. Note that there is a special notation to represent java null values.
+
+\medskip
+\begin{lstlisting}
+{
+   ">" : "null"
+}
+\end{lstlisting}
+\medskip
+
+Also note that you can refer to other objects with the reference object which looks like this:
+
+\medskip
+\begin{lstlisting}
+{
+   ">" : "R",
+   "*" : "id0"
+}
+\end{lstlisting}
+\medskip
+ 
+
+\subsection{Validation}
+
+This tool enables you to validate your JSON files. You can specify which content you expect, the validator can check these constraints for you. The system is straightforward to use and extend. You can add your own rules if you have specific needs. The validation definition is in JSON - as you would expect. Built-in rules:
+
+\medskip
+\begin{lstlisting}
+{
+   "name" : "Some rule name",
+   "type" : "<built-in-type>"
+}
+\end{lstlisting}
+\medskip
+
+A validation document consists of a validation rule. This rule will be applied to the JSONValue that has to be validated. The validation rules can be nested, so it is possible to create complex rules out of simpler ones. The “type” attribute is obligatory.  The  “name” is optional, it will be used during error reporting and for re-use.  The predefined rules are listed below. The name can come in handy while debugging. The name of the failing validation will be available in the exception. If you give each rule its own name or number, you can quickly find out on which predicate the validation fails. Here is an example of how you can create a validator.
+
+\medskip
+\begin{lstlisting}
+// First we create a parser to read the validator specification which is 
+// defined using the (what did you think) JSON format.
+// The validator definition is located in the "my-validator.json" resource in the
+// class path.
+JSONParser lParser = 
+   new JSONParser(
+      MyClass.class.getResourceAsStream("my-validator.json"));
+
+// We parse the validator spec and convert it into a Java representation.
+JSONObject lValidatorObject = (JSONObject) lParser.nextValue();
+
+// Finally we can convert our validator using the Java model.
+Validator lValidator = new JSONValidator(lValidatorObject);
+
+And now that you have the validator, you can start validating your data.
+
+// First we create a parser to read the data. 
+JSONParser lParser = new JSONParser(MyClass.class.getResourceAsStream("data.json"));
+
+// We parse the datafile and convert it into a Java representation.
+JSONValue lMyData = lParser.nextValue();
+
+// Now we can use the validtor to check on our data. We can test if the data has the 
+// correct format or not. 
+lValidator.validate(lMyData);
+\end{lstlisting}
+\medskip
+
+\subsubsection{Basic Rules}
+
+These rules are the basic rules in boolean logic. 
+
+% RULE TRUE
+\ruledef{"type"  : "true"}{-}{This rule always succeeds.}
+
+A validator that will succeed on all JSON data structures.	
+\begin{lstlisting}
+{
+   "name" :"This validator validates *everything*",
+   "type" :"true"
+}
+\end{lstlisting}
+
+% RULE FALSE
+\ruledef{"type" : "false"}{-}{This rule always fails.}
+
+A validator that rejects all data structures.
+\begin{lstlisting}
+{
+   "name" :"This validator rejects all",
+   "type" :"false"
+}
+\end{lstlisting}
+
+% RULE AND
+\ruledef{"type":"and" }{@Quote rules : Array of nested rules.}{All nested rules have to hold for the and rule to succeed.}
+
+A validator that succeeds if the object under scrutiny is both a list and has content consisting of integers.
+\begin{lstlisting}
+{
+   "name" :"List of integers",
+   "type" :"and",
+   "rules" : [{"type":"array"},{"type":"content","rule":{"type":"int"}}]
+}
+\end{lstlisting}
+
+% RULE OR
+\ruledef{"type" : "or" }{@Quote rules : Array of nested rules.}{One of the nested rules has to succeed for this rule to succeed.}
+
+A validator that validates booleans or integers.
+\begin{lstlisting}
+{
+   "name" :"Null or int",
+   "type" :"or",
+   "rules" : [{"type":"int"},{"type":"bool"}]
+}
+\end{lstlisting}
+
+% RULE NOT
+\ruledef{"type" : "not" }{@Quote rule : A single nested rule.}{The rule succeeds if the nested rule fails and vice versa.}
+
+\end{document}

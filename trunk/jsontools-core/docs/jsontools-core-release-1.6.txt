@@ -8,7 +8,7 @@ Changes to the mapper:
 Changes to the serialzier (Marshall) same system as for the mapper was added:
   * Added ObjectHelperDirect, a helper to serialize POJO's. 
   * Added @JSONSerialize and @JSONConstruct.
-  * Added mehtod to the marshall that lets you add helpers.
+  * Added method to the marshall that lets you add helpers.
 
 Miscelaneous:
   * Update to newer version of ANTLR (no not the version 3 which is still in beta).

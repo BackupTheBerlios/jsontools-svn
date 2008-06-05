@@ -9,6 +9,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{avant}
 \usepackage{color}
+\usepackage{verbatim}
 % The following is needed in order to make the code compatible
 % with both latex/dvips and pdflatex.
 \ifx\pdftexversion\undefined
@@ -38,7 +39,7 @@
     commentstyle=\color{Brown}\itshape,
     stringstyle=\ttfamily,
     showstringspaces=true,
-     language=java}
+    language=java}
 \usepackage{fullpage}
 \addtolength{\oddsidemargin}{0.3cm}
 \addtolength{\evensidemargin}{0.3cm}
@@ -454,7 +455,7 @@ A validator that rejects all data structures.
 \end{lstlisting}
 
 % RULE AND
-\ruledef{"type":"and" }{@Quote rules : Array of nested rules.}{All nested rules have to hold for the and rule to succeed.}
+\ruledef{"type":"and" }{\begin{itemize} \item rules : Array of nested rules. \end{itemize}}{All nested rules have to hold for the and rule to succeed.}
 
 A validator that succeeds if the object under scrutiny is both a list and has content consisting of integers.
 \begin{lstlisting}
@@ -478,6 +479,423 @@ A validator that validates booleans or integers.
 \end{lstlisting}
 
 % RULE NOT
-\ruledef{"type" : "not" }{@Quote rule : A single nested rule.}{The rule succeeds if the nested rule fails and vice versa.}
+\ruledef{"type" : "not" }{\begin{itemize} \item rule : A single nested rule. \end{itemize}}{The rule succeeds if the nested rule fails and vice versa.}
 
+\subsubsection{Type Rules }
+
+These rules are predefined rules which allows you to specify type restrictions on the JSON data elements. The meaning of these predicates is obvious, they will not be discussed. See the examples for more information. Following type clauses can be used: 
+
+\begin{itemize}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+   \item  "type":"complex"
+   \item  "type":"array"
+   \item  "type":"object"
+   \item  "type":"simple"
+   \item  "type":"null"
+   \item  "type":"bool"
+   \item  "type":"string"
+   \item  "type":"number"
+   \item  "type":"int"
+   \item  "type":"decimal"
+\end{itemize}
+
+\subsubsection{ Attribute Rules }
+
+These rules check for attributes of certain types.
+
+% LENGTH RULE
+\ruledef{type : length}{
+\begin{itemize}
+   \item min : (optional) The minimal length of the array.
+   \item max : (optional) The maximal length of the array.
+\end{itemize}} {
+Applicable to complex objects and string objects. The rule will fail if the object under investigation has another type. For array objects the number of elements is counted, for objects the number of properties and for strings, the length of its value in Java (not the JSON representation; "$\backslash$n" in the file counts as a single character).}
+
+A validator that only wants arrays of length 5.
+\begin{lstlisting}
+{
+   "name"  :"Array of length 5",
+   "type"  :"and",
+   "rules" : [{"type":"array"}, {"type":"length","min":5,"max":5}]
+}
+\end{lstlisting}
+
+
+% RANGE RULE
+\ruledef{ type :  range }{\begin{itemize} \item min : (optional) The minimal value.\item max : (optional) The maximal value.\end{itemize}}{Applicable to JSONNumbers, i.e. JSONInteger and JSONDecimal.}
+
+Allow numbers between 50 and 100.
+\begin{lstlisting}
+{
+   "name" :"Range validator",
+   "type" :"range",
+   "min" : 50,
+   "max" : 100
+}
+\end{lstlisting}
+
+% ENUM RULE
+\ruledef{type : enum }{\begin{itemize} \item values : An array of JSON values. \end{itemize}}{The value has to occur in the provided list. The list can contain simple types as well as complex nested types.}
+
+An enum validator.
+\begin{lstlisting}
+{
+   "name" :"Enum validator",
+   "type" :"enum",
+   "values" : [13, 17, "JSON", 123.12, [1, 2, 3], {"key":"value"}]
+}
+\end{lstlisting}
+
+% REGEXP RULE
+\ruledef{type : regexp }{\begin{itemize} \item pattern : A regexp pattern.\end{itemize}}{For strings, requires a predefined format according to the regular expression.}
+
+A validator that validates strings containing a sequence of a's , b's and c's.
+
+\begin{lstlisting}
+{
+   "name" :"A-B-C validator",
+   "type" :"regexp",
+   "pattern" : "a*b*c*"
+}
+\end{lstlisting}
+
+% CONTENT RULE
+\ruledef{type :content}{\begin{itemize} \item rule : The rule that specifies how the content of a complex structure -  an array or the property values of an object -  should behave. \end{itemize}}{ Note that in contrast with the @Quote properties  rule (for objects), you can specify in a single rule what all property values of an object should look like.}
+
+
+See @Quote type : @Quote and 
+
+% PROPERTIES RULE
+\ruledef{ type : properties}{\begin{itemize} \item pairs: A list of "key/value" pair descriptions. Note that in contrast with the content rule above you can specify a rule per attribute.Each description contains three properties: \begin{itemize} \item key: the key string;\item optional: a boolean indicating whether this property is optional or not. \item rule: a validation rule that should be applied to the properties value. \end{itemize}  \end{itemize}}{This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
+
+It will validate objects looking like this:
+ 
+\begin{lstlisting}
+Example data structure that will be validated:
+{{"name":"Bruno Ranschaert", "country":"Belgium", "salary":100.0 }}
+
+The validator looks like this:
+{
+   "name" :"Contact spec.",
+   "type" :"properties",
+   "pairs" : [{"key":"name", "optional":false, "rule":{"type":"string"}},
+              {"key":"country", "optional":false, "rule":{"type":"string"}},
+              {"key":"salary", "optional":true, "rule":{"type":"decimal"}}
+             ]
+}
+\end{lstlisting}
+
+\subsubsection{Structural Rules }
+
+% REF RULE
+\ruledef{ type : ref}{\begin{itemize} \item * : The name of the rule to invoke. \end{itemize}}{ This rule lets you specify recursive rules. Be careful not to create infinite validations which is quite possible using this rule. The containing rule will be fetched just before validation, there will be no error message during construction when the containing rule is not found. The rule will fail in this case. If there are several rules with the same name, only the last one with that name is remembered and the last one will be used.}
+
+A validator that validates nested lists of integers. A ref is needed to enable recursion in the validator.
+
+\begin{lstlisting}
+{
+   "name" :"Nested list of integers",
+   "type" :"and",
+   "rules" :
+      [ 
+         {"type":"array"},
+         {"type":"content",
+          "rule":
+             {"type" : "or",
+              "rules": 
+                [{"type":"int"}, 
+                 {"type":"ref", "*" : "Nested list of integers"}]
+             }}
+       ]
+}
+\end{lstlisting}
+
+% LET RULE
+\ruledef{ type : @Quote let}{\begin{itemize} \item rules : A list of rules.\item * : The name of the rule that should be used.\end{itemize}}{Lets you specify a number of named rules in advance. It is a convenience rule that lets you specify a list of global shared validation rules in advance before using these later on. It becomes possible to first define a number of recurring types and then give the starting point. It is a utility rule that lets you tackle more complex validations. Note that it  makes no sense to define anonymous rules inside the list, it is impossible to refer to these later on.}
+
+\begin{lstlisting}
+{
+   "name" :"Let test -  a's or b's",
+   "type" :"let",
+   "*"    : "start",
+   "rules" : 
+      [{"name":"start", "type":"or", "rules":[{"type":"ref", "*":"a"}, 
+                                              {"type":"ref", "*":"b"}]},
+       {"name":"a", "type":"regexp", "pattern":"a*"},
+       {"name":"b", "type":"regexp", "pattern":"b*"}
+      ]
+}
+\end{lstlisting}
+
+The validator class looks like this:
+
+\begin{lstlisting}
+public class MyValidator
+extends CustomValidator
+{
+    public MyValidator(
+       String aName, JSONObject aRule,
+       HashMap<String, Validator> aRuleset)
+    {
+        super(aName, aRule, aRuleset);
+    }
+
+    public void validate(JSONValue aValue) 
+    throws ValidationException
+    {
+        // Do whatever you need to do on aValue ...
+        // If validation is ok, simply return.
+        // If validation fails, you can use:
+        // fail(JSONValue aValue) or 
+        //    fail(String aReason, JSONValue aValue)
+        // to throw the Validation exception for you.
+    }
+}
+\end{lstlisting}
+
+% CUSTOM RULE
+\ruledef{ type : @Quote custom }{\begin{itemize} \item class :  The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from com.sdicons.json.validator.impl.predicates.CustomValidator. }
+
+\begin{lstlisting}
+{
+   "name" :"Custom test",
+   "type" :"custom",
+   "class" : "com.sdicons.json.validator.MyValidator"
+}
+\end{lstlisting}
+
+% SWITCH RULE
+\ruledef{ type : @Quote switch}{\begin{itemize} \item key : The key name of the object that will act as the discriminator. \item case :  A list of objects containing the parameters “values” and “rule”. The first one is a list of values the second one a validator rule. \end{itemize}}{ The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
+Example: The top level rule in the validator for validators contains a switch that could have been described by an or, but the switch gives better error messages.}
+
+\appendix
+
+\newpage
+\section{ License Header }
+
+\begin{verbatim}
+JSONTOOLS - Java JSON Tools
+Copyright (C) 2006-2008 S.D.I.-Consulting BVBA
+http://www.sdi-consulting.com
+mailto://nospam@sdi-consulting.com
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or (at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA 
+\end{verbatim}
+
+\newpage
+\section{ Validator for Validators }
+
+ This example validator is able to validate validators. The example is a bit contrived because the validators really don't need validation because it is built-in in the construction. It is interesting because it can serve as a definition of how to construct a validator.
+ 
+\medskip
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize{}]
+{
+   "name":"Validator validator",
+   "type":"let",
+   "*":"rule",
+   "rules":
+   [
+      ########## START ##########
+      {
+         "name":"rule",
+         "type":"switch",
+         "key":"type",
+         "case":
+         [
+            {"values":["true", "false", "null"], "rule":{"type":"ref","*":"atom-rule"}},
+            {"values":["int", "complex", "array", "object", "simple",
+                       "null", "bool", "string", "number", "decimal"],
+                       "rule":{"type":"ref","*":"type-rule"}},
+            {"values":["not", "content"], "rule":{"type":"ref","*":"rules-rule"}},
+            {"values":["and", "or"], "rule":{"type":"ref","*":"ruleset-rule"}},
+            {"values":["length", "range"], "rule":{"type":"ref","*":"minmax-rule"}},
+            {"values":["ref"], "rule":{"type":"ref","*":"ref-rule"}},
+            {"values":["custom"], "rule":{"type":"ref","*":"custom-rule"}},
+            {"values":["enum"], "rule":{"type":"ref","*":"enum-rule"}},
+            {"values":["let"], "rule":{"type":"ref","*":"let-rule"}},
+            {"values":["regexp"], "rule":{"type":"ref","*":"regexp-rule"}},
+            {"values":["properties"], "rule":{"type":"ref","*":"properties-rule"}},
+            {"values":["switch"], "rule": {"type":"ref","*":"switch-rule"}}
+         ]
+      },
+      ########## RULESET ##########
+      {
+         "name":"ruleset",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"rule"}}]
+      },
+      ########## PAIRS ##########
+      {
+         "name":"pairs",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"pair"}}]
+      },
+      ########## PAIR ##########
+      {
+         "name":"pair",
+         "type":"properties",
+         "pairs" :
+          [{"key":"key",      "optional":false, "rule":{"type":"string"}},
+           {"key":"optional", "optional":false, "rule":{"type":"bool"}},
+           {"key":"rule",     "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## CASES ##########
+      {
+         "name":"cases",
+         "type":"and",
+         "rules":[{"type":"array"},{"type":"content","rule":{"type":"ref","*":"case"}}]
+      },
+      ########## CASE ##########
+      {
+         "name":"case",
+         "type":"properties",
+         "pairs" :
+          [{"key":"values",   "optional":false, "rule":{"type":"array"}},
+           {"key":"rule",     "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## ATOM ##########
+      {
+         "name":"atom-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":
+                          {"type":"enum","values":["true", "false", "null"]}}
+          ]
+      },
+      ########## RULESET-RULE ##########
+      {
+         "name":"ruleset-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true,  "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["and", "or"]}},
+           {"key":"rules", "optional":false, "rule":{"type":"ref","*":"ruleset"}}
+          ]
+      },
+      ########## RULES-RULE ##########
+      {
+         "name":"rules-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true,  "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["not", "content"]}},
+           {"key":"rule", "optional":false, "rule":{"type":"ref","*":"rule"}}
+          ]
+      },
+      ########## TYPE ##########
+      {
+         "name":"type-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum",
+                    "values":["int", "complex", "array", "object", 
+                    "simple", "null", "bool", "string", "number", 
+                    "decimal"]}}
+          ]
+      },
+      ########## MINMAX ##########
+      {
+         "name":"minmax-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["length", "range"]}},
+           {"key":"min", "optional":true, "rule":{"type":"number"}},
+           {"key":"max", "optional":true, "rule":{"type":"number"}}
+          ]
+      },
+      ########## REF ##########
+      {
+         "name":"ref-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["ref"]}},
+           {"key":"*",    "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## CUSTOM ##########
+      {
+         "name":"custom-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["custom"]}},
+           {"key":"class", "optional":true, "rule":{"type":"string"}}
+          ]
+      },
+      ########## ENUM ##########
+      {
+         "name":"enum-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["enum"]}},
+           {"key":"values", "optional":true, "rule":{"type":"array"}}
+          ]
+      },
+      ########## LET ##########
+      {
+         "name":"let-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true,  "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["let"]}},
+           {"key":"rules", "optional":false, "rule":{"type":"ref","*":"ruleset"}},
+           {"key":"*",     "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## REGEXP ##########
+      {
+         "name":"regexp-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name", "optional":true, "rule":{"type":"string"}},
+           {"key":"type", "optional":false, "rule":{"type":"enum","values":["regexp"]}},
+           {"key":"pattern", "optional":false, "rule":{"type":"string"}}
+          ]
+      },
+      ########## PROPERTIES ##########
+      {
+         "name":"properties-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true, "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["properties"]}},
+           {"key":"pairs", "optional":false, "rule":{"type":"ref","*":"pairs"}}
+          ]
+      },
+      ########## SWITCH ##########
+      {
+         "name":"switch-rule",
+         "type":"properties",
+         "pairs" :
+          [{"key":"name",  "optional":true, "rule":{"type":"string"}},
+           {"key":"type",  "optional":false, "rule":{"type":"enum","values":["switch"]}},
+           {"key":"key",   "optional":false, "rule":{"type":"string"}},
+           {"key":"case",  "optional":false, "rule":{"type":"ref","*":"cases"}}
+          ]
+      }
+   ]
+}
+\end{lstlisting}
+ 
 \end{document}

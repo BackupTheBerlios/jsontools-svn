@@ -45,7 +45,8 @@
 \addtolength{\evensidemargin}{0.3cm}
 % No indentation at start of a paragraph.
 \setlength{\parindent}{0in}
-\renewcommand*\familydefault{\sfdefault}     
+\renewcommand*\familydefault{\sfdefault}    
+\renewcommand{\baselinestretch}{1.2} 
 
 \newcommand{\ruledef}[3]{
 \medskip
@@ -59,11 +60,13 @@
    \item Description: #3
 \end{itemize}
 }
+\newcommand{\rulename}[1]{\textbf{``type'' : ``#1''}}
+\newcommand{\jtools}{JSON Tools}
 
 %% 
 %% Title information
 %%
-\title{JSON Tools Core}
+\title{\jtools\ Core}
 \author{Bruno Ranschaert}
 
 \begin{document}
@@ -125,21 +128,24 @@ In JSON everything is well defined, all aspects of the representation are clear,
 
 This project wants to provide the tools to manipulate and use the format in a Java application. 
 
-\subsection{Dependencies}
-
-The parser uses ANTLR  2.7.7\footnote{ANTLR: \url{http://www.antlr.org/}} , so the ANTLR runtime is needed for this.  It might work with other versions, I simply did not test it. The project is based on the maven2 build system. 
-
-The @Tools libraries are written using the new language features from JDK 1.5 \footnote{Sun Java 5: \url{http://java.sun.com/j2se/1.5}}.  Enumerations and generics are used because these make the code nicer to read.  There are no dependencies to the new libraries. On the other hand, there is no guarantee we will keep it this way in future releases. If you want to use the libraries for an earlier version of the JDK, the retrotranslator tool\footnote{Retrotranslator: \url{http://retrotranslator.sourceforge.net}} might be an option.
-
-\subsection{License}
-
-The library is released under the LGPL\footnote{Gnu GPL: \url{http://www.gnu.org/licenses/lgpl.html}}. You are free to use it for commercial or non-commercial applications as long as you leave the copyright intact and add a reference to the project. You can find a copy of the license header in appendix @NumberOf { license }. 
-Let me know what you like and what you don't like about the library so that I can improve it.
+\subsection{Acknowledgements}
+The \jtools\ library is the result of many suggestions, contributions and reviews from the users. Without the feedback the library would not be as versatile and stable as it is today. Thank you for all the feedback that makes the library better.
 
 \subsection{About S.D.I-Consulting}
 
 Visit the web site \url{http://www.sdi-consulting.com} for more information.
-Visit the @Tools project summary\footnote{@Tools summary: \url{http://jsontools.sdicons.com}} page, the project itself is hosted on the Berlios service\footnote{@Tools  project page: \url{http://jsontools.berlios.de}}.
+Visit the \jtools\ project summary\footnote{\jtools\ summary: \url{http://jsontools.sdicons.com}} page, the project itself is hosted on the Berlios service\footnote{\jtools\  project page: \url{http://jsontools.berlios.de}}.
+
+\subsection{Dependencies}
+
+The parser uses ANTLR  2.7.7\footnote{ANTLR: \url{http://www.antlr.org/}} , so the ANTLR runtime is needed for this. It might work with other versions, I simply did not test it. The project is based on the maven2 build system. 
+
+The \jtools\ libraries are written using the new language features from JDK 1.5 \footnote{Sun Java 5: \url{http://java.sun.com/j2se/1.5}}.  Enumerations and generics are used because these make the code nicer to read.  There are no dependencies to the new libraries. On the other hand, there is no guarantee we will keep it this way in future releases. If you want to use the libraries for an earlier version of the JDK, the retrotranslator tool\footnote{Retrotranslator: \url{http://retrotranslator.sourceforge.net}} might be an option.
+
+\subsection{License}
+
+The library is released under the LGPL\footnote{Gnu LGPL: \url{http://www.gnu.org/licenses/lgpl.html}}. You are free to use it for commercial or non-commercial applications as long as you leave the copyright intact and add a reference to the project. You can find a copy of the license header in appendix \ref{license}. 
+Let me know what you like and what you don't like about the library so that I can improve it.
 
 \subsection{JSON Extensions}
 
@@ -149,19 +155,21 @@ Comments. I added line comments which start with "\#". It is easier for the exam
 %% SECTION - CORE TOOLS
 %%
 \section{The Core Tools}
+
+%% PARSING
 \subsection{Parsing - Reading JSON}
 
 The most important tool in the tool set is the parser, it enables you to convert a JSON file or stream into a Java model. All JSON objects remember the position in the file (line, column), so if you are doing post processing of the data you can always refer to the position in the original file. 
 Invoking the parser is very simple as you can see in this example:
 
 \medskip
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize{}]
 JSONParser lParser = new JSONParser(JSONTest.class.getResourceAsStream("/config.json"));
 JSONValue lValue = lParser.nextValue();
 \end{lstlisting}
 \medskip
 
-DP The JSON model is a hierarchy of types, the hierarchy looks like this:
+The JSON model is a hierarchy of types, the hierarchy looks like this:
 
 \medskip
 \begin{lstlisting}
@@ -179,9 +187,18 @@ JSONValue
 \end{lstlisting}
 \medskip
 
-\subsection{Mapping}
+%% RENDERING
+\subsection{Rendering - Writing JSON}
 
-Both mapping tool (this section) and serialisation tool (section @NumberOf serialisation on page @PageOf { serialisation }) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the mapper are:
+The classes in the JSON model can render themselves to a String. You can choose to render to a pretty form, nicely indented and easily readable by humans, or you can render to a compact form, no spaces or indentations are provided. This is suited to use on a communications channel when you are implementing a communication protocol.
+
+In the introduction we already saw a pretty rendering of some widget data. The same structure can be rendered without pretty printing in order to reduce whitespace. This can be an interesting feature when space optimisation is very important, e.g. communication protocols.
+
+%% MAPPING
+\subsection{Mapping}
+\label{mapping}
+
+Both mapping tool (this section) and serialisation tool (section \ref{serialisation} on page \pageref{serialisation}) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the mapper are:
 
 \begin{itemize}
 	\item The JSON text should be clean and straightforward. So no meta information can be stored.
@@ -189,7 +206,7 @@ Both mapping tool (this section) and serialisation tool (section @NumberOf seria
 	\item Not all Java data structures have to be mapped: recursive structures, differentiation between primitives and reference types are less important. If a trade-off has to be made, it will be in favor of the JSON format.
 \end{itemize}
 
-The JSON from the mapper can be easily interpreted in another lanugage. An example could be JavaScript in the context of an AJAX @FootNote {AJAX = Asynchronous JavaScript and XML, see \url{http://en.wikipedia.org/wiki/AJAX} for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map Java data to JSON. It can be done like this:
+The JSON from the mapper can be easily interpreted in another lanugage. An example could be JavaScript in the context of an AJAX\footnote{AJAX = Asynchronous JavaScript and XML, see \url{http://en.wikipedia.org/wiki/AJAX} for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map Java data to JSON. It can be done like this:
 
 \medskip
 \begin{lstlisting}
@@ -219,9 +236,11 @@ Note that the mapper needs some help to convert JSON into Java. As we stated in 
 
 This list could be interpreted as a list of Strings, but also as a list of Dates. The mapper has no idea what to do with it. When we pass the type LinkedList<Date> or the type LinkedList<String>, the mapper can exploit this type information and do the right thing. Also note that the mapper automatically exploits this information when the outer layer is a bean, and the list is one of the beans properties.
 
+%% SERIALIZING
 \subsection{Serialisation}
+\label{serialisation}
 
-Both mapping tool (section @NumberOf mapping on page @PageOf { mapping })  and serialisation tool (this section) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the serialiser are:
+Both mapping tool (section \ref{mapping} on page \pageref{mapping})  and serialisation tool (this section) can be used to convert Java into JSON and vice versa. These tools have different goals. The goals of the serialiser are:
 
 \begin{itemize}
 	\item The serialisation tool could be an alternative for native serialisation\footnote{Java serialisation: \url{http://java.sun.com/j2se/1.5.0/docs/guide/serialization/}} (regarding functionality). This does not mean that all kinds of classes are supported out of the box, but it means that the general mechanism should be there and there should be an easy way to extend the mechanism so that we can deal with all classes.
@@ -271,11 +290,11 @@ Primitive types are represented like this.
 \end{lstlisting}
 \medskip
 
-The  @Quote >  attribute with value @Quote P  indicates a primitive type. The @Quote  =  attribute contains the representation of the value and the @Quote t attribute contains the original java type.
+The ``>''  attribute with value ``P''  indicates a primitive type. The ``=''  attribute contains the representation of the value and the ``t'' attribute contains the original java type.
 
 \subsubsection{Reference Types}
 
-An array is defined recursively like this. We can see the @Quote > attribute this time with the @Quote A  value, indicating that the object represents an array. The @Quote C attribute contains the type representation for arrays as it is defined in java. The @Quote =  attribute contains a list of the values.
+An array is defined recursively like this. We can see the ``>'' attribute this time with the ``A''  value, indicating that the object represents an array. The ``C'' attribute contains the type representation for arrays as it is defined in java. The ``=''  attribute contains a list of the values.
 
 \medskip
 \begin{lstlisting}
@@ -361,7 +380,7 @@ An object is represented like this.
 \end{lstlisting}
 \medskip
 
-The @Quote > marker contains @Quote O for object this time. The @Quote C attribute contains a fully qualified class name. The @Quote \& contains a unique id, it can be used to refer to the object so that we are able to represent recursive data structures. The @Quote =  attribute contains a JSON object having a property for each Java Bean property.  The property value is recursively a representation of a Java object. Note that there is a special notation to represent java null values.
+The ``>'' marker contains ``O'' for object this time. The ``C'' attribute contains a fully qualified class name. The ``\&'' contains a unique id, it can be used to refer to the object so that we are able to represent recursive data structures. The ``=''  attribute contains a JSON object having a property for each Java Bean property.  The property value is recursively a representation of a Java object. Note that there is a special notation to represent java null values.
 
 \medskip
 \begin{lstlisting}
@@ -382,7 +401,7 @@ Also note that you can refer to other objects with the reference object which lo
 \end{lstlisting}
 \medskip
  
-
+%% VALIDATION
 \subsection{Validation}
 
 This tool enables you to validate your JSON files. You can specify which content you expect, the validator can check these constraints for you. The system is straightforward to use and extend. You can add your own rules if you have specific needs. The validation definition is in JSON - as you would expect. Built-in rules:
@@ -396,10 +415,10 @@ This tool enables you to validate your JSON files. You can specify which content
 \end{lstlisting}
 \medskip
 
-A validation document consists of a validation rule. This rule will be applied to the JSONValue that has to be validated. The validation rules can be nested, so it is possible to create complex rules out of simpler ones. The “type” attribute is obligatory.  The  “name” is optional, it will be used during error reporting and for re-use.  The predefined rules are listed below. The name can come in handy while debugging. The name of the failing validation will be available in the exception. If you give each rule its own name or number, you can quickly find out on which predicate the validation fails. Here is an example of how you can create a validator.
+A validation document consists of a validation rule. This rule will be applied to the JSONValue that has to be validated. The validation rules can be nested, so it is possible to create complex rules out of simpler ones. The ``type'' attribute is obligatory.  The  ``name'' is optional, it will be used during error reporting and for re-use.  The predefined rules are listed below. The name can come in handy while debugging. The name of the failing validation will be available in the exception. If you give each rule its own name or number, you can quickly find out on which predicate the validation fails. Here is an example of how you can create a validator.
 
 \medskip
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize{}]
 // First we create a parser to read the validator specification which is 
 // defined using the (what did you think) JSON format.
 // The validator definition is located in the "my-validator.json" resource in the
@@ -433,7 +452,7 @@ lValidator.validate(lMyData);
 These rules are the basic rules in boolean logic. 
 
 % RULE TRUE
-\ruledef{"type"  : "true"}{-}{This rule always succeeds.}
+\ruledef{\rulename{true}}{-}{This rule always succeeds.}
 
 A validator that will succeed on all JSON data structures.	
 \begin{lstlisting}
@@ -444,7 +463,7 @@ A validator that will succeed on all JSON data structures.
 \end{lstlisting}
 
 % RULE FALSE
-\ruledef{"type" : "false"}{-}{This rule always fails.}
+\ruledef{\rulename{false}}{-}{This rule always fails.}
 
 A validator that rejects all data structures.
 \begin{lstlisting}
@@ -455,7 +474,8 @@ A validator that rejects all data structures.
 \end{lstlisting}
 
 % RULE AND
-\ruledef{"type":"and" }{\begin{itemize} \item rules : Array of nested rules. \end{itemize}}{All nested rules have to hold for the and rule to succeed.}
+\label{and}
+\ruledef{\rulename{and}}{\begin{itemize} \item rules : Array of nested rules. \end{itemize}}{All nested rules have to hold for the and rule to succeed.}
 
 A validator that succeeds if the object under scrutiny is both a list and has content consisting of integers.
 \begin{lstlisting}
@@ -467,7 +487,7 @@ A validator that succeeds if the object under scrutiny is both a list and has co
 \end{lstlisting}
 
 % RULE OR
-\ruledef{"type" : "or" }{@Quote rules : Array of nested rules.}{One of the nested rules has to succeed for this rule to succeed.}
+\ruledef{\rulename{or}}{rules : Array of nested rules.}{One of the nested rules has to succeed for this rule to succeed.}
 
 A validator that validates booleans or integers.
 \begin{lstlisting}
@@ -479,7 +499,7 @@ A validator that validates booleans or integers.
 \end{lstlisting}
 
 % RULE NOT
-\ruledef{"type" : "not" }{\begin{itemize} \item rule : A single nested rule. \end{itemize}}{The rule succeeds if the nested rule fails and vice versa.}
+\ruledef{\rulename{not}}{\begin{itemize} \item rule : A single nested rule. \end{itemize}}{The rule succeeds if the nested rule fails and vice versa.}
 
 \subsubsection{Type Rules }
 
@@ -489,16 +509,16 @@ These rules are predefined rules which allows you to specify type restrictions o
 \setlength{\itemsep}{1pt}
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
-   \item  "type":"complex"
-   \item  "type":"array"
-   \item  "type":"object"
-   \item  "type":"simple"
-   \item  "type":"null"
-   \item  "type":"bool"
-   \item  "type":"string"
-   \item  "type":"number"
-   \item  "type":"int"
-   \item  "type":"decimal"
+   \item  \rulename{complex}
+   \item  \rulename{array}
+   \item  \rulename{object}
+   \item  \rulename{simple}
+   \item  \rulename{null}
+   \item  \rulename{bool}
+   \item  \rulename{string}
+   \item  \rulename{number}
+   \item  \rulename{int}
+   \item  \rulename{decimal}
 \end{itemize}
 
 \subsubsection{ Attribute Rules }
@@ -506,7 +526,7 @@ These rules are predefined rules which allows you to specify type restrictions o
 These rules check for attributes of certain types.
 
 % LENGTH RULE
-\ruledef{type : length}{
+\ruledef{\rulename{length}}{
 \begin{itemize}
    \item min : (optional) The minimal length of the array.
    \item max : (optional) The maximal length of the array.
@@ -522,9 +542,8 @@ A validator that only wants arrays of length 5.
 }
 \end{lstlisting}
 
-
 % RANGE RULE
-\ruledef{ type :  range }{\begin{itemize} \item min : (optional) The minimal value.\item max : (optional) The maximal value.\end{itemize}}{Applicable to JSONNumbers, i.e. JSONInteger and JSONDecimal.}
+\ruledef{\rulename{range}}{\begin{itemize} \item min : (optional) The minimal value.\item max : (optional) The maximal value.\end{itemize}}{Applicable to JSONNumbers, i.e. JSONInteger and JSONDecimal.}
 
 Allow numbers between 50 and 100.
 \begin{lstlisting}
@@ -537,7 +556,7 @@ Allow numbers between 50 and 100.
 \end{lstlisting}
 
 % ENUM RULE
-\ruledef{type : enum }{\begin{itemize} \item values : An array of JSON values. \end{itemize}}{The value has to occur in the provided list. The list can contain simple types as well as complex nested types.}
+\ruledef{\rulename{enum}}{\begin{itemize} \item values : An array of JSON values. \end{itemize}}{The value has to occur in the provided list. The list can contain simple types as well as complex nested types.}
 
 An enum validator.
 \begin{lstlisting}
@@ -549,7 +568,7 @@ An enum validator.
 \end{lstlisting}
 
 % REGEXP RULE
-\ruledef{type : regexp }{\begin{itemize} \item pattern : A regexp pattern.\end{itemize}}{For strings, requires a predefined format according to the regular expression.}
+\ruledef{\rulename{regexp}}{\begin{itemize} \item pattern : A regexp pattern.\end{itemize}}{For strings, requires a predefined format according to the regular expression.}
 
 A validator that validates strings containing a sequence of a's , b's and c's.
 
@@ -562,13 +581,13 @@ A validator that validates strings containing a sequence of a's , b's and c's.
 \end{lstlisting}
 
 % CONTENT RULE
-\ruledef{type :content}{\begin{itemize} \item rule : The rule that specifies how the content of a complex structure -  an array or the property values of an object -  should behave. \end{itemize}}{ Note that in contrast with the @Quote properties  rule (for objects), you can specify in a single rule what all property values of an object should look like.}
+\ruledef{\rulename{content}}{\begin{itemize} \item rule : The rule that specifies how the content of a complex structure -  an array or the property values of an object -  should behave. \end{itemize}}{ Note that in contrast with the ``properties'' rule (for objects), you can specify in a single rule what all property values of an object should look like.}
 
 
-See @Quote type : @Quote and 
+See \rulename{and} on page \pageref{and}. 
 
 % PROPERTIES RULE
-\ruledef{ type : properties}{\begin{itemize} \item pairs: A list of "key/value" pair descriptions. Note that in contrast with the content rule above you can specify a rule per attribute.Each description contains three properties: \begin{itemize} \item key: the key string;\item optional: a boolean indicating whether this property is optional or not. \item rule: a validation rule that should be applied to the properties value. \end{itemize}  \end{itemize}}{This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
+\ruledef{\rulename{properties}}{\begin{itemize} \item pairs: A list of "key/value" pair descriptions. Note that in contrast with the content rule above you can specify a rule per attribute.Each description contains three properties: \begin{itemize} \item key: the key string;\item optional: a boolean indicating whether this property is optional or not. \item rule: a validation rule that should be applied to the properties value. \end{itemize}  \end{itemize}}{This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
 
 It will validate objects looking like this:
  
@@ -590,7 +609,7 @@ The validator looks like this:
 \subsubsection{Structural Rules }
 
 % REF RULE
-\ruledef{ type : ref}{\begin{itemize} \item * : The name of the rule to invoke. \end{itemize}}{ This rule lets you specify recursive rules. Be careful not to create infinite validations which is quite possible using this rule. The containing rule will be fetched just before validation, there will be no error message during construction when the containing rule is not found. The rule will fail in this case. If there are several rules with the same name, only the last one with that name is remembered and the last one will be used.}
+\ruledef{\rulename{ref}}{\begin{itemize} \item * : The name of the rule to invoke. \end{itemize}}{ This rule lets you specify recursive rules. Be careful not to create infinite validations which is quite possible using this rule. The containing rule will be fetched just before validation, there will be no error message during construction when the containing rule is not found. The rule will fail in this case. If there are several rules with the same name, only the last one with that name is remembered and the last one will be used.}
 
 A validator that validates nested lists of integers. A ref is needed to enable recursion in the validator.
 
@@ -613,7 +632,7 @@ A validator that validates nested lists of integers. A ref is needed to enable r
 \end{lstlisting}
 
 % LET RULE
-\ruledef{ type : @Quote let}{\begin{itemize} \item rules : A list of rules.\item * : The name of the rule that should be used.\end{itemize}}{Lets you specify a number of named rules in advance. It is a convenience rule that lets you specify a list of global shared validation rules in advance before using these later on. It becomes possible to first define a number of recurring types and then give the starting point. It is a utility rule that lets you tackle more complex validations. Note that it  makes no sense to define anonymous rules inside the list, it is impossible to refer to these later on.}
+\ruledef{\rulename{let}}{\begin{itemize} \item rules : A list of rules.\item * : The name of the rule that should be used.\end{itemize}}{Lets you specify a number of named rules in advance. It is a convenience rule that lets you specify a list of global shared validation rules in advance before using these later on. It becomes possible to first define a number of recurring types and then give the starting point. It is a utility rule that lets you tackle more complex validations. Note that it  makes no sense to define anonymous rules inside the list, it is impossible to refer to these later on.}
 
 \begin{lstlisting}
 {
@@ -656,7 +675,7 @@ extends CustomValidator
 \end{lstlisting}
 
 % CUSTOM RULE
-\ruledef{ type : @Quote custom }{\begin{itemize} \item class :  The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from com.sdicons.json.validator.impl.predicates.CustomValidator. }
+\ruledef{\rulename{custom}}{\begin{itemize} \item class :  The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from com.sdicons.json.validator.impl.predicates.CustomValidator. }
 
 \begin{lstlisting}
 {
@@ -667,13 +686,14 @@ extends CustomValidator
 \end{lstlisting}
 
 % SWITCH RULE
-\ruledef{ type : @Quote switch}{\begin{itemize} \item key : The key name of the object that will act as the discriminator. \item case :  A list of objects containing the parameters “values” and “rule”. The first one is a list of values the second one a validator rule. \end{itemize}}{ The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
+\ruledef{\rulename{switch}}{\begin{itemize} \item key : The key name of the object that will act as the discriminator. \item case :  A list of objects containing the parameters “values” and “rule”. The first one is a list of values the second one a validator rule. \end{itemize}}{ The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
 Example: The top level rule in the validator for validators contains a switch that could have been described by an or, but the switch gives better error messages.}
 
 \appendix
 
 \newpage
 \section{ License Header }
+\label{license}
 
 \begin{verbatim}
 JSONTOOLS - Java JSON Tools

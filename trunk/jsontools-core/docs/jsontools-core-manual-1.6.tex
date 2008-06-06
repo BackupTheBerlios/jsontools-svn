@@ -93,38 +93,28 @@ In JSON everything is well defined, all aspects of the representation are clear,
 
 \medskip
 \begin{lstlisting}
-{
-   "widget" :
-      {
-         "debug" : "on",
-         "text" :
-            {
-               "onMouseUp" : "sun1.opacity = (sun1.opacity / 100) * 90;",
-               "hOffset" : 250,
-               "data" : "Click Here",
-               "alignment" : "center",
-               "style" : "bold",
-               "size" : 36,
-               "name" : "text1",
-               "vOffset" : 100
-            },
-         "image" :
-            {
-               "hOffset" : 250,
-               "alignment" : "center",
-               "src" : "Images/Sun.png",
-               "name" : "sun1",
-               "vOffset" : 250
-            },
-         "window" :
-            {
-               "width" : 500,
-               "height" : 500,
-               "title" : "Sample Konfabulator Widget",
-               "name" : "main_window"
-            }
-      }
-}
+{ "widget" : {
+      "debug" : "on",
+      "text" : {
+         "onMouseUp" : "sun1.opacity = (sun1.opacity / 100) * 90;",
+         "hOffset" : 250,
+         "data" : "Click Here",
+         "alignment" : "center",
+         "style" : "bold",
+         "size" : 36,
+         "name" : "text1",
+         "vOffset" : 100 },
+      "image" : {
+         "hOffset" : 250,
+         "alignment" : "center",
+         "src" : "Images/Sun.png",
+         "name" : "sun1",
+         "vOffset" : 250 },
+      "window" : {
+         "width" : 500,
+         "height" : 500,
+         "title" : "Sample Konfabulator Widget",
+         "name" : "main_window" } } }
 \end{lstlisting}
 \medskip
 
@@ -233,7 +223,7 @@ Note that the mapper needs some help to convert JSON into \java. As we stated in
 
 \medskip
 \begin{lstlisting}
-["01/12/2006", "03/12/2007", ... ]
+[ "01/12/2006", "03/12/2007", ... ]
 \end{lstlisting}
 \medskip
 
@@ -286,24 +276,30 @@ Here is an example of an annotated class. It is the first solution, in combinati
 \begin{lstlisting}
 public class MyDate
 {
+    // The fields will be mapped as well, independent of the 
+    // constructor values.
     private Date theDate;
     private String theTimeZone;
+    
+    // Because of this annotation, the ObjectMapperDirect will call this 
+    // function and serialize the values in the object array. These values 
+    // will be used later on to call the annotated constructor. 
+    @JSONMap   
+    public Object[] getTime()
+    {
+         return new Object[]{theDate.getTime(), theTimeZone};
+    }
 
+    // This constructor will be called with the same values that were 
+    // provided by the other annotated method.
     @JSONConstruct
     public MyDate(long aTime, String aTimeZone)
     {
         theDate = new Date(aTime);
         theTimeZone = aTimeZone;
-    }
-
-    @JSONMap
-    public Object[] getTime()
-    {
-         return new Object[]{theDate.getTime(), theTimeZone};
-    }
+    }        
 }
 \end{lstlisting}
-
 
 %% SERIALIZING
 \subsection{Serialization}
@@ -351,11 +347,9 @@ Primitive types are represented like this.
 
 \medskip
 \begin{lstlisting}
-{
-   ">" : "P",
-   "=" : "1",
-   "t" : "int"
-}
+{ ">" : "P",
+  "=" : "1",
+  "t" : "int" }
 \end{lstlisting}
 \medskip
 
@@ -367,43 +361,34 @@ An array is defined recursively like this. We can see the ``>'' attribute this t
 
 \medskip
 \begin{lstlisting}
-{
-   ">" : "A",
-   "c" : "I",
-   "=" :
-      [
+{ ">" : "A",
+  "c" : "I",
+  "=" :
+     [
          {
             ">" : "P",
             "=" : "0",
-            "t" : "int"
-         },
+            "t" : "int" },
          {
             ">" : "P",
             "=" : "1",
-            "t" : "int"
-         },
+            "t" : "int" },
          {
             ">" : "P",
             "=" : "2",
-            "t" : "int"
-         },
+            "t" : "int" },
          {
             ">" : "P",
             "=" : "3",
-            "t" : "int"
-         },
+            "t" : "int" },
          {
             ">" : "P",
             "=" : "4",
-            "t" : "int"
-         },
+            "t" : "int" },
          {
             ">" : "P",
             "=" : "5",
-            "t" : "int"
-         }
-      ]
-}
+            "t" : "int" } ] }
 \end{lstlisting}
 \medskip
 
@@ -415,37 +400,24 @@ An object is represented like this.
    ">" : "O",
    "c" : "com.sdicons.json.serializer.MyBean",
    "&" : "id0",
-   "=" :
-      {
-         "int2" :
-            {
-               ">" : "null"
-            },
-         "ptr" :
-            {
-               ">" : "R",
-               "*" : "id0"
-            },
-         "name" :
-            {
-               ">" : "O",
-               "c" : "java.lang.String",
-               "&" : "id2",
-               "=" : "This is a test..."
-            },
-         "int1" :
-            {
-               ">" : "null"
-            },
-         "id" :
-            {
-               ">" : "O",
-               "c" : "java.lang.Integer",
-               "&" : "id1",
-               "=" : "1003"
-            }
-      }
-}
+   "=" : {
+      "int2" :
+        { ">" : "null" },
+      "ptr" :
+        { ">" : "R",
+          "*" : "id0" },
+      "name" :
+        { ">" : "O",
+          "c" : "java.lang.String",
+          "&" : "id2",
+          "=" : "This is a test..." },
+      "int1" :
+        { ">" : "null" },
+      "id" :
+        { ">" : "O",
+          "c" : "java.lang.Integer",      
+          "&" : "id1",
+          "=" : "1003" } } }
 \end{lstlisting}
 \medskip
 
@@ -453,9 +425,7 @@ The ``>'' marker contains ``O'' for object this time. The ``C'' attribute contai
 
 \medskip
 \begin{lstlisting}
-{
-   ">" : "null"
-}
+{ ">" : "null" }
 \end{lstlisting}
 \medskip
 
@@ -463,10 +433,8 @@ Also note that you can refer to other objects with the reference object which lo
 
 \medskip
 \begin{lstlisting}
-{
-   ">" : "R",
-   "*" : "id0"
-}
+{ ">" : "R",
+  "*" : "id0" }
 \end{lstlisting}
 \medskip
 
@@ -492,20 +460,26 @@ Here is an example of an annotated class.
 \begin{lstlisting}
 public class MyDate
 {
+    // These private fields will be serialized in addition to the
+    // constructor values.
     private Date theDate;
     private String theTimeZone;
 
+    // This method will be called during serialization to obtain the
+    // values that can later be used to call the constructor.
+    @JSONSerialize
+    public Object[] getTime()
+    {
+        return new Object[]{theDate.getTime(), theTimeZone};
+    }
+    
+    // This constructor will be called with the values that were provided
+    // by the other annotated method.
     @JSONConstruct
     public MyDate(long aTime, String aTimeZone)
     {
         theDate = new Date(aTime);
         theTimeZone = aTimeZone;
-    }
-
-    @JSONSerialize
-    public Object[] getTime()
-    {
-        return new Object[]{theDate.getTime(), theTimeZone};
     }
 }
 \end{lstlisting}
@@ -513,40 +487,28 @@ public class MyDate
 The result of the serialization looks like the following listing. As you can see, there are two extra artificial fields \lstinline{cons-0} on line \ref{cons0} and \lstinline{cons-1} on line \ref{cons1} which are generted automatically by the serializer, these properties contain the values which were provided by the method which was annotated with \lstinline{@JSONSerialize}. These same properties will be used for calling the \lstinline{@JSONConstruct} annotated constructor.
 
 \begin{lstlisting}
-{
-   ">" : "O",
-   "&" : "id0",
-   "c" : "MyDate",
-   "=" :
-      {
-         "cons-0" : //*\label{cons0}
-            {
-               ">" : "O",
-               "&" : "id1",
-               "c" : "java.lang.Long",
-               "=" : "1212717107857"
-            },
-         "cons-1" : //*\label{cons1}
-            {
-               ">" : "O",
-               "&" : "id2",
-               "c" : "java.lang.String",
-               "=" : "CEST"
-            },
-         "theDate" :
-            {
-               ">" : "O",
-               "&" : "id3",
-               "c" : "java.util.Date",
-               "=" : "2008-06-06 03:51:47,857 CEST"
-            },
-         "theTimeZone" :
-            {
-               ">" : "R",
-               "*" : "id2"
-            }
-      }
-}
+{ ">" : "O",
+  "&" : "id0",
+  "c" : "MyDate",
+  "=" : {
+     "cons-0" : {//*\label{cons0}     
+        ">" : "O",
+        "&" : "id1",
+        "c" : "java.lang.Long",
+        "=" : "1212717107857" },
+     "cons-1" : {//*\label{cons1}            
+        ">" : "O",
+        "&" : "id2",
+        "c" : "java.lang.String",
+        "=" : "CEST" },
+     "theDate" : {
+        ">" : "O",
+        "&" : "id3",
+        "c" : "java.util.Date",
+        "=" : "2008-06-06 03:51:47,857 CEST" },
+     "theTimeZone" : {
+        ">" : "R",
+        "*" : "id2" } } }
 \end{lstlisting}
 
  
@@ -557,10 +519,8 @@ This tool enables you to validate your JSON files. You can specify which content
 
 \medskip
 \begin{lstlisting}
-{
-   "name" : "Some rule name",
-   "type" : "<built-in-type>"
-}
+{ "name" : "Some rule name",
+  "type" : "<built-in-type>" }
 \end{lstlisting}
 \medskip
 
@@ -605,10 +565,8 @@ These rules are the basic rules in boolean logic.
 
 A validator that will succeed on all JSON data structures.	
 \begin{lstlisting}
-{
-   "name" :"This validator validates *everything*",
-   "type" :"true"
-}
+{ "name" :"This validator validates *everything*",
+  "type" :"true" }
 \end{lstlisting}
 
 % RULE FALSE
@@ -616,10 +574,8 @@ A validator that will succeed on all JSON data structures.
 
 A validator that rejects all data structures.
 \begin{lstlisting}
-{
-   "name" :"This validator rejects all",
-   "type" :"false"
-}
+{ "name" :"This validator rejects all",
+  "type" :"false" }
 \end{lstlisting}
 
 % RULE AND
@@ -628,11 +584,9 @@ A validator that rejects all data structures.
 
 A validator that succeeds if the object under scrutiny is both a list and has content consisting of integers.
 \begin{lstlisting}
-{
-   "name" :"List of integers",
-   "type" :"and",
-   "rules" : [{"type":"array"},{"type":"content","rule":{"type":"int"}}]
-}
+{ "name" :"List of integers",
+  "type" :"and",
+  "rules" : [ {"type":"array"}, {"type":"content","rule":{"type":"int"} } ] }
 \end{lstlisting}
 
 % RULE OR
@@ -640,11 +594,9 @@ A validator that succeeds if the object under scrutiny is both a list and has co
 
 A validator that validates booleans or integers.
 \begin{lstlisting}
-{
-   "name" :"Null or int",
-   "type" :"or",
-   "rules" : [{"type":"int"},{"type":"bool"}]
-}
+{ "name" :"Null or int",
+  "type" :"or",
+  "rules" : [ {"type":"int"}, {"type":"bool"} ] }
 \end{lstlisting}
 
 % RULE NOT
@@ -684,11 +636,9 @@ Applicable to complex objects and string objects. The rule will fail if the obje
 
 A validator that only wants arrays of length 5.
 \begin{lstlisting}
-{
-   "name"  :"Array of length 5",
-   "type"  :"and",
-   "rules" : [{"type":"array"}, {"type":"length","min":5,"max":5}]
-}
+{ "name"  :"Array of length 5",
+  "type"  :"and",
+  "rules" : [{"type":"array"}, {"type":"length","min":5,"max":5}] }
 \end{lstlisting}
 
 % RANGE RULE
@@ -696,12 +646,10 @@ A validator that only wants arrays of length 5.
 
 Allow numbers between 50 and 100.
 \begin{lstlisting}
-{
-   "name" :"Range validator",
-   "type" :"range",
-   "min" : 50,
-   "max" : 100
-}
+{ "name" :"Range validator",
+  "type" :"range",
+  "min" : 50,
+  "max" : 100 }
 \end{lstlisting}
 
 % ENUM RULE
@@ -709,11 +657,9 @@ Allow numbers between 50 and 100.
 
 An enum validator.
 \begin{lstlisting}
-{
-   "name" :"Enum validator",
-   "type" :"enum",
-   "values" : [13, 17, "JSON", 123.12, [1, 2, 3], {"key":"value"}]
-}
+{ "name" :"Enum validator",
+  "type" :"enum",
+  "values" : [13, 17, "JSON", 123.12, [1, 2, 3], {"key":"value"}] }
 \end{lstlisting}
 
 % REGEXP RULE
@@ -722,16 +668,13 @@ An enum validator.
 A validator that validates strings containing a sequence of a's , b's and c's.
 
 \begin{lstlisting}
-{
-   "name" :"A-B-C validator",
-   "type" :"regexp",
-   "pattern" : "a*b*c*"
-}
+{ "name" :"A-B-C validator",
+  "type" :"regexp",
+  "pattern" : "a*b*c*" }
 \end{lstlisting}
 
 % CONTENT RULE
 \ruledef{\rulename{content}}{\begin{itemize} \item \param{rule} The rule that specifies how the content of a complex structure -  an array or the property values of an object -  should behave. \end{itemize}}{ Note that in contrast with the ``properties'' rule (for objects), you can specify in a single rule what all property values of an object should look like.}
-
 
 See \rulename{and} on page \pageref{and}. 
 
@@ -745,14 +688,11 @@ Example data structure that will be validated:
 {{"name":"Bruno Ranschaert", "country":"Belgium", "salary":13.0 }}
 
 The validator looks like this:
-{
-   "name" :"Contact spec.",
-   "type" :"properties",
-   "pairs" : [{"key":"name", "optional":false, "rule":{"type":"string"}},
+{ "name" :"Contact spec.",
+  "type" :"properties",
+  "pairs" : [{"key":"name", "optional":false, "rule":{"type":"string"}},
               {"key":"country", "optional":false, "rule":{"type":"string"}},
-              {"key":"salary", "optional":true, "rule":{"type":"decimal"}}
-             ]
-}
+              {"key":"salary", "optional":true, "rule":{"type":"decimal" } } ] }
 \end{lstlisting}
 
 \subsubsection{Structural Rules }
@@ -763,38 +703,30 @@ The validator looks like this:
 A validator that validates nested lists of integers. A ref is needed to enable recursion in the validator.
 
 \begin{lstlisting}
-{
-   "name" :"Nested list of integers",
-   "type" :"and",
-   "rules" :
-      [ 
-         {"type":"array"},
-         {"type":"content",
-          "rule":
-             {"type" : "or",
-              "rules": 
-                [{"type":"int"}, 
-                 {"type":"ref", "*" : "Nested list of integers"}]
-             }}
-       ]
-}
+{ "name" :"Nested list of integers",
+  "type" :"and",
+  "rules" : [ 
+     {"type":"array"},
+     {"type":"content",
+      "rule": {
+         "type" : "or",
+         "rules": [
+            {"type":"int"}, 
+            {"type":"ref", "*" : "Nested list of integers" } ] } } ] }
 \end{lstlisting}
 
 % LET RULE
 \ruledef{\rulename{let}}{\begin{itemize} \item \param{rules} A list of rules.\item * : The name of the rule that should be used.\end{itemize}}{Lets you specify a number of named rules in advance. It is a convenience rule that lets you specify a list of global shared validation rules in advance before using these later on. It becomes possible to first define a number of recurring types and then give the starting point. It is a utility rule that lets you tackle more complex validations. Note that it  makes no sense to define anonymous rules inside the list, it is impossible to refer to these later on.}
 
 \begin{lstlisting}
-{
-   "name" :"Let test -  a's or b's",
-   "type" :"let",
-   "*"    : "start",
-   "rules" : 
-      [{"name":"start", "type":"or", "rules":[{"type":"ref", "*":"a"}, 
-                                              {"type":"ref", "*":"b"}]},
-       {"name":"a", "type":"regexp", "pattern":"a*"},
-       {"name":"b", "type":"regexp", "pattern":"b*"}
-      ]
-}
+{ "name" :"Let test -  a's or b's",
+  "type" :"let",
+  "*"    : "start",
+  "rules" : 
+     [{"name":"start", "type":"or", "rules":[{"type":"ref", "*":"a"}, 
+                                             {"type":"ref", "*":"b"}]},
+      {"name":"a", "type":"regexp", "pattern":"a*"},
+      {"name":"b", "type":"regexp", "pattern":"b*" } ] }
 \end{lstlisting}
 
 The validator class looks like this:
@@ -827,11 +759,9 @@ extends CustomValidator
 \ruledef{\rulename{custom}}{\begin{itemize} \item \param{class} The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from \lstinline{CustomValidator}. }
 
 \begin{lstlisting}
-{
-   "name" :"Custom test",
-   "type" :"custom",
-   "class" : "com.sdicons.json.validator.MyValidator"
-}
+{ "name" :"Custom test",
+  "type" :"custom",
+  "class" : "com.sdicons.json.validator.MyValidator" }
 \end{lstlisting}
 
 % SWITCH RULE

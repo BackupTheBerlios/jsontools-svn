@@ -194,13 +194,13 @@ JSONValue
 
 The classes in the JSON model can render themselves to a String. You can choose to render to a pretty form, nicely indented and easily readable by humans, or you can render to a compact form, no spaces or indentations are provided. This is suited to use on a communications channel when you are implementing a communication protocol.
 
-In the introduction we already saw a pretty rendering of some widget data. The same structure can be rendered without pretty printing in order to reduce whitespace. This can be an interesting feature when space optimisation is very important, e.g. communication protocols.
+In the introduction we already saw a pretty rendering of some widget data. The same structure can be rendered without pretty printing in order to reduce whitespace. This can be an interesting feature when space optimization is very important, e.g. communication protocols.
 
 %% MAPPING
 \subsection{Mapping}
 \label{mapping}
 
-Both mapping tool (this section) and serialisation tool (section \ref{serialisation} on page \pageref{serialisation}) can be used to convert \java\ into JSON and vice versa. These tools have different goals. The goals of the mapper are:
+Both mapping tool (this section) and serialization tool (section \ref{serialization} on page \pageref{serialization}) can be used to convert \java\ into JSON and vice versa. These tools have different goals. The goals of the mapper are:
 
 \begin{itemize}
 	\item The JSON text should be clean and straightforward. So no meta information can be stored.
@@ -208,7 +208,7 @@ Both mapping tool (this section) and serialisation tool (section \ref{serialisat
 	\item Not all \java\ data structures have to be mapped: recursive structures, differentiation between primitives and reference types are less important. If a trade-off has to be made, it will be in favor of the JSON format.
 \end{itemize}
 
-The JSON from the mapper can be easily interpreted in another lanugage. An example could be JavaScript in the context of an AJAX\footnote{AJAX = Asynchronous JavaScript and XML, see \url{http://en.wikipedia.org/wiki/AJAX} for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map \java\ data to JSON. It can be done like this:
+The JSON from the mapper can be easily interpreted in another language. An example could be JavaScript in the context of an AJAX\footnote{AJAX = Asynchronous JavaScript and XML, see \url{http://en.wikipedia.org/wiki/AJAX} for more information.} communication with the server. The service could be talking some JSON protocol. It is not difficult to map \java\ data to JSON. It can be done like this:
 
 \medskip
 \begin{lstlisting}
@@ -228,7 +228,7 @@ MyBean bean = (MyBean) JSONMapper.toJava(lObj, MyBean.class);
 \end{lstlisting}
 \medskip
 
-Note that the mapper needs some help to convert JSON into \java\. As we stated in the goals of the mapper, we cannot store meta information in the JSON text. As a result the mapper cannot know how the JSON text should be mapped. Therefore we pass a class to the mapper (line 3) so that the mapper can exploit this information. In fact, there are two kinds of information the mapper can work with (1) classes as in the example and (2) types e.g. \lstinline{List<Integer>}. The rationale for this might be illustrated by the following example. Consider a JSON text 
+Note that the mapper needs some help to convert JSON into \java. As we stated in the goals of the mapper, we cannot store meta information in the JSON text. As a result the mapper cannot know how the JSON text should be mapped. Therefore we pass a class to the mapper (line 3) so that the mapper can exploit this information. In fact, there are two kinds of information the mapper can work with (1) classes as in the example and (2) types e.g. \lstinline{List<Integer>}. The rationale for this might be illustrated by the following example. Consider a JSON text 
 
 \medskip
 \begin{lstlisting}
@@ -239,20 +239,20 @@ Note that the mapper needs some help to convert JSON into \java\. As we stated i
 This list could be interpreted as a list of Strings, but also as a list of Dates. The mapper has no idea what to do with it. When we pass the type \lstinline{LinkedList<Date>} or the type \lstinline{LinkedList<String>}, the mapper can exploit this type information and do the right thing. Also note that the mapper automatically exploits this information when the outer layer is a bean, and the list is one of the beans properties.
 
 %% SERIALIZING
-\subsection{Serialisation}
-\label{serialisation}
+\subsection{Serialization}
+\label{serialization}
 
-Both mapping tool (section \ref{mapping} on page \pageref{mapping})  and serialisation tool (this section) can be used to convert \java\ into JSON and vice versa. These tools have different goals. The goals of the serialiser are:
+Both mapping tool (section \ref{mapping} on page \pageref{mapping})  and serialization tool (this section) can be used to convert \java\ into JSON and vice versa. These tools have different goals. The goals of the serializer are:
 
 \begin{itemize}
-	\item The serialisation tool could be an alternative for native serialisation\footnote{Java serialisation: \url{http://java.sun.com/j2se/1.5.0/docs/guide/serialization/}} (regarding functionality). This does not mean that all kinds of classes are supported out of the box, but it means that the general mechanism should be there and there should be an easy way to extend the mechanism so that we can deal with all classes.
-	\item The serialisation tool should preserve the difference between reference types and primitive types.
-	\item Recursive types should be supported without putting the (de)serialiser into an infinite loop.
-	\item Instance identity should be preserved. If the same instance is referenced from other instances, the same structure should be reconstructed during de-serialisation. There should only be one instance representing the original referenced instance.
-	\item The content of the JSON text can contain meta information which can help de-serialisation. We are allowed to add extra information in the JSON text in order to accomplish the other goals.
+	\item The serialization tool could be an alternative for native serialization\footnote{Java serialization: \url{http://java.sun.com/j2se/1.5.0/docs/guide/serialization/}} (regarding functionality). This does not mean that all kinds of classes are supported out of the box, but it means that the general mechanism should be there and there should be an easy way to extend the mechanism so that we can deal with all classes.
+	\item The serialization tool should preserve the difference between reference types and primitive types.
+	\item Recursive types should be supported without putting the (de)serializer into an infinite loop.
+	\item Instance identity should be preserved. If the same instance is referenced from other instances, the same structure should be reconstructed during de-serialization. There should only be one instance representing the original referenced instance.
+	\item The content of the JSON text can contain meta information which can help de-serialization. We are allowed to add extra information in the JSON text in order to accomplish the other goals.
 \end{itemize}
 
-This tool enables you to render POJO's \footnote{POJO = Plain Old Java Object. See \url{http://en.wikipedia.org/wiki/Plain_Old_Java_Object} for more information.}  to a JSON file. It is similar to the XML serialisation in \java\ or the XML Stream library, but it uses the JSON format. The result is a very fast text serialisation, you can customise it if you want.  The code is based on the SISE project, it was adjusted to make use of and benefit from the JSON format. Marshalling (converting from \java\ to JSON) as well as un-marshalling is very straightforward:
+This tool enables you to render POJO's \footnote{POJO = Plain Old Java Object. See \url{http://en.wikipedia.org/wiki/Plain_Old_Java_Object} for more information.}  to a JSON file. It is similar to the XML serialization in \java\ or the XML Stream library, but it uses the JSON format. The result is a very fast text serialization, you can customize it if you want.  The code is based on the SISE project, it was adjusted to make use of and benefit from the JSON format. Marshaling (converting from \java\ to JSON) as well as un-marshaling is very straightforward:
 
 \medskip
 \begin{lstlisting}
@@ -271,12 +271,12 @@ And the other way around:
 import com.sdicons.json.serializer.marshall.*;
 ...
 JSONObject myJSONObject = ...
-MarshallValue lResult = marshall.unmarshall(myJSONObject);
+MarshallValue lResult = marshall.unmarshall(myJSONObject); //*\label{marshallvalue}
 ... = lResult.getReference()
 \end{lstlisting}
 \medskip
 
-You might wonder what the MarshallValue (on line 4) is all about, why is un-marshalling giving an extra object back? The answer is that we went to great lengths to provide marshalling or un-marshalling for both \java\ reference types as \java\ basic types. A basic type needs to be fetched using specific methods (there is no other way). In order to provide these specific methods we need an extra class.
+You might wonder what the \lstinline{MarshallValue} (on line \ref{marshallvalue}) is all about, why is un-marshaling giving an extra object back? The answer is that we went to great lengths to provide marshaling or un-marshaling for both \java\ reference types as \java\ basic types. A basic type needs to be fetched using specific methods (there is no other way). In order to provide these specific methods we need an extra class.
 
 \subsubsection{Primitive Types}
 
@@ -443,7 +443,7 @@ JSONParser lParser = new JSONParser(MyClass.class.getResourceAsStream("data.json
 // We parse the datafile and convert it into a Java representation.
 JSONValue lMyData = lParser.nextValue();
 
-// Now we can use the validtor to check on our data. We can test if the data has the 
+// Now we can use the validator to check on our data. We can test if the data has the 
 // correct format or not. 
 lValidator.validate(lMyData);
 \end{lstlisting}
@@ -570,7 +570,7 @@ An enum validator.
 \end{lstlisting}
 
 % REGEXP RULE
-\ruledef{\rulename{regexp}}{\begin{itemize} \item \param{pattern} A regexp pattern.\end{itemize}}{For strings, requires a predefined format according to the regular expression.}
+\ruledef{\rulename{regexp}}{\begin{itemize} \item \param{pattern} A regular expression pattern.\end{itemize}}{For strings, requires a predefined format according to the regular expression.}
 
 A validator that validates strings containing a sequence of a's , b's and c's.
 
@@ -589,7 +589,7 @@ A validator that validates strings containing a sequence of a's , b's and c's.
 See \rulename{and} on page \pageref{and}. 
 
 % PROPERTIES RULE
-\ruledef{\rulename{properties}}{\begin{itemize} \item \param{pairs} A list of ``key/value'' pair descriptions. Note that in contrast with the content rule above you can specify a rule per attribute.Each description contains three properties: \begin{itemize} \item \param{key} The key string. \item \param{optional} A boolean indicating whether this property is optional or not. \item \param{rule} A validation rule that should be applied to the properties value. \end{itemize}  \end{itemize}}{This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
+\ruledef{\rulename{properties}}{\begin{itemize} \item \param{pairs} A list of ``key/value'' pair descriptions. Note that in contrast with the content rule above you can specify a rule per attribute. Each description contains three properties: \begin{itemize} \item \param{key} The key string. \item \param{optional} A boolean indicating whether this property is optional or not. \item \param{rule} A validation rule that should be applied to the properties value. \end{itemize}  \end{itemize}}{This predicate is only applicable (and only has meaning) on object data structures. It will fail on any other type.}
 
 It will validate objects looking like this:
  
@@ -688,7 +688,7 @@ extends CustomValidator
 \end{lstlisting}
 
 % SWITCH RULE
-\ruledef{\rulename{switch}}{\begin{itemize} \item \param{key} The key name of the object that will act as the discriminator. \item \param{case}  A list of objects containing the parameters “values” and “rule”. The first one is a list of values the second one a validator rule. \end{itemize}}{ The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
+\ruledef{\rulename{switch}}{\begin{itemize} \item \param{key} The key name of the object that will act as the discriminator. \item \param{case}  A list of objects containing the parameters ``values'' and ``rule''. The first one is a list of values the second one a validator rule. \end{itemize}}{ The switch validator is a convenience one. It is a subset of the or validator, but the problem with the or validator is that it does a bad job for error reporting when things go wrong. The reason is that all rules fail and it is not always clear why, because the reason a rule fails might be some levels deeper. The switch validator selects a validator based on the value of  a property encountered in the value being validated. The error produced will be the one of the selected validator.  The first applicable validator is used, the following ones are ignored.
 Example: The top level rule in the validator for validators contains a switch that could have been described by an or, but the switch gives better error messages.}
 
 \appendix
@@ -928,7 +928,7 @@ Changes to the mapper:
   * Added @JSONMap, @JSONConstruct annotations that let you quickly create mapper helpers for POJO's that do not have an empty constructor.
   * Added a method to the mapper that lets you add helpers quickly.
 
-Changes to the serialzier (Marshall) same system as for the mapper was added:
+Changes to the serialzer (Marshall) same system as for the mapper was added:
   * Added ObjectHelperDirect, a helper to serialize POJO's. 
   * Added @JSONSerialize and @JSONConstruct.
   * Added method to the marshall that lets you add helpers.

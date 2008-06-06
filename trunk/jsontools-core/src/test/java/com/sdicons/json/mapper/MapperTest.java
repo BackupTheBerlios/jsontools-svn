@@ -658,4 +658,9 @@ extends TestCase
             Assert.fail();
         }
     }
+
+     public void testRepository()
+     {
+         System.out.println(JSONMapper.getRepository().prettyPrint());
+     }
 }

@@ -140,7 +140,7 @@ Visit the \jtools\ project summary\footnote{\jtools\ summary: \url{http://sdi-co
 
 \subsection{Dependencies}
 
-The parser uses ANTLR  2.7.7\footnote{ANTLR: \url{http://www.antlr.org/}} , so the ANTLR runtime is needed for this. It might work with other versions, I simply did not test it. The project is based on the maven2 build system. 
+The parser uses ANTLR  2.7.7\footnote{ANTLR: \url{http://www.antlr.org/}} , so the ANTLR runtime is needed for this. It might work with other versions, I simply did not test it. I am aware that ANTLR v3 is available, but it is still in beta. We will stick to the stable release. The project is based on the maven2 build system.
 
 The \jtools\ libraries are written using the new language features from JDK 1.5 \footnote{Sun \java\ 5: \url{http://java.sun.com/j2se/1.5}}.  Enumerations and generics are used because these make the code nicer to read.  There are no dependencies to the new libraries. On the other hand, there is no guarantee we will keep it this way in future releases. If you want to use the libraries for an earlier version of the JDK, the retrotranslator tool\footnote{Retrotranslator: \url{http://retrotranslator.sourceforge.net}} might be an option.
 
@@ -199,6 +199,7 @@ In the introduction we already saw a pretty rendering of some widget data. The s
 %% MAPPING
 \subsection{Mapping}
 \label{mapping}
+\subsubsection{When to choose mapping}
 
 Both mapping tool (this section) and serialization tool (section \ref{serialization} on page \pageref{serialization}) can be used to convert \java\ into JSON and vice versa. These tools have different goals. The goals of the mapper are:
 
@@ -237,6 +238,72 @@ Note that the mapper needs some help to convert JSON into \java. As we stated in
 \medskip
 
 This list could be interpreted as a list of Strings, but also as a list of Dates. The mapper has no idea what to do with it. When we pass the type \lstinline{LinkedList<Date>} or the type \lstinline{LinkedList<String>}, the mapper can exploit this type information and do the right thing. Also note that the mapper automatically exploits this information when the outer layer is a bean, and the list is one of the beans properties.
+
+\subsubsection{The mapping process}
+\label{mappingprocess}
+
+The mapper uses a repository of helpers. Each helper is specialized in mapping instances of a certain class or interface. The mappers are organized in the repository in a hierarchical way, ordered according to the class hierarchy. When mapping an object, the mapper will try to find the most specific helper available. The default hierarchy looks like this:
+
+\begin{lstlisting}
+// Calling this method:
+System.out.println(JSONMapper.getRepository().prettyPrint());
+
+// Results in this output:
+java.lang.Object
+   java.lang.String
+   java.lang.Boolean
+   java.lang.Byte
+   java.lang.Short
+   java.lang.Integer
+   java.lang.Long
+   java.lang.Float
+   java.lang.Double
+   java.math.BigInteger
+   java.math.BigDecimal
+   java.lang.Character
+   java.util.Date
+   java.util.Collection
+   java.util.Map
+\end{lstlisting}
+
+The basic \java\ types (byte, int, char, ..., arrays) are handled internally by the mapper, no helpers are used for this. For all reference types, the repository is used to find an appropriate handler. If there is no specific helper available, the mapper will eventually use the root mapper. Currently there are two flavors available of the root mapper that handles \lstinline{java.lang.Object}.
+
+\begin{itemize}
+   \item \lstinline{ObjectMapper} is the default helper for objects that have no specific helper. It tries to access the object as a JavaBean. The object has to have an empty constructor, and the helper will only look at the getters/setters to retreive the contents of the bean. This helper is the default root helper for compatibility reasons with earlier versions of the \jtools. The JavaBean helper can be explicitly activated by calling the method \lstinline{JSONMapper.useJavaBeanAccess()}.
+   \item \lstinline{ObjectMaperDirect} is optional, this helper will access the fields directly, no getters or setters are needed. The fields can even be private. This POJO helper can be activated by calling the method \lstinline{JSONMapper.usePojoAccess();}.
+\end{itemize}
+
+It is also possible to add your own mapper helpers to the repository. As you can see, the default repository is only two levels deep, but it can be much more specialized according to the business needs. There are two different ways to create a helper or to influence the mapping process.
+
+\begin{itemize}
+   \item \lstinline{@JSONMap, @JSONConstruct}. If the \lstinline{ObjectHelperDirect} is activated as described above, then the class that you want to map can simply annotate two methods with these annotations. The \lstinline{@JSONMap} annotation has to be used to mark a method that returns an object array. This method will be called by the mapping process when an instance of the class is mapped from the \java\ model to JSON. These values will be used by the mapper when the instance is mapped from JSON to \java\ by invoking the constructor that is annotated with the \lstinline{@JSONConstruct} annotation.
+   \item Another way to create a helper is to create a new class, derived from \lstinline{SimpleMapperHelper}, and add it to the mapper repository by calling the method \lstinline{JSONMapper.addHelper(myHelper)}.
+\end{itemize}
+
+Here is an example of an annotated class. It is the first solution, in combination with \lstinline{ObjectMapperDirect}. Do not forget to activate the POJO mapper.
+
+\medskip
+\begin{lstlisting}
+public class MyDate
+{
+    private Date theDate;
+    private String theTimeZone;
+
+    @JSONConstruct
+    public MyDate(long aTime, String aTimeZone)
+    {
+        theDate = new Date(aTime);
+        theTimeZone = aTimeZone;
+    }
+
+    @JSONMap
+    public Object[] getTime()
+    {
+         return new Object[]{theDate.getTime(), theTimeZone};
+    }
+}
+\end{lstlisting}
+
 
 %% SERIALIZING
 \subsection{Serialization}
@@ -402,6 +469,86 @@ Also note that you can refer to other objects with the reference object which lo
 }
 \end{lstlisting}
 \medskip
+
+\subsubsection{The serialization process}
+\label{serializationprocess}
+
+The serialization process uses the same mechanism as the mapping process (section \ref{mappingprocess} on page \pageref{mappingprocess}), but the repository contains serialization helpers in stead of mapping helpers. There are also two different flavors of root serializers available:
+
+\begin{itemize}
+   \item \lstinline{ObjectHelper} Serializes an instance as a JavaBean. This is the default for compatibility reasons. You can explicitly activate it by calling \lstinline{((JsonMarshall) marshall).useJavaBeanAccess()}.
+   \item \lstinline{ObjectHelperDirect} Serializes an instance as a POJO. You an activate this by calling the method \lstinline{((JsonMarshall) marshall).usePojoAccess()}.
+\end{itemize}
+
+You can customize the serializer for your own business model in two ways.
+
+\begin{itemize}
+   \item \lstinline{@JSONSerialize, @JSONConstruct} in combination with the \lstinline{ObjectHelperDirect}.
+   \item Deriving your own helper class from \lstinline{MarshallHelper} and adding it with the method call  \lstinline{((JsonMarshall) marshall).addHelper(myHelper)}.
+\end{itemize}
+
+Here is an example of an annotated class.
+
+\begin{lstlisting}
+public class MyDate
+{
+    private Date theDate;
+    private String theTimeZone;
+
+    @JSONConstruct
+    public MyDate(long aTime, String aTimeZone)
+    {
+        theDate = new Date(aTime);
+        theTimeZone = aTimeZone;
+    }
+
+    @JSONSerialize
+    public Object[] getTime()
+    {
+        return new Object[]{theDate.getTime(), theTimeZone};
+    }
+}
+\end{lstlisting}
+
+The result of the serialization looks like the following listing. As you can see, there are two extra artificial fields \lstinline{cons-0} on line \ref{cons0} and \lstinline{cons-1} on line \ref{cons1} which are generted automatically by the serializer, these properties contain the values which were provided by the method which was annotated with \lstinline{@JSONSerialize}. These same properties will be used for calling the \lstinline{@JSONConstruct} annotated constructor.
+
+\begin{lstlisting}
+{
+   ">" : "O",
+   "&" : "id0",
+   "c" : "MyDate",
+   "=" :
+      {
+         "cons-0" : //*\label{cons0}
+            {
+               ">" : "O",
+               "&" : "id1",
+               "c" : "java.lang.Long",
+               "=" : "1212717107857"
+            },
+         "cons-1" : //*\label{cons1}
+            {
+               ">" : "O",
+               "&" : "id2",
+               "c" : "java.lang.String",
+               "=" : "CEST"
+            },
+         "theDate" :
+            {
+               ">" : "O",
+               "&" : "id3",
+               "c" : "java.util.Date",
+               "=" : "2008-06-06 03:51:47,857 CEST"
+            },
+         "theTimeZone" :
+            {
+               ">" : "R",
+               "*" : "id2"
+            }
+      }
+}
+\end{lstlisting}
+
  
 %% VALIDATION
 \subsection{Validation}
@@ -595,7 +742,7 @@ It will validate objects looking like this:
  
 \begin{lstlisting}
 Example data structure that will be validated:
-{{"name":"Bruno Ranschaert", "country":"Belgium", "salary":100.0 }}
+{{"name":"Bruno Ranschaert", "country":"Belgium", "salary":13.0 }}
 
 The validator looks like this:
 {
@@ -677,7 +824,7 @@ extends CustomValidator
 \end{lstlisting}
 
 % CUSTOM RULE
-\ruledef{\rulename{custom}}{\begin{itemize} \item \param{class} The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from com.sdicons.json.validator.impl.predicates.CustomValidator. }
+\ruledef{\rulename{custom}}{\begin{itemize} \item \param{class} The fully qualified class name of the validator.\end{itemize}}{An instance of this validator will be created and will be given a hash map of validations.  A custom validator should be derived from \lstinline{CustomValidator}. }
 
 \begin{lstlisting}
 {
@@ -924,8 +1071,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 \section{Changes since 1.5}
 \begin{verbatim}
 Changes to the mapper:
-  * Added ObjectMapperDirect, a helper that can map plain POJO's. In previous version only a helper for JavaBean properties was provided.
-  * Added @JSONMap, @JSONConstruct annotations that let you quickly create mapper helpers for POJO's that do not have an empty constructor.
+  * Added ObjectMapperDirect, a helper that can map plain POJO's. 
+    In previous version only a helper for JavaBean properties was provided.
+  * Added @JSONMap, @JSONConstruct annotations that let you quickly create 
+    mapper helpers for POJO's that do not have an empty constructor.
   * Added a method to the mapper that lets you add helpers quickly.
 
 Changes to the serialzer (Marshall) same system as for the mapper was added:
@@ -936,7 +1085,8 @@ Changes to the serialzer (Marshall) same system as for the mapper was added:
 Miscelaneous:
   * Update to newer version of ANTLR (no not the version 3 which is still in beta).
   * Code review, small code improvements.
-  * Converted documentation from lout to latex. 
+  * Converted documentation from lout to latex. Lout is a fine system, but latex is
+    more mainstream so more tools, packages and help are available.
   * Documentation update.
 \end{verbatim}
  

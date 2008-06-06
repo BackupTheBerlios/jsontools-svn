@@ -210,6 +210,11 @@ public class JSONMapper
         repo.addHelper(aHelper);
     }
 
+    public static HelperRepository<SimpleMapperHelper> getRepository()
+    {
+        return repo;
+    }
+
     /**
      * The objects that fall back on the general object mapper will be mapped by
      * using their fields directly. Without further annotations, the default

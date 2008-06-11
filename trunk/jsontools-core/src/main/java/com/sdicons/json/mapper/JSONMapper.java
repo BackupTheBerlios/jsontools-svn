@@ -27,6 +27,9 @@ import com.sdicons.json.mapper.helper.SimpleMapperHelper;
 import com.sdicons.json.mapper.helper.impl.*;
 import com.sdicons.json.model.JSONNull;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.serializer.helper.impl.ColorHelper;
+import com.sdicons.json.serializer.helper.impl.EnumHelper;
+import com.sdicons.json.serializer.helper.impl.FontHelper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -70,9 +73,7 @@ public class JSONMapper
         repo.addHelper(new DateMapper());
         repo.addHelper(new CollectionMapper());
         repo.addHelper(new MapMapper());
-//        repo.addHelper(new ColorHelper());
-//        repo.addHelper(new FontHelper());
-//        repo.addHelper(new EnumHelper());
+        repo.addHelper(new EnumMapper());
     }
 
     /**

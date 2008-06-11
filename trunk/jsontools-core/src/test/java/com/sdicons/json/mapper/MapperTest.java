@@ -28,6 +28,8 @@ import java.util.Vector;
 public class MapperTest
 extends TestCase
 {
+    public static enum TheSimpsons {HOMER, BART, LISA, MARGE, MAGGY};
+
     public static class TestBean
     {
         private Boolean booleanMbr;
@@ -54,6 +56,7 @@ extends TestCase
         private String onlyWritableProperty;
         private LinkedList<String> linkedList;
         private ArrayList<Date> arrayList;
+        private TheSimpsons simpson;
 
         private LinkedHashMap<String, Date> linkedMap;
 
@@ -195,7 +198,6 @@ extends TestCase
             this.date = date;
         }
 
-
         public ArrayList<Date> getArrayList()
         {
             return arrayList;
@@ -226,53 +228,75 @@ extends TestCase
             this.linkedMap = linkedMap;
         }
 
-		public Boolean getFalse1() {
+		public Boolean getFalse1()
+        {
 			return false1;
 		}
 
-		public void setFalse1(Boolean false1) {
+		public void setFalse1(Boolean false1)
+        {
 			this.false1 = false1;
 		}
 
-		public Boolean getFalse2() {
+		public Boolean getFalse2()
+        {
 			return false2;
 		}
 
-		public void setFalse2(Boolean false2) {
+		public void setFalse2(Boolean false2)
+        {
 			this.false2 = false2;
 		}
 
-		public Boolean getFalse3() {
+		public Boolean getFalse3()
+        {
 			return false3;
 		}
 
-		public void setFalse3(Boolean false3) {
+		public void setFalse3(Boolean false3)
+        {
 			this.false3 = false3;
 		}
 
-		public Boolean getTrue1() {
+		public Boolean getTrue1()
+        {
 			return true1;
 		}
 
-		public void setTrue1(Boolean true1) {
+		public void setTrue1(Boolean true1)
+        {
 			this.true1 = true1;
 		}
 
-		public Boolean getTrue2() {
+		public Boolean getTrue2()
+        {
 			return true2;
 		}
 
-		public void setTrue2(Boolean true2) {
+		public void setTrue2(Boolean true2)
+        {
 			this.true2 = true2;
 		}
 
-		public Boolean getTrue3() {
+		public Boolean getTrue3()
+        {
 			return true3;
 		}
 
-		public void setTrue3(Boolean true3) {
+		public void setTrue3(Boolean true3)
+        {
 			this.true3 = true3;
 		}
+
+        public TheSimpsons getSimpson()
+        {
+            return simpson;
+        }
+
+        public void setSimpson(TheSimpsons simpson)
+        {
+            this.simpson = simpson;
+        }
     }
 
     public static class MyDate
@@ -345,6 +369,7 @@ extends TestCase
             lDuupje.setFalse1(falseBoolean);
             lDuupje.setFalse2(falseBoolean);
             lDuupje.setFalse3(falseBoolean);
+            lDuupje.setSimpson(TheSimpsons.HOMER);
             
             LinkedList lLinkedList = new LinkedList();
             lLinkedList.add("uno");
@@ -371,8 +396,8 @@ extends TestCase
 			JSONParser jsonParser=new JSONParser(stringReader,fromJS); 
 			lObj=jsonParser.nextValue();
 			
-//            MapperTest.TestBean lLitmus = (MapperTest.TestBean) JSONMapper.toJava(lObj, TestBean.class);
-//            Assert.assertNotNull(lLitmus);
+            MapperTest.TestBean lLitmus = (MapperTest.TestBean) JSONMapper.toJava(lObj, TestBean.class);
+            Assert.assertNotNull(lLitmus);
 //            assertEquals("changed me",lLitmus.onlyWritableProperty);
         }
         catch(Exception e)
@@ -381,32 +406,46 @@ extends TestCase
             Assert.fail();
         }
     }
-    public static class Graph{
+    
+    public static class Graph
+    {
     	private HashMap<String, ArrayList<Integer>> nodes;
     	private ArrayList edges;
     	private Collection<HashMap<String,String>> col;
     	
-		public ArrayList getEdges() {
+		public ArrayList getEdges()
+        {
 			return edges;
 		}
-		public void setEdges(ArrayList edges) {
+
+        public void setEdges(ArrayList edges)
+        {
 			this.edges = edges;
 		}
-		public HashMap<String, ArrayList<Integer>> getNodes() {
+
+        public HashMap<String, ArrayList<Integer>> getNodes()
+        {
 			return nodes;
 		}
-		public void setNodes(HashMap<String, ArrayList<Integer>> nodes) {
+
+        public void setNodes(HashMap<String, ArrayList<Integer>> nodes)
+        {
 			this.nodes = nodes;
 		}
-		public Collection<HashMap<String, String>> getCol() {
+
+        public Collection<HashMap<String, String>> getCol()
+        {
 			return col;
 		}
-		public void setCol(Collection<HashMap<String, String>> col) {
+
+        public void setCol(Collection<HashMap<String, String>> col)
+        {
 			this.col = col;
 		}
-    	
     }
-    public void test2(){    	
+
+    public void test2()
+    {
     	HashMap<String, ArrayList<Integer>> nodes = new HashMap<String, ArrayList<Integer>>();
 
     	ArrayList<Integer> nodeInfo = new ArrayList<Integer>();
@@ -452,6 +491,7 @@ extends TestCase
 
     	System.out.println(javaObj);
     }
+
     public void test3(){
     	String[] strings={"abc","bcd","def"};
     	System.out.println("String[] class:"+strings.getClass());

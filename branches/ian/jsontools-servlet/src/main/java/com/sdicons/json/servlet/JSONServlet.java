@@ -3,7 +3,10 @@
  */
 package com.sdicons.json.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,6 +15,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -20,14 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.sdicons.json.servlet.IJSONResponder;
-import com.sdicons.json.servlet.JSONResponderDescription;
+import com.sdicons.json.annotations.JSONMethod;
 import com.sdicons.json.mapper.JSONMapper;
+import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.parser.JSONParser;
-import com.sdicons.json.annotations.JSONMethod;
 
 /**
  * @author itaylor
@@ -42,7 +45,7 @@ public abstract class JSONServlet extends HttpServlet
 	{
 		if (responderMap.isEmpty())
 		{
-			for (IJSONResponder responder : this.getJSONResponderClasses())
+			for (IJSONResponder responder : getJSONResponderClasses())
 			{
 				JSONResponderDescription responderDesc = new JSONResponderDescription(responder);
 				responderMap.put(responder.getResponderName(), responderDesc);
@@ -97,6 +100,8 @@ public abstract class JSONServlet extends HttpServlet
 			    .write(getJSFunctionsScriptBody(getServletPathSansFile(req.getRequestURI())));
 		} catch (Exception ex)
 		{
+			ex.printStackTrace();
+			LOG.error("Error writing javascript", ex);
 			throw new ServletException("Error writing javascript", ex);
 		}
 	}
@@ -108,15 +113,8 @@ public abstract class JSONServlet extends HttpServlet
 			ExecuteJSON(req, resp);
 		} catch (Exception ex)
 		{
-			LOG.error("JSONServelet Error", ex);
-			try
-			{
-				WriteJSONErrorResponse(ex, resp);
-			} catch (Exception ex2)
-			{
-				throw new ServletException("Error writing JSON exception", ex2);
-			}
-
+			LOG.error("Error processing JSON request", ex);
+			throw new ServletException("Error processing JSON request:" + ex.getMessage(), ex);
 		}
 	}
 
@@ -134,6 +132,11 @@ public abstract class JSONServlet extends HttpServlet
 		String requestURI = req.getRequestURI();
 		String responderName = requestURI.substring(requestURI.lastIndexOf("/") + 1,
 		                                            requestURI.indexOf(getResponderSuffix()));
+		if (responderName.equals("JSONServletBatchResponseHandler"))
+		{
+			ExecuteBatch(req, resp);
+			return;
+		}
 		if ((responderName == null) || (responderMap.get(responderName) == null))
 		{
 			throw new RuntimeException("JSON Responder named: " + responderName + " was not found.");
@@ -150,14 +153,77 @@ public abstract class JSONServlet extends HttpServlet
 			throw new RuntimeException("There was no method registered with the function name " +
 			        functionName);
 		}
-		Object result = runMethod(method, description.getResponderObj(), req);
-		WriteJSONResponse(result, resp);
+
+		JSONMethod jsonMethod = method.getAnnotation(JSONMethod.class);
+		String[] params = jsonMethod.params();
+		Object result = runMethod(method, description.getResponderObj(), turnParamMapToJsonVer(req.getParameterMap(), params ));
+		WriteJSONResponse(result, req, resp);
+	}
+	@SuppressWarnings("unchecked")
+    private Map<String, JSONValue> turnParamMapToJsonVer(Map parameterMap, String[] functionParams)
+	{
+		Map<String, JSONValue> myMap = new HashMap<String, JSONValue>();
+		for (String key : functionParams)
+		{
+			if (parameterMap.get(key) != null)
+			{
+				String value = ((String[])parameterMap.get(key))[0];
+				myMap.put(key, new JSONParser(value).nextValue());
+			}
+		}
+		return myMap;
+	}
+	protected void ExecuteBatch(HttpServletRequest req, HttpServletResponse resp) throws IOException
+	{
+		String responderNamesStr = req.getParameter("responderNameArray");
+		String dataToSendStr = req.getParameter("dataToSendArray");
+		if (responderNamesStr == null || dataToSendStr == null)
+		{
+			throw new RuntimeException("The responderNameArray or dataToSendArray were null on a batch request");
+		}
+		JSONArray responderNames = (JSONArray) new JSONParser(responderNamesStr).nextValue();
+		JSONArray dataToSend = (JSONArray) new JSONParser(dataToSendStr).nextValue();
+
+		if (responderNames.size() != dataToSend.size())
+		{
+			throw new RuntimeException("The responderNameArray and dataToSendArray did not match in size");
+		}
+		ArrayList<Object> results = new ArrayList<Object>();
+		for(int i=0; i < responderNames.size() ; i++)
+		{
+
+			String responderAndFxName = ((JSONString) responderNames.get(i)).getValue();
+
+			String responderName =  responderAndFxName.split(getResponderSuffix())[0];
+			String functionName = responderAndFxName.split("=")[1];
+
+			if ((responderName == null) || (responderMap.get(responderName) == null))
+			{
+				throw new RuntimeException("JSON Responder named: " + responderName + " was not found.");
+			}
+
+			JSONObject dataValues = (JSONObject) dataToSend.get(i);
+			Map<String, JSONValue> dataParams = dataValues.getValue();
+
+			JSONResponderDescription description = responderMap.get(responderName);
+			Method method = description.getMethods().get(functionName);
+
+			if (method == null)
+			{
+				throw new RuntimeException("There was no method registered with the function name " +
+				        functionName);
+			}
+			Object result = runMethod(method, description.getResponderObj(), dataParams);
+			results.add(result);
+		}
+		WriteJSONResponse(results, req, resp);
 
 	}
 
 	protected JSONObject buildJSONExceptionObj(Throwable ex)
 	{
 		JSONObject jsonException = new JSONObject();
+		LOG.info("Exception thrown in JSON Call.  Exception will be presented to Javascript.", ex);
 		jsonException.getValue().put("exception", new JSONString(ex.getClass().getName()));
 		if (ex.getMessage() != null)
 		{
@@ -170,18 +236,7 @@ public abstract class JSONServlet extends HttpServlet
 		return jsonException;
 	}
 
-	protected void WriteJSONErrorResponse(Exception ex, HttpServletResponse resp) throws IOException
-	{
-		resp.setContentType("text/json");
-		Writer writer = resp.getWriter();
-		writer.write("/*-secure-\n");
-		writer.write(buildJSONExceptionObj(ex).render(false));
-		writer.write("*/");
-		LOG.error("Exception thrown during JSON call", ex);
-		ex.getStackTrace();
-	}
-
-	protected void WriteJSONResponse(Object value, HttpServletResponse resp) throws IOException
+	protected void WriteJSONResponse(Object value, HttpServletRequest req,  HttpServletResponse resp) throws IOException
 	{
 		JSONValue jsonVal = JSONMapper.toJSON(value);
 		resp.setContentType("text/json");
@@ -193,34 +248,32 @@ public abstract class JSONServlet extends HttpServlet
 
 	@SuppressWarnings("unchecked")
 	protected Object[] getMethodParameterValues(Type[] genericParameters, JSONMethod jsonMethod,
-	                                            HttpServletRequest req)
+	                                            Map<String, JSONValue> reqParameters)
 	{
 		String[] methodParams = jsonMethod.params();
 		ArrayList<Object> paramValues = new ArrayList<Object>();
 
 		for (int i = 0; i < methodParams.length; i++)
 		{
-			String paramValue = req.getParameter(methodParams[i]);
+			JSONValue paramValue = reqParameters.get(methodParams[i]);
 
 			if (paramValue != null)
 			{
 				Type paramType = genericParameters[i];
-				JSONParser parser = new JSONParser(paramValue);
-				JSONValue value = parser.nextValue();
 
 				if (paramType instanceof ParameterizedType)
 				{
-					paramValues.add(JSONMapper.toJava(value, null, (ParameterizedType) paramType));
+					paramValues.add(JSONMapper.toJava(paramValue, null, (ParameterizedType) paramType));
 				} else
 				{
 					Class c = (Class) paramType;
 					if (c.isAssignableFrom(JSONValue.class))
 					{
 						//Pass the jsonValue version of the parameter, they requested it.
-						paramValues.add(value);
+						paramValues.add(paramValue);
 					} else
 					{
-						paramValues.add(JSONMapper.toJava(value, c));
+						paramValues.add(JSONMapper.toJava(paramValue, c));
 					}
 				}
 			} else
@@ -231,17 +284,34 @@ public abstract class JSONServlet extends HttpServlet
 		return paramValues.toArray();
 	}
 
-	protected Object runMethod(Method method, IJSONResponder responderObj, HttpServletRequest req) throws IllegalAccessException, InvocationTargetException
+	@SuppressWarnings("unchecked")
+    protected Object runMethod(Method method, IJSONResponder responderObj, Map reqParams)
 	{
-		JSONMethod jsonMethod = method.getAnnotation(JSONMethod.class);
-		Type[] paramTypes = method.getGenericParameterTypes();
-		Object[] methodParameterValues = this.getMethodParameterValues(paramTypes, jsonMethod, req);
-		if (method.getReturnType() == void.class)
+		try
 		{
-			method.invoke(responderObj, methodParameterValues);
-			return null;
+			JSONMethod jsonMethod = method.getAnnotation(JSONMethod.class);
+			Type[] paramTypes = method.getGenericParameterTypes();
+			Object[] methodParameterValues = getMethodParameterValues(paramTypes, jsonMethod, reqParams);
+			if (method.getReturnType() == void.class)
+			{
+				method.invoke(responderObj, methodParameterValues);
+				return null;
+			}
+			return method.invoke(responderObj, methodParameterValues);
 		}
-		return method.invoke(responderObj, methodParameterValues);
+		catch (InvocationTargetException ex)
+		{
+			Throwable realEx = ex.getCause();
+			if (realEx != null)
+			{
+				return buildJSONExceptionObj(realEx);
+			}
+			return buildJSONExceptionObj(ex);
+		}
+		catch (Exception ex)
+		{
+			return buildJSONExceptionObj(ex);
+		}
 	}
 
 	private static String jsFunctionScript;
@@ -251,7 +321,7 @@ public abstract class JSONServlet extends HttpServlet
 		StringBuilder sb = new StringBuilder();
 		if (jsFunctionScript == null)
 		{
-			sb.append(this.getJSCallbackFunction());
+			sb.append(getJSCallbackFunction(servletBaseUrl));
 
 			for (String responderName : responderMap.keySet())
 			{
@@ -277,28 +347,27 @@ public abstract class JSONServlet extends HttpServlet
 						sb.append(",");
 						sb.append(jsonMethod.params()[i]);
 					}
-					sb.append(")\n{\n");
+					sb.append(",batch)\n{\n");
 
-					sb.append("var dataToSend = new Array();\n");
+					sb.append("var dataToSend = {\n");
 					for (int i = 0; i < jsonMethod.params().length; i++)
 					{
 						String paramName = jsonMethod.params()[i];
-						sb.append("dataToSend.push(\n{");
-						sb.append("key:\"");
 						sb.append(paramName);
-						sb.append("\",");
-						sb.append("value:");
+						sb.append(":");
 						sb.append(paramName);
-						sb.append("}\n);");
+						if (i < jsonMethod.params().length -1 )
+						{
+							sb.append(",\n");
+						}
 					}
+					sb.append("};\n");
 					sb.append("\njsonServletCallback(\"");
-					sb.append(servletBaseUrl);
-					sb.append("/");
 					sb.append(responderName);
-					sb.append(this.getResponderSuffix());
+					sb.append(getResponderSuffix());
 					sb.append("?jsfunction=");
 					sb.append(jsFunctionName);
-					sb.append("\",onCompleteFunc,dataToSend)");
+					sb.append("\",onCompleteFunc,dataToSend, batch)");
 					sb.append(";\n}\n");
 				}
 			}
@@ -307,30 +376,31 @@ public abstract class JSONServlet extends HttpServlet
 		return jsFunctionScript;
 	}
 
-	/**
-	 * This generates the JS Callback function that is used to make ajax calls
-	 * It requires that prototype.js has been loaded.
-	 */
-	public String getJSCallbackFunction()
+	public String getJSCallbackFunction(String servletBaseUrl)
 	{
+		InputStream resourceAsStream = JSONServlet.class.getResourceAsStream("/jsCallback.js");
+		if (resourceAsStream == null)
+		{
+			throw new RuntimeException("Unable to read jsCallback.js as resource");
+		}
 		StringBuilder sb = new StringBuilder();
-
-		sb.append("function jsonServletCallback (dataUrl, loadFunction, dataToSend)\n");
-		sb.append("{\n");
-		sb.append("if(!Prototype) {alert('prototype.js has not been loaded and is required to make this call'); return false;}");
-		sb.append("if(!dataToSend){dataToSend = new Array();}\n");
-		sb.append("if (loadFunction == null){throw(\"No loadFunction was passed into the function jsonServletCallback\");}\n");
-		sb.append("var errorHandlerFunction = function(request, exception){throw(exception);}\n");
-		sb.append("dataToSend.push({key:\"noCache\", value: Math.random() * 1000000000});\n");
-		sb.append("var params = \"\";\n");
-		sb.append("for (var i=0; i < dataToSend.length; i++)\n");
-		sb.append("{params += \"&\";\n");
-		sb.append("var keyValue = dataToSend[i];\n");
-		sb.append("params += keyValue.key + \"=\"+ encodeURIComponent(Object.toJSON(keyValue.value));}\n");
-		sb.append("var headers = ['json', 'true'];\n");
-		sb.append("var successFunction = function (transport){loadFunction(transport.responseText.evalJSON(true), transport)}\n");
-		sb.append("var myAjax = new Ajax.Request(dataUrl,{method: 'post',requestHeaders: headers,parameters: params,onComplete: successFunction, onException: errorHandlerFunction,onFailure: errorHandlerFunction});\n");
-		sb.append("}\n");
+		sb.append("var jsonServletDataUrl=\"");
+		sb.append(servletBaseUrl);
+		sb.append("/\";\n");
+		BufferedReader in = new BufferedReader(new InputStreamReader(resourceAsStream));
+		String line;
+		try
+        {
+	        while ((line = in.readLine()) != null)
+	        {
+	        	sb.append(line + "\n");
+	        }
+        }
+        catch (IOException ex)
+        {
+        	LOG.error("Couldn't read from jscallback.js", ex);
+	       throw new RuntimeException("Couldn't read from jscallback.js", ex);
+        }
 		return sb.toString();
 	}
 

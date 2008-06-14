@@ -156,7 +156,7 @@ public class JSONServletTest
 		Assert.assertEquals(response.getContentType(), "text/javascript");
 		//I don't really have a good way to test that the js that came out was valid...
 		//I can test that it contains the functions that I expect though.
-		Assert.assertTrue(resultScript.contains("TestJSONResponder.test1 = function (onCompleteFunc,text,number)"));
+		Assert.assertTrue(resultScript.contains("TestJSONResponder.test1 = function (onCompleteFunc,text,number,batch)"));
 	}
 
 	@Test
@@ -184,6 +184,27 @@ public class JSONServletTest
 		Assert.assertFalse(Boolean.parseBoolean(response.getText()));
 	}
 
+	@Test
+	public void testBatchQuery() throws MalformedURLException, IOException, SAXException
+	{
+		ServletUnitClient sc = sr.newClient();
+		WebRequest request = new PostMethodWebRequest("http://test.zloop.com/jsonServlet/JSONServletBatchResponseHandler.json");
+
+
+		TestJSONObject obj1 = getTestJSONObject(1);
+		JSONValue val = JSONMapper.toJSON(obj1);
+		String obj1val = val.render(false);
+
+		String responders = "[\"TestJSONResponder.json?jsfunction=test1\",\"TestJSONResponder.json?jsfunction=test2\"]";
+		String data = "[{\"text\":\"mytext\", \"number\":2}, {\"obj1\":" + obj1val + "}]";
+
+		request.setParameter("responderNameArray", responders);
+		request.setParameter("dataToSendArray", data);
+		WebResponse response = sc.getResponse(request);
+
+		Assert.assertEquals(response.getText(), addSecure("[\"mytext20\",1]"));
+	}
+
 	private String addSecure(String s)
 	{
 		return "/*-secure-\n" + s + "*/";
@@ -194,10 +215,10 @@ public class JSONServletTest
 		TestJSONObject tjo = new TestJSONObject();
 		tjo.setTestInt(seed);
 		tjo.setTestString("String" + seed);
-		tjo.setTestStringList(this.getTestStringList(seed));
-		tjo.setTestSubObject(this.getTestJSONSubObject(seed));
-		tjo.setTestMap(this.getTestMap(seed));
-		tjo.setTestDoubleNestedGeneric(this.getTestDoubleNestedGeneric(seed));
+		tjo.setTestStringList(getTestStringList(seed));
+		tjo.setTestSubObject(getTestJSONSubObject(seed));
+		tjo.setTestMap(getTestMap(seed));
+		tjo.setTestDoubleNestedGeneric(getTestDoubleNestedGeneric(seed));
 		return tjo;
 
 	}
@@ -215,8 +236,8 @@ public class JSONServletTest
 
 		Map<String, TestJSONSubObject> myMap = new HashMap<String, TestJSONSubObject>();
 
-		myMap.put("Key_" + seed + "_1", this.getTestJSONSubObject(0));
-		myMap.put("Key_" + seed + "_2", this.getTestJSONSubObject(1));
+		myMap.put("Key_" + seed + "_1", getTestJSONSubObject(0));
+		myMap.put("Key_" + seed + "_2", getTestJSONSubObject(1));
 
 		return myMap;
 	}
@@ -235,7 +256,7 @@ public class JSONServletTest
 		tjso.setTestInt(seed);
 		tjso.setTestString("String" + seed);
 
-		tjso.setTestStringList(this.getTestStringList(seed));
+		tjso.setTestStringList(getTestStringList(seed));
 		return tjso;
 	}
 

@@ -2,6 +2,8 @@ package com.sdicons.json.mapper;
 
 import com.sdicons.json.mapper.helper.impl.DateMapper;
 import com.sdicons.json.model.JSONValue;
+import com.sdicons.json.model.JSONString;
+import com.sdicons.json.model.JSONLiteral;
 import com.sdicons.json.parser.JSONParser;
 
 import junit.framework.Assert;
@@ -543,32 +545,15 @@ extends TestCase
     		e.printStackTrace();
     	}
     }
-//TODO: add msec date mapper test instead of this. itaylor
+    public void testJSONLiteral()
+    {
+    	JSONLiteral myJSFunction = new JSONLiteral("function () {alert('hello')}");
+    	System.out.println(myJSFunction.toString());
+    	JSONValue val = JSONMapper.toJSON(myJSFunction);
+    	System.out.println(val.render(false));
+    	assert(val.render(false).equals("function () {alert('hello')}"));
+    	JSONString s = new JSONString("function () {alert('hello')}");
+    	Object o = JSONMapper.toJava(s, JSONLiteral.class);
+    }
 
-//    public void testDateMapper(){
-//
-//    	try {
-//    		//By Default,DateMapper will ignore the timezone.
-//    		//it's convenient for me,and maybe others.
-//    		Date date1=new Date();
-//    		JSONValue lObj = JSONMapper.toJSON(date1);
-//    		System.out.println(lObj.render(true));
-//    		Object javaObj = JSONMapper.toJava(lObj, date1.getClass());
-//        	Date date2=(Date)javaObj;
-//        	Assert.assertEquals(date1, date2);
-//        	System.out.println(date2);
-//
-//        	DateMapper.setTimeZoneIgnored(false);
-//    		date1=new Date();
-//    		lObj = JSONMapper.toJSON(date1);
-//    		System.out.println(lObj.render(true));
-//    		javaObj = JSONMapper.toJava(lObj, date1.getClass());
-//        	date2=(Date)javaObj;
-//        	Assert.assertEquals(date1, date2);
-//        	System.out.println(date2);
-//    	}catch (Exception e) {
-//        	e.printStackTrace();
-//        }
-//
-//    }
 }

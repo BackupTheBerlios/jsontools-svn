@@ -22,7 +22,8 @@ public class JSONResponderDescription
 	private IJSONResponder responder;
 	private HashMap<String, Method> theMethods;
 
-	protected HashMap<String, Method> getMethods()
+	@SuppressWarnings("unchecked")
+    protected HashMap<String, Method> getMethods()
 	{
 		if (theMethods == null)
 		{
@@ -48,6 +49,6 @@ public class JSONResponderDescription
 	}
 	public IJSONResponder getResponderObj()
 	{
-		return this.responder;
+		return responder;
 	}
 }

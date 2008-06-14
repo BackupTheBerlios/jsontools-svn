@@ -35,6 +35,8 @@ import com.sdicons.json.mapper.helper.impl.DoubleMapper;
 import com.sdicons.json.mapper.helper.impl.EnumMapper;
 import com.sdicons.json.mapper.helper.impl.FloatMapper;
 import com.sdicons.json.mapper.helper.impl.IntegerMapper;
+import com.sdicons.json.mapper.helper.impl.JSONLiteralMapper;
+import com.sdicons.json.mapper.helper.impl.JSONValueMapper;
 import com.sdicons.json.mapper.helper.impl.LongMapper;
 import com.sdicons.json.mapper.helper.impl.MapMapper;
 import com.sdicons.json.mapper.helper.impl.ObjectMapper;
@@ -80,6 +82,8 @@ public class JSONMapper
 		repo.addHelper(new CollectionMapper());
 		repo.addHelper(new MapMapper());
 		repo.addHelper(new EnumMapper());
+		repo.addHelper(new JSONLiteralMapper());
+		repo.addHelper(new JSONValueMapper());
 // repo.addHelper(new ColorHelper());
 // repo.addHelper(new FontHelper());
 // repo.addHelper(new EnumHelper());

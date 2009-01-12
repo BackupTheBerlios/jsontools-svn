@@ -143,7 +143,7 @@ implements SimpleMapperHelper
          else
              // Array of array; Array of primitive types.
         	 lArrClassName = lObjClassName.substring(1);
-         System.out.println("lArrClassName:"+lArrClassName);
+
         final List<Object> lElements = new LinkedList<Object>();
         for (JSONValue jsonValue : lValues.getValue())
         {

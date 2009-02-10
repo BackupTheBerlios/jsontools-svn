@@ -66,7 +66,6 @@ extends Predicate
             catch (ValidationException e)
             {
                 // This rule failed. Ignore for the time being.
-                //System.out.println(e);
             }
         }
         // If we get here, then all rules failed.

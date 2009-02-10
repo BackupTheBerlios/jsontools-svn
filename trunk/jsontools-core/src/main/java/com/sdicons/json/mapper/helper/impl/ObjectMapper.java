@@ -70,8 +70,8 @@ implements SimpleMapperHelper
                         if (lWriter == null)
                         {
                         	//Ignore the case of no setter                        	
-                            final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
-                            System.out.println("WARNING:"+lMsg);
+                            // final String lMsg = "Could not find a setter for prop: " + lPropname + " in class: " + aRequestedClass;
+                            // System.out.println("WARNING:"+lMsg);
                             break;
                             //throw new MapperException(lMsg);
                         }

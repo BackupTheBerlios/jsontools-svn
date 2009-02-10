@@ -8,6 +8,12 @@ import java.math.BigInteger;
 
 class JSONParserAntlr extends Parser;
 
+options
+{
+
+   defaultErrorHandler = false;
+}
+
 value[String aStreamName] returns [JSONValue val=JSONNull.NULL] :
      val=object[aStreamName]
    | val=array[aStreamName]

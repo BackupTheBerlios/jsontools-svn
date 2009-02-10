@@ -29,6 +29,7 @@ import com.sdicons.json.model.JSONValue;
 import junit.framework.TestCase;
 
 import java.util.Iterator;
+import java.io.StringReader;
 
 public class JSONTest
 extends TestCase
@@ -72,6 +73,26 @@ extends TestCase
         catch (RecognitionException e)
         {
            TestCase.fail(e.getMessage());
+        }
+    }
+
+    public void testAntiExamples()
+    {
+        try
+        {
+            final String lErrorExample = "{ \"fld1\" : \"val1\" ["; // This string contains an error.
+            final String lErrorExample2 = "[1, 2, 3 {";
+
+            final JSONParser lParser = new JSONParser(new StringReader(lErrorExample2));
+            final JSONValue lConfig = lParser.nextValue();
+            System.out.println(lConfig);
+            TestCase.fail("Anb exception should be thrown when an error is found.");
+
+        }
+        catch(Exception e)
+        {
+            // This is correct, an exception should be thrown.
+            // This test has to arrive here.
         }
     }
 

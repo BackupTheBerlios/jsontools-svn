@@ -21,14 +21,11 @@ package com.sdicons.json.parser;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 import junit.framework.TestCase;
 
-import java.util.Iterator;
 import java.io.StringReader;
 
 public class JSONTest
@@ -42,13 +39,11 @@ extends TestCase
             final JSONValue lConfig = lParser.nextValue();
             assertTrue(lConfig.isArray());
             final JSONArray lConfigArray = (JSONArray) lConfig;
-            final Iterator<JSONValue> lIter = lConfigArray.getValue().iterator();
 
-            while (lIter.hasNext())
+            for(JSONValue lJSONValue : lConfigArray.getValue())
             {
-                final JSONValue lEntry = lIter.next();
-                TestCase.assertTrue(lEntry.isString());
-                final JSONString lEntryResource = (JSONString) lEntry;
+                TestCase.assertTrue(lJSONValue.isString());
+                final JSONString lEntryResource = (JSONString) lJSONValue;
 
                 try
                 {
@@ -58,21 +53,17 @@ extends TestCase
                     System.out.println(lExampleVal.render(true));
                     JSONValue.decorate(lExampleVal.strip());
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     e.printStackTrace();
                     TestCase.fail(e.getMessage());
                 }
             }
         }
-        catch (TokenStreamException e)
+        catch(JSONParserException e)
         {
             e.printStackTrace();
             TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-           TestCase.fail(e.getMessage());
         }
     }
 
@@ -80,13 +71,13 @@ extends TestCase
     {
         try
         {
-            final String lErrorExample = "{ \"fld1\" : \"val1\" ["; // This string contains an error.
+            // final String lErrorExample = "{ \"fld1\" : \"val1\" ["; // This string contains an error.
             final String lErrorExample2 = "[1, 2, 3 {";
 
             final JSONParser lParser = new JSONParser(new StringReader(lErrorExample2));
             final JSONValue lConfig = lParser.nextValue();
             System.out.println(lConfig);
-            TestCase.fail("Anb exception should be thrown when an error is found.");
+            TestCase.fail("An exception should be thrown when an error is found.");
 
         }
         catch(Exception e)

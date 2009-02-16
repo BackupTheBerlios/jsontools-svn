@@ -21,13 +21,12 @@ package com.sdicons.json.validator;
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
 import com.sdicons.json.model.JSONArray;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
 import com.sdicons.json.parser.JSONParser;
+import com.sdicons.json.parser.JSONParserException;
 import junit.framework.TestCase;
 
 public class ValidatorTest
@@ -43,18 +42,14 @@ extends TestCase
             final Validator lChecker = new JSONValidator((JSONObject) lParser.nextValue());
             lChecker.validate(new JSONObject());                  
         }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-            TestCase.fail(e.getMessage());
-        }
         catch (ValidationException e)
         {
             e.printStackTrace();
+            TestCase.fail(e.getMessage());
+        }
+        catch(JSONParserException e)
+        {
+             e.printStackTrace();
             TestCase.fail(e.getMessage());
         }
     }
@@ -88,17 +83,12 @@ extends TestCase
                 }
             }
         }
-        catch (TokenStreamException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
-        catch (RecognitionException e)
-        {
-            e.printStackTrace();
-            TestCase.fail(e.getMessage());
-        }
         catch (ValidationException e)
+        {
+            e.printStackTrace();
+            TestCase.fail(e.getMessage());
+        }
+        catch(JSONParserException e)
         {
             e.printStackTrace();
             TestCase.fail(e.getMessage());
@@ -152,16 +142,12 @@ extends TestCase
                 }
             }
         }
-        catch (TokenStreamException e)
+        catch (ValidationException e)
         {
             e.printStackTrace();
             TestCase.fail(e.getMessage());
         }
-        catch (RecognitionException e)
-        {
-            TestCase.fail(e.getMessage());
-        }
-        catch (ValidationException e)
+        catch(JSONParserException e)
         {
             e.printStackTrace();
             TestCase.fail(e.getMessage());

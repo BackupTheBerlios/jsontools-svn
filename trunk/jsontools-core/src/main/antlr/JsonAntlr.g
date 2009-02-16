@@ -11,9 +11,6 @@ options
 @lexer::header
 {
 package com.sdicons.json.parser.impl;
-import com.sdicons.json.model.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 }
 
 @header
@@ -31,6 +28,8 @@ import java.math.BigInteger;
 	  throw e;
 	}
 }
+
+values[String aStreamName] : value[aStreamName]* EOF!;
 
 value[String aStreamName] returns [JSONValue val=JSONNull.NULL] :
      obj=object[aStreamName] {$val = obj.result;}
@@ -147,8 +146,8 @@ WS	:	(	' '
 		|	'\f'
 			// handle newlines
 		|	(	
-			:	'\r\n'  // Evil DOS
-			|	'\r'    // Macintosh
+			:	
+				'\r'    // Macintosh
 			|	'\n'    // Unix (the right way)
 			)
 		)+
